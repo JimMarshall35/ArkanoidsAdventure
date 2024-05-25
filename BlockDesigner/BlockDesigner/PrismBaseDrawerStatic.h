@@ -3,6 +3,7 @@
 #include "Camera2D.h"
 #include "IDragAcceptor.h"
 #include "IMouseMoveAcceptor.h"
+#include "IMouseDownAcceptor.h"
 #include <memory>
 #include <glm.hpp>
 
@@ -21,7 +22,8 @@
 
 class PrismBaseDrawerStatic : public CStatic,
 	public IDragAcceptor,
-	public IMouseMoveAcceptor
+	public IMouseMoveAcceptor,
+	public IMouseDownAcceptor
 { 
 	DECLARE_DYNAMIC(PrismBaseDrawerStatic)
 public:
@@ -34,11 +36,15 @@ public:
 	virtual void StartDrag(const glm::vec2& pt, MouseButton btn) override;
 	virtual void StopDrag(const glm::vec2& pt) override;
 	virtual void UpdateDrag(const glm::vec2& lastPt) override;
-	virtual void GetWindowRectForDrag(LONG& t, LONG& l, LONG& b, LONG& r) const override;
 
 	// Inherited via IMouseMoveAcceptor
 	virtual void UpdateMousePos(const glm::vec2& lastPt) override;
-	virtual void GetWindowRectForMove(LONG& t, LONG& l, LONG& b, LONG& r) const override;
+
+	// Inherited via IMouseDownAcceptor
+	virtual void MouseDown(const glm::vec2& pt, MouseButton btn) override;
+
+	// Inherited via IGetWindowRect
+	virtual void GetWindowRect(LONG& t, LONG& l, LONG& b, LONG& r) const override;
 
 	afx_msg void OnPaint();
 	afx_msg BOOL OnEraseBkgnd(CDC*);

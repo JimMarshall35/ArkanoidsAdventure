@@ -245,11 +245,10 @@ BOOL CBlockDesignerDlg::OnInitDialog()
 
 	m_ctlIncrementSpinBtn.SetRange(1, 5);
 	m_ctlIncrementSpinBtn.SetPos(1);
-	//m_ctlIncremetnEdit.EnableWindow(FALSE);
-	//m_ctlIncrementSpinBtn.EnableWindow(TRUE);
 
-	m_DragDispatcher.RegisterDragAcceptor(&m_ctlPrismBaseDrawer);
+	m_DragDispatcher.RegisterDragAcceptor(&m_ctlPrismBaseDrawer, MouseButton::Middle);
 	m_DragDispatcher.RegisterMouseMoveAcceptor(&m_ctlPrismBaseDrawer);
+	m_DragDispatcher.RegisterMouseDownAcceptor(&m_ctlPrismBaseDrawer, MouseButton::Left);
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 

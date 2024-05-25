@@ -2,10 +2,10 @@
 
 enum class MouseButton
 {
-	None = 0,
-	Middle = 1,
-	Left = 2,
-	Right = 4
+	Middle,
+	Left,
+	Right,
+	NumMouseButtons
 };
 
 inline MouseButton operator|(MouseButton a, MouseButton b)

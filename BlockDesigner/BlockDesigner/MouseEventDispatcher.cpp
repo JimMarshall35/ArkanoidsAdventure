@@ -2,16 +2,33 @@
 #include "MouseEventDispatcher.h"
 #include "IDragAcceptor.h"
 #include "IMouseMoveAcceptor.h"
+#include "IMouseDownAcceptor.h"
+#include "MiscFunctions.h"
 
-void MouseEventDispatcher::RegisterDragAcceptor(IDragAcceptor* acceptor)
+MouseEventDispatcher::MouseEventDispatcher(bool bDragAcceptorAndMouseDownMutuallyExclusive)
+	:m_bDragAcceptorAndMouseDownMutuallyExclusive(bDragAcceptorAndMouseDownMutuallyExclusive)
 {
-	if (std::find(m_DragAcceptors.begin(), m_DragAcceptors.end(), acceptor) != m_DragAcceptors.end())
+}
+
+void MouseEventDispatcher::RegisterDragAcceptor(IDragAcceptor* acceptor, MouseButton btn)
+{
+	if (m_bDragAcceptorAndMouseDownMutuallyExclusive)
+	{
+		std::vector<IMouseDownAcceptor*>& acceptorList = m_MouseDownAcceptors[(int)btn];
+		if (std::find(acceptorList.begin(), acceptorList.end(), (IMouseDownAcceptor*)acceptor) != acceptorList.end())
+		{
+			ASSERT(false);
+			return;
+		}
+	}
+	std::vector<IDragAcceptor*>& acceptorList = m_DragAcceptors[(int)btn];
+	if (std::find(acceptorList.begin(), acceptorList.end(), acceptor) != acceptorList.end())
 	{
 		ASSERT(false);
 	}
 	else
 	{
-		return m_DragAcceptors.push_back(acceptor);
+		return acceptorList.push_back(acceptor);
 	}
 }
 
@@ -24,6 +41,28 @@ void MouseEventDispatcher::RegisterMouseMoveAcceptor(IMouseMoveAcceptor* accepto
 	else
 	{
 		return m_MoveAcceptors.push_back(acceptor);
+	}
+}
+
+void MouseEventDispatcher::RegisterMouseDownAcceptor(IMouseDownAcceptor* acceptor, MouseButton btn)
+{
+	if (m_bDragAcceptorAndMouseDownMutuallyExclusive)
+	{
+		std::vector<IDragAcceptor*>& acceptorList = m_DragAcceptors[(int)btn];
+		if (std::find(acceptorList.begin(), acceptorList.end(), (IDragAcceptor*)acceptor) != acceptorList.end())
+		{
+			ASSERT(false);
+			return;
+		}
+	}
+	std::vector<IMouseDownAcceptor*>& acceptorList = m_MouseDownAcceptors[(int)btn];
+	if (std::find(acceptorList.begin(), acceptorList.end(), acceptor) != acceptorList.end())
+	{
+		ASSERT(false);
+	}
+	else
+	{
+		return acceptorList.push_back(acceptor);
 	}
 }
 
@@ -57,35 +96,26 @@ void MouseEventDispatcher::OnRightMouseUp(const glm::vec2& windowSpacePos, Windo
 	ButtonUpInternal(windowSpacePos, w2c);
 }
 
-
-static bool RectTest(const CRect& rect, const glm::vec2& pos)
-{
-	if (pos.x >= rect.left && pos.x <= rect.right)
-	{
-		if (pos.y >= rect.top && pos.y <= rect.bottom)
-		{
-			return true;
-		}
-	}
-	return false;
-}
-
 void MouseEventDispatcher::OnMouseMove(const glm::vec2& windowSpacePos, WindowToClientFn w2c)
 {
 	if (m_pCurrentDrag)
 	{
 		CRect rect;
-		m_pCurrentDrag->GetWindowRectForDrag(rect.top, rect.left, rect.bottom, rect.right);
+		m_pCurrentDrag->GetWindowRect(rect.top, rect.left, rect.bottom, rect.right);
 		w2c(rect.top, rect.left, rect.bottom, rect.right);
+
+		glm::vec2 topLeft = { rect.left, rect.top };
+		glm::vec2 acceptorPos = windowSpacePos - topLeft;
 
 		if (!RectTest(rect, windowSpacePos))
 		{
-			m_pCurrentDrag->StopDrag(windowSpacePos);
+			m_pCurrentDrag->StopDrag(acceptorPos);
 			m_pCurrentDrag = nullptr;
 		}
 		else
 		{
-			m_pCurrentDrag->UpdateDrag(windowSpacePos);
+
+			m_pCurrentDrag->UpdateDrag(acceptorPos);
 		}
 		
 	}
@@ -94,7 +124,7 @@ void MouseEventDispatcher::OnMouseMove(const glm::vec2& windowSpacePos, WindowTo
 		for (IMouseMoveAcceptor* acceptor : m_MoveAcceptors)
 		{
 			CRect rect;
-			acceptor->GetWindowRectForMove(rect.top, rect.left, rect.bottom, rect.right);
+			acceptor->GetWindowRect(rect.top, rect.left, rect.bottom, rect.right);
 			w2c(rect.top, rect.left, rect.bottom, rect.right);
 			if (RectTest(rect, windowSpacePos))
 			{
@@ -108,43 +138,45 @@ void MouseEventDispatcher::OnMouseMove(const glm::vec2& windowSpacePos, WindowTo
 
 void MouseEventDispatcher::ButtonDownInternal(const glm::vec2& windowSpacePos, WindowToClientFn w2c, MouseButton btn)
 {
-	for (IDragAcceptor* a : m_DragAcceptors)
+	const std::vector<IDragAcceptor*>& dragAcceptorList = m_DragAcceptors[(int)btn];
+
+	for (IDragAcceptor* a : dragAcceptorList)
 	{
 		CRect rect;
-		//::GetWindowRect(m_ctlPrismBaseDrawer.GetSafeHwnd(), &rect);
-		a->GetWindowRectForDrag(rect.top, rect.left, rect.bottom, rect.right);
+		a->GetWindowRect(rect.top, rect.left, rect.bottom, rect.right);
 		w2c(rect.top, rect.left, rect.bottom, rect.right);
-		if (windowSpacePos.x >= rect.left && windowSpacePos.x <= rect.right)
+		if (RectTest(rect, windowSpacePos))
 		{
-			if (windowSpacePos.y >= rect.top && windowSpacePos.y <= rect.bottom)
-			{
+			glm::vec2 topLeft = { rect.left, rect.top };
+			glm::vec2 acceptorPos = windowSpacePos - topLeft;
+			a->StartDrag(acceptorPos, btn);
+			ASSERT(!m_pCurrentDrag);
+			m_pCurrentDrag = a;
+			return;
+		}
+	}
 
-				a->StartDrag(windowSpacePos, btn);
-				ASSERT(!m_pCurrentDrag);
-				m_pCurrentDrag = a;
-				return;
-			}
+	const std::vector<IMouseDownAcceptor*>& mouseDownAcceptorList = m_MouseDownAcceptors[(int)btn];
+	for (IMouseDownAcceptor* a : mouseDownAcceptorList)
+	{
+		CRect rect;
+		a->GetWindowRect(rect.top, rect.left, rect.bottom, rect.right);
+		w2c(rect.top, rect.left, rect.bottom, rect.right);
+		if (RectTest(rect, windowSpacePos))
+		{
+			glm::vec2 topLeft = { rect.left, rect.top };
+			glm::vec2 acceptorPos = windowSpacePos - topLeft;
+			a->MouseDown(acceptorPos, btn);
+			return;
 		}
 	}
 }
 
 void MouseEventDispatcher::ButtonUpInternal(const glm::vec2& windowSpacePos, WindowToClientFn w2c)
 {
-	for (IDragAcceptor* a : m_DragAcceptors)
+	if (m_pCurrentDrag)
 	{
-		CRect rect;
-		//::GetWindowRect(m_ctlPrismBaseDrawer.GetSafeHwnd(), &rect);
-		a->GetWindowRectForDrag(rect.top, rect.left, rect.bottom, rect.right);
-		w2c(rect.top, rect.left, rect.bottom, rect.right);
-		if (windowSpacePos.x >= rect.left && windowSpacePos.x <= rect.right)
-		{
-			if (windowSpacePos.y >= rect.top && windowSpacePos.y <= rect.bottom)
-			{
-				a->StopDrag(windowSpacePos);
-				//ASSERT(m_pCurrentDrag);
-				m_pCurrentDrag = nullptr;
-				return;
-			}
-		}
+		m_pCurrentDrag->StopDrag(windowSpacePos);
+		m_pCurrentDrag = nullptr;
 	}
 }

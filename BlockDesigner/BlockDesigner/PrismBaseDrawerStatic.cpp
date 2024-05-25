@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "PrismBaseDrawerStatic.h"
 #include "BasicTypedefs.h"
+#include "MiscFunctions.h"
 #include <vector>
 
 IMPLEMENT_DYNAMIC(PrismBaseDrawerStatic, CStatic)
@@ -50,8 +51,6 @@ void PrismBaseDrawerStatic::OnPaint()
 	GetClientRect(&rect);
 	float w = rect.Width();
 	float h = rect.Height();
-	PAINTSTRUCT p, memP;
-	HANDLE      hOld;
 
 	if (!m_hbmMem)
 	{
@@ -60,7 +59,7 @@ void PrismBaseDrawerStatic::OnPaint()
 		m_hdcMem = CreateCompatibleDC(GetDC()->GetSafeHdc());
 	}
 
-	hOld = ::SelectObject(m_hdcMem, m_hbmMem);
+	HANDLE hOld = ::SelectObject(m_hdcMem, m_hbmMem);
 
 	RECT r = {
 		0, 0,
@@ -173,10 +172,9 @@ void PrismBaseDrawerStatic::OnPaint()
 	}
 	
 	// Transfer the off-screen DC to the screen
+	PAINTSTRUCT p;
 	CDC* cdc = BeginPaint(&p);
-
 	BitBlt(cdc->GetSafeHdc(), 0, 0, w, h, m_hdcMem, 0, 0, SRCCOPY);
-
 	EndPaint(&p);
 }
 
@@ -260,13 +258,18 @@ void PrismBaseDrawerStatic::UpdateMousePos(const glm::vec2& lastPt)
 			break;
 		}
 	}
+	/* if change from selected or deselected (or vice versa), trigger redraw */
 	if (bPointPreviouslySelected != m_bAPointIsSelected)
 	{
 		InvalidateRect(NULL);
 	}
 }
 
-void PrismBaseDrawerStatic::GetWindowRectForMove(LONG& t, LONG& l, LONG& b, LONG& r) const
+void PrismBaseDrawerStatic::MouseDown(const glm::vec2& pt, MouseButton btn)
+{
+}
+
+void PrismBaseDrawerStatic::GetWindowRect(LONG& t, LONG& l, LONG& b, LONG& r) const
 {
 	GetWindowRectInternal(t, l, b, r);
 }
@@ -277,8 +280,9 @@ void PrismBaseDrawerStatic::StartDrag(const glm::vec2& pt, MouseButton btn)
 	{
 		ASSERT(!m_bDraggingToMove);
 		m_bDraggingToMove = true;
+		m_LastDragPos = pt;
 	}
-	m_LastDragPos = pt;
+	
 }
 
 void PrismBaseDrawerStatic::StopDrag(const glm::vec2& pt)
@@ -299,9 +303,4 @@ void PrismBaseDrawerStatic::UpdateDrag(const glm::vec2& lastPt)
 		m_LastDragPos = lastPt;
 		InvalidateRect(NULL);
 	}
-}
-
-void PrismBaseDrawerStatic::GetWindowRectForDrag(LONG& t, LONG& l, LONG& b, LONG& r) const
-{
-	GetWindowRectInternal(t, l, b, r);
 }

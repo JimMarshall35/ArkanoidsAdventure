@@ -1,10 +1,10 @@
 #pragma once
 #include <Windows.h>
 #include <glm.hpp>
+#include "IGetWindowRect.h"
 
-class IMouseMoveAcceptor
+class IMouseMoveAcceptor : public IGetWindowRect
 {
 public:
 	virtual void UpdateMousePos(const glm::vec2& lastPt) = 0;
-	virtual void GetWindowRectForMove(LONG& t, LONG& l, LONG& b, LONG& r) const = 0;
 };

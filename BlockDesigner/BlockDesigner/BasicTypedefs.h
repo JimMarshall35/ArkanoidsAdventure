@@ -36,10 +36,6 @@ inline unsigned int operator&(Directions a, Directions b)
 	return static_cast<unsigned int>(a) & static_cast<unsigned int>(b);
 }
 
-inline bool AreSame(float a, float b, float tolerance)
-{
-	float diff = fabs(a - b);
-	return diff < tolerance;
-}
+
 
 #define NUMDIRECTIONS 4
