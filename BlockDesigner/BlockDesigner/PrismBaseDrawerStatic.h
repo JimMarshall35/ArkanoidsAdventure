@@ -26,6 +26,7 @@ class PrismBaseDrawerStatic : public CStatic,
 	DECLARE_DYNAMIC(PrismBaseDrawerStatic)
 public:
 	PrismBaseDrawerStatic();
+	~PrismBaseDrawerStatic();
 	void SetNewZoom(float zoom);
 	void SetNewIncrement(int newIncrement);
 
@@ -41,9 +42,11 @@ public:
 
 	afx_msg void OnPaint();
 	afx_msg BOOL OnEraseBkgnd(CDC*);
-protected:
+private:
 	void GetWindowRectInternal(LONG& t, LONG& l, LONG& b, LONG& r) const;
-protected:
+	void CreateBrushesAndPens();
+	void DeleteBrushesAndPens();
+private:
 	std::unique_ptr<Camera2D> m_pCam;
 	glm::vec2 m_LastDragPos;
 	MouseButton m_MouseMoveButton;
@@ -52,7 +55,17 @@ protected:
 	HDC m_hdcMem = NULL;
 	HBITMAP m_hbmMem = NULL;
 
-protected:
+	bool m_bAPointIsSelected = false;
+	glm::vec2 m_SelectedPoint;
+
+	HBRUSH m_hOriginPointBrush;
+	HBRUSH m_hOtherPointBrush;
+	HBRUSH m_hBackgroundBrush;
+	HPEN m_hGridPen;
+	HPEN m_hUnselectedPointPen;
+	HPEN m_hSelectedGridPointPen;
+
+private:
 	DECLARE_MESSAGE_MAP()
 
 	
