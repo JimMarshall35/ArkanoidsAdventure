@@ -45,13 +45,16 @@
     <ClInclude Include="IDragAcceptor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DragDispatcher.h">
+    <ClInclude Include="MouseEventDispatcher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IMouseMoveAcceptor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DebugHelpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseButton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -71,7 +74,7 @@
     <ClCompile Include="Camera2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DragDispatcher.cpp">
+    <ClCompile Include="MouseEventDispatcher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DebugHelpers.cpp">

@@ -2,15 +2,19 @@
 #include <glm.hpp>
 #include <vector>
 #include <functional>
-#include "IDragAcceptor.h"
+#include "MouseButton.h"
+
+class IMouseMoveAcceptor;
+class IDragAcceptor;
 
 typedef std::function<void(LONG& t, LONG& l, LONG& b, LONG& r)> WindowToClientFn;
 
 
-class DragDispatcher
+class MouseEventDispatcher
 {
 public:
-	void RegisterAcceptor(IDragAcceptor* acceptor);
+	void RegisterDragAcceptor(IDragAcceptor* acceptor);
+	void RegisterMouseMoveAcceptor(IMouseMoveAcceptor* acceptor);
 
 	void OnMiddleMouseDown(const glm::vec2& windowSpacePos, WindowToClientFn w2c);
 	void OnMiddleMouseUp(const glm::vec2& windowSpacePos, WindowToClientFn w2c);
@@ -30,6 +34,7 @@ protected:
 
 protected:
 	IDragAcceptor* m_pCurrentDrag = nullptr;
-	std::vector<IDragAcceptor*> m_Acceptors;
+	std::vector<IDragAcceptor*> m_DragAcceptors;
+	std::vector<IMouseMoveAcceptor*> m_MoveAcceptors;
 };
 

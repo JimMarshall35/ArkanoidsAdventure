@@ -189,7 +189,8 @@
     <ClInclude Include="BlockDesignerDlg.h" />
     <ClInclude Include="BasicTypedefs.h" />
     <ClInclude Include="Camera2D.h" />
-    <ClInclude Include="DragDispatcher.h" />
+    <ClInclude Include="MouseButton.h" />
+    <ClInclude Include="MouseEventDispatcher.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="DebugHelpers.h" />
     <ClInclude Include="IDragAcceptor.h" />
@@ -204,7 +205,7 @@
     <ClCompile Include="BlockDesignerDlg.cpp" />
     <ClCompile Include="Camera2D.cpp" />
     <ClCompile Include="DebugHelpers.cpp" />
-    <ClCompile Include="DragDispatcher.cpp" />
+    <ClCompile Include="MouseEventDispatcher.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

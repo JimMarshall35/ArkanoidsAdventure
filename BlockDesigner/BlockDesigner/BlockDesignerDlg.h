@@ -4,7 +4,7 @@
 
 #pragma once
 #include "PrismBaseDrawerStatic.h"
-#include "DragDispatcher.h"
+#include "MouseEventDispatcher.h"
 
 
 // CBlockDesignerDlg dialog
@@ -31,7 +31,7 @@ protected:
 	CSpinButtonCtrl m_ctlIncrementSpinBtn;
 	CEdit m_ctlIncremetnEdit;
 
-	DragDispatcher m_DragDispatcher;
+	MouseEventDispatcher m_DragDispatcher;
 
 protected:
 	// Generated message map functions

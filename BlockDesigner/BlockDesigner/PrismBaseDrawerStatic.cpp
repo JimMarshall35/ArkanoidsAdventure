@@ -205,6 +205,25 @@ BOOL PrismBaseDrawerStatic::OnEraseBkgnd(CDC* dc)
 	return FALSE;
 }
 
+void PrismBaseDrawerStatic::GetWindowRectInternal(LONG& t, LONG& l, LONG& b, LONG& r) const
+{
+	CRect re;
+	::GetWindowRect(GetSafeHwnd(), &re);
+	t = re.top;
+	l = re.left;
+	b = re.bottom;
+	r = re.right;
+}
+
+void PrismBaseDrawerStatic::UpdateMousePos(const glm::vec2& lastPt)
+{
+}
+
+void PrismBaseDrawerStatic::GetWindowRectForMove(LONG& t, LONG& l, LONG& b, LONG& r) const
+{
+	GetWindowRectInternal(t, l, b, r);
+}
+
 void PrismBaseDrawerStatic::StartDrag(const glm::vec2& pt, MouseButton btn)
 {
 	if (m_MouseMoveButton == btn)
@@ -239,13 +258,7 @@ void PrismBaseDrawerStatic::UpdateDrag(const glm::vec2& lastPt)
 	}
 }
 
-void PrismBaseDrawerStatic::GetWindowRect(LONG& t, LONG& l, LONG& b, LONG& r)
+void PrismBaseDrawerStatic::GetWindowRectForDrag(LONG& t, LONG& l, LONG& b, LONG& r) const
 {
-	CRect re;
-	::GetWindowRect(GetSafeHwnd(), &re);
-	t = re.top;
-	l = re.left;
-	b = re.bottom;
-	r = re.right;
-
+	GetWindowRectInternal(t, l, b, r);
 }

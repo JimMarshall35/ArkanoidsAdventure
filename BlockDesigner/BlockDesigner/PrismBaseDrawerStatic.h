@@ -2,6 +2,7 @@
 #include "afx.h"
 #include "Camera2D.h"
 #include "IDragAcceptor.h"
+#include "IMouseMoveAcceptor.h"
 #include <memory>
 #include <glm.hpp>
 
@@ -18,7 +19,9 @@
 
 /* -----------*     E N D     *----------- */
 
-class PrismBaseDrawerStatic : public CStatic, public IDragAcceptor
+class PrismBaseDrawerStatic : public CStatic,
+	public IDragAcceptor,
+	public IMouseMoveAcceptor
 { 
 	DECLARE_DYNAMIC(PrismBaseDrawerStatic)
 public:
@@ -30,10 +33,16 @@ public:
 	virtual void StartDrag(const glm::vec2& pt, MouseButton btn) override;
 	virtual void StopDrag(const glm::vec2& pt) override;
 	virtual void UpdateDrag(const glm::vec2& lastPt) override;
-	virtual void GetWindowRect(LONG& t, LONG& l, LONG& b, LONG& r) override;
+	virtual void GetWindowRectForDrag(LONG& t, LONG& l, LONG& b, LONG& r) const override;
+
+	// Inherited via IMouseMoveAcceptor
+	virtual void UpdateMousePos(const glm::vec2& lastPt) override;
+	virtual void GetWindowRectForMove(LONG& t, LONG& l, LONG& b, LONG& r) const override;
 
 	afx_msg void OnPaint();
 	afx_msg BOOL OnEraseBkgnd(CDC*);
+protected:
+	void GetWindowRectInternal(LONG& t, LONG& l, LONG& b, LONG& r) const;
 protected:
 	std::unique_ptr<Camera2D> m_pCam;
 	glm::vec2 m_LastDragPos;
@@ -45,6 +54,9 @@ protected:
 
 protected:
 	DECLARE_MESSAGE_MAP()
+
+	
+
 
 	
 

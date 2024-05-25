@@ -110,17 +110,6 @@ END_MESSAGE_MAP()
 
 afx_msg void CBlockDesignerDlg::OnMButtonDown(UINT v, CPoint pt)
 {
-	//CRect rect;
-	//::GetWindowRect(m_ctlPrismBaseDrawer.GetSafeHwnd(), &rect);
-	//ScreenToClient(&rect); //optional step - see below
-	//if (pt.x >= rect.left && pt.x <= rect.right)
-	//{
-	//	if (pt.y >= rect.top && pt.y <= rect.bottom)
-	//	{
-	//		printf("fdji");
-
-	//	}
-	//}
 	m_DragDispatcher.OnMiddleMouseDown({ pt.x, pt.y }, [this](LONG& t, LONG& l, LONG& b, LONG& r) -> void
 	{
 		CRect rect;
@@ -259,7 +248,8 @@ BOOL CBlockDesignerDlg::OnInitDialog()
 	//m_ctlIncremetnEdit.EnableWindow(FALSE);
 	//m_ctlIncrementSpinBtn.EnableWindow(TRUE);
 
-	m_DragDispatcher.RegisterAcceptor(&m_ctlPrismBaseDrawer);
+	m_DragDispatcher.RegisterDragAcceptor(&m_ctlPrismBaseDrawer);
+	m_DragDispatcher.RegisterMouseMoveAcceptor(&m_ctlPrismBaseDrawer);
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
