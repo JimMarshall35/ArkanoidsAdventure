@@ -38,7 +38,8 @@ inline unsigned int operator&(Directions a, Directions b)
 
 inline bool AreSame(float a, float b, float tolerance)
 {
-	return fabs(a - b) < tolerance;
+	float diff = fabs(a - b);
+	return diff < tolerance;
 }
 
 #define NUMDIRECTIONS 4

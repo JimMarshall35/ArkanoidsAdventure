@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "PrismBaseDrawerStatic.h"
 #include "BasicTypedefs.h"
+#include <vector>
 
 IMPLEMENT_DYNAMIC(PrismBaseDrawerStatic, CStatic)
 
@@ -19,17 +20,16 @@ static void Circle(HDC dc, float x, float y, float radius,
 	b.lbColor = fillC;
 	b.lbStyle = BS_SOLID;
 
-	NewBrush.CreateBrushIndirect(&b);
-	NewPen.CreatePen(PS_SOLID, 1, outline);
-	//HGDIOBJ oldPen = ::SelectObject(dc, &NewPen);
-	HGDIOBJ oldBrush = ::SelectObject(dc, &NewBrush);
+	HBRUSH newBrush = CreateSolidBrush(fillC);
+
+	HGDIOBJ oldBrush = ::SelectObject(dc, newBrush);
 
 	//SelectObject return a NON NULL object
 	Ellipse(dc, x - radius, y - radius, x + radius, y + radius);
 	//dc.FloodFill(x, y, fillC);
 	::SelectObject(dc, oldBrush);
 	//::SelectObject(dc, oldPen);
-
+	DeleteObject(newBrush);
 
 }
 
@@ -52,8 +52,6 @@ void PrismBaseDrawerStatic::SetNewIncrement(int newIncrement)
 
 void PrismBaseDrawerStatic::OnPaint()
 {
-
-	//CPaintDC dc(this);
 	CRect rect;
 	GetClientRect(&rect);
 	float w = rect.Width();
@@ -71,10 +69,6 @@ void PrismBaseDrawerStatic::OnPaint()
 	}
 	hOld = ::SelectObject(m_hdcMem, m_hbmMem);
 
-	//dc.Gr
-	//dc.FillSolidRect(0, 0, w, h, 0x00FFFFFF);
-	//dc.FillRect()
-	// Draw into m_hdcMem here
 	RECT r = {
 		0, 0,
 		w, h
@@ -85,10 +79,6 @@ void PrismBaseDrawerStatic::OnPaint()
 		m_hdcMem,
 		&r,
 		newBrush
-
-		/*[in] HDC        hDC,
-		[in] const RECT * lprc,
-		[in] HBRUSH     hbr*/
 	);
 	::SelectObject(m_hdcMem, hbrushOld);
 	DeleteObject(newBrush);
@@ -106,19 +96,68 @@ void PrismBaseDrawerStatic::OnPaint()
 			);
 	}
 	glm::vec4 tlbr = m_pCam->GetTLBR();
-	float x = (float)((int)(tlbr[1] / (1.0f / (float)m_Increment))) * (1.0f / (float)m_Increment);
-	//float x = ceilf(tlbr[1]);
-	float y = (float)((int)(tlbr[0] / (1.0f / (float)m_Increment))) * (1.0f / (float)m_Increment);
-	// ceilf(tlbr[0]);
+	float x = tlbr[1] - fmod((long double)tlbr[1], (long double)(1.0f / (float)m_Increment));
+	float y = tlbr[0] - fmod((long double)tlbr[0], (long double)(1.0f / (float)m_Increment));
+	
+	/* 
+		these 2 ifs ensure that the grid is still drawn when the camera top left is in the  
+		+ve (bottom right) quadrant
+	*/
+	if (tlbr[1] > 0.0f)
+	{
+		x += 1.0f / (float)m_Increment;
+	}
+	if (tlbr[0] > 0.0f)
+	{
+		y += 1.0f / (float)m_Increment;
+	}
+
+	float worldW = tlbr[3] - tlbr[1];
+
 	float initialX = x;
 	float initialY = y;
 	float increment = 1.0f / (float)m_Increment;
-	const float tolerance = 10e-4;
+	const float tolerance = 10e-3;
+
+	int onRow = 0;
+
+	HPEN gridPen = ::CreatePen(
+		PS_DASH,
+		1,
+		RGB(128, 128, 128)
+		//	[in] int      iStyle,
+		//	[in] int      cWidth,
+		//	[in] COLORREF color
+	);
+
+	POINT pt;
 
 	while (m_pCam->WorldPosCircleInScreenRect(x, y, CIRCLE_GRID_POINT_RADIUS_WORLDSPACE))
 	{
+		if (AreSame(round(y) - y, 0.0, tolerance))
+		{
+			glm::vec2 pt1 = m_pCam->WorldToScreenPos(tlbr[1], y);
+			glm::vec2 pt2 = m_pCam->WorldToScreenPos(tlbr[3], y);
+
+			HGDIOBJ oldPen = ::SelectObject(m_hdcMem, gridPen);
+
+			MoveToEx(m_hdcMem, pt1.x, pt1.y, &pt);
+			LineTo(m_hdcMem, pt2.x, pt2.y);
+			::SelectObject(m_hdcMem, oldPen);
+		}
+
 		while (m_pCam->WorldPosCircleInScreenRect(x, y, CIRCLE_GRID_POINT_RADIUS_WORLDSPACE))
 		{
+			if (onRow == 0 && AreSame(round(x) - x, 0.0, tolerance))
+			{
+				HGDIOBJ oldPen = ::SelectObject(m_hdcMem, gridPen);
+				glm::vec2 pt1 = m_pCam->WorldToScreenPos(x, tlbr[0]);
+				glm::vec2 pt2 = m_pCam->WorldToScreenPos(x, tlbr[2]);
+				MoveToEx(m_hdcMem, pt1.x, pt1.y, &pt);
+				LineTo(m_hdcMem, pt2.x, pt2.y);
+				::SelectObject(m_hdcMem, oldPen);
+			}
+
 			glm::vec2 ScreenSpace = m_pCam->WorldToScreenPos(x, y);
 			if (AreSame(x, 0, tolerance) && AreSame(y, 0, tolerance))
 			{
@@ -127,7 +166,8 @@ void PrismBaseDrawerStatic::OnPaint()
 					RGB(0, 255, 255),
 					RGB(0, 255, 0));
 			}
-			else if (AreSame(fmod(x, 1.0f), 0.0f, tolerance) && AreSame(fmod(y, 1.0f), 0.0f, tolerance))
+			else if (AreSame(round(x) - x, 0.0f, tolerance) && 
+				AreSame(round(y) - y, 0.0f, tolerance))
 			{
 				Circle(m_hdcMem, ScreenSpace.x, ScreenSpace.y, m_pCam->WorldLengthToScreenLength(CIRCLE_GRID_POINT_RADIUS_WORLDSPACE),
 					RGB(0, 0, 0),
@@ -145,14 +185,11 @@ void PrismBaseDrawerStatic::OnPaint()
 		}
 		x = initialX;
 		y += increment;
+		onRow++;
 	}
 
-	// draw thick border to hide the fact that circles aren't clipped to actual size of WND
-	//cdc->FillSolidRect(-BORDER_THICKNESS, -BORDER_THICKNESS, w + 2*BORDER_THICKNESS, BORDER_THICKNESS, 0x00000000);
-	//cdc->FillSolidRect(-BORDER_THICKNESS, -BORDER_THICKNESS, BORDER_THICKNESS, h * 2 * BORDER_THICKNESS, 0x00000000);
-	//cdc->FillSolidRect(w, -BORDER_THICKNESS, BORDER_THICKNESS, h * 2 * BORDER_THICKNESS, 0x00000000);
-	//cdc->FillSolidRect(-BORDER_THICKNESS, h, w + 2 * BORDER_THICKNESS, h + 2 * BORDER_THICKNESS, 0x00000000);
-
+	::DeleteObject(gridPen);
+	
 	// Transfer the off-screen DC to the screen
 	CDC* cdc = BeginPaint(&p);
 
@@ -195,6 +232,10 @@ void PrismBaseDrawerStatic::UpdateDrag(const glm::vec2& lastPt)
 		m_pCam->FocusPosition.y += -camMoveVector.y;
 		m_LastDragPos = lastPt;
 		InvalidateRect(NULL);
+	}
+	else
+	{
+
 	}
 }
 
