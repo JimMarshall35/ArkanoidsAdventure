@@ -200,6 +200,7 @@
     <ClInclude Include="IMouseMoveAcceptor.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Poly2D.h" />
+    <ClInclude Include="polypartition.h" />
     <ClInclude Include="PrismBaseDrawerStatic.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
@@ -218,6 +219,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Poly2D.cpp" />
+    <ClCompile Include="polypartition.cpp" />
     <ClCompile Include="PrismBaseDrawerStatic.cpp" />
   </ItemGroup>
   <ItemGroup>

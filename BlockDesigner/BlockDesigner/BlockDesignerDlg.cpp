@@ -249,6 +249,8 @@ BOOL CBlockDesignerDlg::OnInitDialog()
 	m_DragDispatcher.RegisterDragAcceptor(&m_ctlPrismBaseDrawer, MouseButton::Middle);
 	m_DragDispatcher.RegisterMouseMoveAcceptor(&m_ctlPrismBaseDrawer);
 	m_DragDispatcher.RegisterMouseDownAcceptor(&m_ctlPrismBaseDrawer, MouseButton::Left);
+	m_DragDispatcher.RegisterMouseDownAcceptor(&m_ctlPrismBaseDrawer, MouseButton::Right);
+
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 

@@ -23,7 +23,9 @@ static void Circle(HDC dc, float x, float y, float radius,
 }
 
 PrismBaseDrawerStatic::PrismBaseDrawerStatic()
-	:m_MouseMoveButton(MouseButton::Middle)
+	:m_MouseMoveButton(MouseButton::Middle),
+	m_AddPolyPointButton(MouseButton::Left),
+	m_CompletePolyButton(MouseButton::Right)
 {
 	CreateBrushesAndPens();
 }
@@ -170,6 +172,15 @@ void PrismBaseDrawerStatic::OnPaint()
 		y += increment;
 		onRow++;
 	}
+
+	if (m_bConstructingPoly)
+	{
+		DrawPolyUnderConstruction();
+	}
+	else if (m_Poly2D.HasPoints())
+	{
+		DrawConstructedPoly();
+	}
 	
 	// Transfer the off-screen DC to the screen
 	PAINTSTRUCT p;
@@ -210,10 +221,23 @@ void PrismBaseDrawerStatic::CreateBrushesAndPens()
 		1,
 		RGB(0,0,0)
 	);
+
 	m_hSelectedGridPointPen = ::CreatePen(
 		PS_SOLID,
 		2,
 		RGB(255, 0, 0)
+	);
+
+	m_hPolyUnderConstructionPen = ::CreatePen(
+		PS_SOLID,
+		2,
+		RGB(0, 0, 255)
+	);
+
+	m_hConstructedPolyPen = ::CreatePen(
+		PS_SOLID,
+		2,
+		RGB(0, 255, 255)
 	);
 }
 
@@ -226,10 +250,68 @@ void PrismBaseDrawerStatic::DeleteBrushesAndPens()
 	::DeleteObject(m_hUnselectedPointPen);
 	::DeleteObject(m_hUnselectedPointPen);
 	::DeleteObject(m_hSelectedGridPointPen);
+	::DeleteObject(m_hPolyUnderConstructionPen);
+	::DeleteObject(m_hConstructedPolyPen);
+}
+
+void PrismBaseDrawerStatic::DrawPolyUnderConstruction() const
+{
+	const std::vector<glm::vec2>& polyPoints = m_Poly2D.GetPoints();
+	ASSERT(polyPoints.size() > 0);
+	glm::vec2 lastPt;
+	HGDIOBJ oldPen = ::SelectObject(m_hdcMem, m_hPolyUnderConstructionPen);
+
+	glm::vec2 firstPtScreen = m_pCam->WorldToScreenPos(polyPoints[0].x, polyPoints[0].y);
+	POINT _;
+	MoveToEx(m_hdcMem, firstPtScreen.x, firstPtScreen.y, &_);
+
+	for (int i = 1; i < polyPoints.size(); i++)
+	{
+		glm::vec2 ptScreen = m_pCam->WorldToScreenPos(polyPoints[i].x, polyPoints[i].y);
+		LineTo(m_hdcMem, ptScreen.x, ptScreen.y);
+	}
+	// draw line from lastPt to mousePosition
+	LineTo(m_hdcMem, m_LastMouseScreenPos.x, m_LastMouseScreenPos.y);
+
+	::SelectObject(m_hdcMem, oldPen);
+}
+
+void PrismBaseDrawerStatic::DrawConstructedPoly() const
+{
+	const std::vector<glm::vec2>& polyPoints = m_Poly2D.GetPoints();
+	const std::vector<int>& polyIndices = m_Poly2D.GetIndices();
+
+	ASSERT(polyPoints.size() > 0);
+	ASSERT(polyIndices.size() > 0);
+	ASSERT(polyIndices.size() % 3 == 0);
+
+	HGDIOBJ oldPen = ::SelectObject(m_hdcMem, m_hConstructedPolyPen);
+	POINT _;
+
+	for (int i = 0; i < polyIndices.size(); i += 3)
+	{
+		const glm::vec2& t1 = polyPoints[polyIndices[i]];
+		const glm::vec2& t2 = polyPoints[polyIndices[i + 1]];
+		const glm::vec2& t3 = polyPoints[polyIndices[i + 2]];
+		glm::vec2 s1 = m_pCam->WorldToScreenPos(t1.x, t1.y);
+		glm::vec2 s2 = m_pCam->WorldToScreenPos(t2.x, t2.y);
+		glm::vec2 s3 = m_pCam->WorldToScreenPos(t3.x, t3.y);
+		MoveToEx(m_hdcMem, s1.x, s1.y, &_);
+		LineTo(m_hdcMem, s2.x, s2.y);
+		LineTo(m_hdcMem, s3.x, s3.y);
+		LineTo(m_hdcMem, s1.x, s1.y);
+	}
+
+	::SelectObject(m_hdcMem, oldPen);
 }
 
 void PrismBaseDrawerStatic::UpdateMousePos(const glm::vec2& lastPt)
 {
+	/*
+		THIS IS BROKEN FOR POINTS IN THE TOPLEFT QUADRANT (-x,-y)
+		doesn't detect the point in the topleft.
+		Usable but annoying
+	*/
 	glm::vec2 world = m_pCam->MouseScreenPosToWorld(lastPt.x, lastPt.y);
 	float incr = 1.0f / (float)m_Increment;
 	/* top left point */
@@ -259,14 +341,70 @@ void PrismBaseDrawerStatic::UpdateMousePos(const glm::vec2& lastPt)
 		}
 	}
 	/* if change from selected or deselected (or vice versa), trigger redraw */
-	if (bPointPreviouslySelected != m_bAPointIsSelected)
+	if (m_bConstructingPoly || (bPointPreviouslySelected != m_bAPointIsSelected))
 	{
 		InvalidateRect(NULL);
 	}
+	m_LastMouseScreenPos = lastPt;
+}
+
+static bool PointIsAllowed(const glm::vec2& point2Add, const std::vector<glm::vec2>& existingPoints)
+{
+	size_t size = existingPoints.size();
+	//ASSERT(size);
+	for (const glm::vec2& pt : existingPoints)
+	{
+		if (PointIsSame(point2Add, pt))
+		{
+			return false;
+		}
+	}
+	if (size > 1)
+	{
+		/*glm::vec2 newSeg1 = existingPoints[size - 1];
+		const glm::vec2& newSeg2 = point2Add;
+		for (int i = 0; i < size - 1; i++)
+		{
+			if (DoIntersect(newSeg1, newSeg2, existingPoints[i], existingPoints[i + 1]))
+			{
+				return false;
+			}
+		}*/
+	}
+	
+	return true;
 }
 
 void PrismBaseDrawerStatic::MouseDown(const glm::vec2& pt, MouseButton btn)
 {
+	glm::vec2 worldPos = m_pCam->MouseScreenPosToWorld(pt.x, pt.y);
+	if (btn == m_AddPolyPointButton)
+	{
+		m_bConstructingPoly = true;
+		glm::vec2 point2Add = m_bAPointIsSelected ? m_SelectedPoint : worldPos;
+		if (PointIsAllowed(point2Add, m_Poly2D.GetPoints()))
+		{
+			m_Poly2D.PushPoint(point2Add);
+			if (m_bAPointIsSelected)
+			{
+				// point has snapped to one of the circles so redraw
+				InvalidateRect(NULL);
+			}
+		}
+		else
+		{
+			/* make polygon flash to show that you cn't place a point here */
+		}
+	}
+	else if (btn == m_CompletePolyButton)
+	{
+		if (m_bConstructingPoly)
+		{
+			m_bConstructingPoly = false;
+			m_Poly2D.Triangulate();
+			InvalidateRect(NULL);
+		}
+	}
 }
 
 void PrismBaseDrawerStatic::GetWindowRect(LONG& t, LONG& l, LONG& b, LONG& r) const

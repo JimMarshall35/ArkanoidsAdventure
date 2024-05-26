@@ -2,10 +2,11 @@
 #include <numeric>
 #include <glm.hpp>
 
-inline bool AreSame(float a, float b, float tolerance = 10e-5)
-{
-	float diff = fabs(a - b);
-	return diff < tolerance;
-}
+bool AreSame(float a, float b, float tolerance = 10e-5);
+
+
+bool PointIsSame(const glm::vec2& pt1, const glm::vec2& pt2, float tolerance = 10e-5);
 
 bool RectTest(const CRect& rect, const glm::vec2& pos);
+
+bool DoIntersect(const glm::vec2& p1, const glm::vec2& q1, const glm::vec2& p2, const glm::vec2& q2);
