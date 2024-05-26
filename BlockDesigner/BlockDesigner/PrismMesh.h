@@ -1,0 +1,51 @@
+#pragma once
+#include <vector>
+#include <glm.hpp>
+
+class Poly2D;
+
+class PrismMesh
+{
+public:
+	void ExtrudeFromPoly2D(const Poly2D& poly, float extrudeLength);
+
+	const std::vector<glm::vec3>& GetPositions() const { return m_Positions; }
+	const std::vector<glm::vec3>& GetNormals() const { return m_Normals; }
+	const std::vector<int>& GetIndices() const { return m_Indices; }
+
+private:
+	void PushVert(const glm::vec3& pos, const glm::vec3& normal);
+	void PushIndex(int index);
+
+	void DesignateBottomCapStart();
+	void DesignateBottomCapEnd();
+	
+	void DesignateTopCapStart();
+	void DesignateTopCapEnd();
+	
+	void DesignateSidesStart();
+	void DesignateSidesEnd();
+private:
+	std::vector<glm::vec3> m_Positions;
+	std::vector<glm::vec3> m_Normals;
+	std::vector<int> m_Indices;
+
+	size_t m_BottomCapVertsStart = 0;
+	size_t m_BottomCapVertsEnd = 0;
+
+	size_t m_BottomCapIndsStart = 0;
+	size_t m_BottomCapIndsEnd = 0;
+
+	size_t m_TopCapVertsStart = 0;
+	size_t m_TopCapVertsEnd = 0;
+
+	size_t m_TopCapIndsStart = 0;
+	size_t m_TopCapIndsEnd = 0;
+
+	size_t m_SidesVertsStart = 0;
+	size_t m_SidesVertsEnd = 0;
+
+	size_t m_SidesIndsStart = 0;
+	size_t m_SidesIndsEnd = 0;
+};
+

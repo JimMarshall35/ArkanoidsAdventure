@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Poly2D.h"
 #include "polypartition.h"
+#include "MiscFunctions.h"
 #include <list>
 
 void Poly2D::PushPoint(const glm::vec2& pt)

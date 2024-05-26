@@ -2,6 +2,8 @@
 #include "PrismBaseDrawerStatic.h"
 #include "BasicTypedefs.h"
 #include "MiscFunctions.h"
+#include "PrismMesh.h"
+#include "SerializeObj.h"
 #include <vector>
 
 IMPLEMENT_DYNAMIC(PrismBaseDrawerStatic, CStatic)
@@ -402,6 +404,11 @@ void PrismBaseDrawerStatic::MouseDown(const glm::vec2& pt, MouseButton btn)
 		{
 			m_bConstructingPoly = false;
 			m_Poly2D.Triangulate();
+
+			PrismMesh pm;
+			pm.ExtrudeFromPoly2D(m_Poly2D, 1.0f);
+			SaveAsObj(pm, "mesh.obj");
+
 			InvalidateRect(NULL);
 		}
 	}

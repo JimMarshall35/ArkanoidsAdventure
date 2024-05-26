@@ -202,7 +202,9 @@
     <ClInclude Include="Poly2D.h" />
     <ClInclude Include="polypartition.h" />
     <ClInclude Include="PrismBaseDrawerStatic.h" />
+    <ClInclude Include="PrismMesh.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="SerializeObj.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
@@ -221,6 +223,8 @@
     <ClCompile Include="Poly2D.cpp" />
     <ClCompile Include="polypartition.cpp" />
     <ClCompile Include="PrismBaseDrawerStatic.cpp" />
+    <ClCompile Include="PrismMesh.cpp" />
+    <ClCompile Include="SerializeObj.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="BlockDesigner.rc" />

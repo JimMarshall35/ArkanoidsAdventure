@@ -72,6 +72,12 @@
     <ClInclude Include="polypartition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PrismMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SerializeObj.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BlockDesigner.cpp">
@@ -102,6 +108,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="polypartition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PrismMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SerializeObj.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
