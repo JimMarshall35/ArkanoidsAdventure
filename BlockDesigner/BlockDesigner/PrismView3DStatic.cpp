@@ -314,7 +314,7 @@ void PrismView3DStatic::StopDrag(const glm::vec2& pt)
 }
 
 
-
+// https://asliceofrendering.com/camera/2019/11/30/ArcballCamera/
 void PrismView3DStatic::UpdateDrag(const glm::vec2& lastPt)
 {
 	float xPos = lastPt.x;

@@ -3,9 +3,9 @@
 #include <gl/glew.h>
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
-
 #include <vector>
 
+// https://asliceofrendering.com/camera/2019/11/30/ArcballCamera/
 class Camera
 {
 public:
