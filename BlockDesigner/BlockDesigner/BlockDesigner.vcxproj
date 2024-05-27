@@ -192,6 +192,7 @@
     <ClInclude Include="BlockDesigner.h" />
     <ClInclude Include="BlockDesignerDlg.h" />
     <ClInclude Include="BasicTypedefs.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Camera2D.h" />
     <ClInclude Include="IGetWindowRect.h" />
     <ClInclude Include="IMouseDownAcceptor.h" />
@@ -210,6 +211,7 @@
     <ClInclude Include="PrismView3DStatic.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SerializeObj.h" />
+    <ClInclude Include="Shader.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>

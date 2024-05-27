@@ -7,6 +7,9 @@
 #include "Poly2D.h"
 #include <memory>
 #include <glm.hpp>
+#include <functional>
+
+typedef std::function<void(const Poly2D&)> PolyCreatedDelegate;
 
 /* -----------* D E F I N E S *----------- */
 
@@ -32,6 +35,7 @@ public:
 	~PrismBaseDrawerStatic();
 	void SetNewZoom(float zoom);
 	void SetNewIncrement(int newIncrement);
+	void SetMeshCreatedDelegate(PolyCreatedDelegate onMeshCreated);
 
 	// Inherited via IDragAcceptor
 	virtual void StartDrag(const glm::vec2& pt, MouseButton btn) override;
@@ -88,6 +92,7 @@ private:
 	HPEN m_hPolyUnderConstructionPen = NULL;
 	HPEN m_hConstructedPolyPen = NULL;
 
+	PolyCreatedDelegate m_OnPolyCreasted = nullptr;
 private:
 	DECLARE_MESSAGE_MAP()
 };

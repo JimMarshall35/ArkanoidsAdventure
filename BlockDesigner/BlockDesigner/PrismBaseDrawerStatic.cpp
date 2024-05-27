@@ -48,6 +48,11 @@ void PrismBaseDrawerStatic::SetNewIncrement(int newIncrement)
 	m_Increment = newIncrement;
 }
 
+void PrismBaseDrawerStatic::SetMeshCreatedDelegate(PolyCreatedDelegate onMeshCreated)
+{
+	m_OnPolyCreasted = onMeshCreated;
+}
+
 
 void PrismBaseDrawerStatic::OnPaint()
 {
@@ -206,7 +211,7 @@ void PrismBaseDrawerStatic::GetWindowRectInternal(LONG& t, LONG& l, LONG& b, LON
 	r = re.right;
 }
 
-void PrismBaseDrawerStatic::CreateBrushesAndPens()
+void PrismBaseDrawerStatic::CreateBrushesAndPens() 
 {
 	m_hOriginPointBrush = CreateSolidBrush(RGB(0, 255, 0));
 	m_hOtherPointBrush = CreateSolidBrush(RGB(255, 255, 255));
@@ -405,9 +410,13 @@ void PrismBaseDrawerStatic::MouseDown(const glm::vec2& pt, MouseButton btn)
 			m_bConstructingPoly = false;
 			m_Poly2D.Triangulate();
 
-			PrismMesh pm;
+			/*PrismMesh pm;
 			pm.ExtrudeFromPoly2D(m_Poly2D, 1.0f);
-			SaveAsObj(pm, "mesh.obj");
+			SaveAsObj(pm, "mesh.obj");*/
+			if (m_OnPolyCreasted)
+			{
+				m_OnPolyCreasted(m_Poly2D);
+			}
 
 			InvalidateRect(NULL);
 		}

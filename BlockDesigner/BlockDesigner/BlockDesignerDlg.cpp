@@ -251,6 +251,10 @@ BOOL CBlockDesignerDlg::OnInitDialog()
 	m_DragDispatcher.RegisterMouseDownAcceptor(&m_ctlPrismBaseDrawer, MouseButton::Left);
 	m_DragDispatcher.RegisterMouseDownAcceptor(&m_ctlPrismBaseDrawer, MouseButton::Right);
 
+	m_DragDispatcher.RegisterDragAcceptor(&m_ctlPrismView3DStatic, MouseButton::Right);
+
+
+	m_ctlPrismBaseDrawer.SetMeshCreatedDelegate([this](const Poly2D& poly) { m_ctlPrismView3DStatic.SetMesh(poly); });
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
