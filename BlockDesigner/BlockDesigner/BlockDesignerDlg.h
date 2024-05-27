@@ -4,6 +4,7 @@
 
 #pragma once
 #include "PrismBaseDrawerStatic.h"
+#include "PrismView3DStatic.h"
 #include "MouseEventDispatcher.h"
 
 
@@ -27,6 +28,7 @@ protected:
 protected:
 	HICON m_hIcon;
 	PrismBaseDrawerStatic m_ctlPrismBaseDrawer;
+	PrismView3DStatic m_ctlPrismView3DStatic;
 	CSliderCtrl m_ctlPrismStaticZoomSlider;
 	CSpinButtonCtrl m_ctlIncrementSpinBtn;
 	CEdit m_ctlIncremetnEdit;

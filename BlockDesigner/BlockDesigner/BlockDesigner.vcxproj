@@ -79,14 +79,16 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)vendor\glm\glm;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)vendor\glm\glm;$(SolutionDir)vendor\glew-2.1.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)vendor\glew-2.1.0\lib\Release\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)vendor\glm\glm;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)vendor\glm\glm;$(SolutionDir)vendor\glew-2.1.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)vendor\glew-2.1.0\lib\Release\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -120,6 +122,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;glu32.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -172,6 +175,7 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>glew32.lib;opengl32.lib;glu32.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -203,6 +207,7 @@
     <ClInclude Include="polypartition.h" />
     <ClInclude Include="PrismBaseDrawerStatic.h" />
     <ClInclude Include="PrismMesh.h" />
+    <ClInclude Include="PrismView3DStatic.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SerializeObj.h" />
     <ClInclude Include="targetver.h" />
@@ -224,6 +229,7 @@
     <ClCompile Include="polypartition.cpp" />
     <ClCompile Include="PrismBaseDrawerStatic.cpp" />
     <ClCompile Include="PrismMesh.cpp" />
+    <ClCompile Include="PrismView3DStatic.cpp" />
     <ClCompile Include="SerializeObj.cpp" />
   </ItemGroup>
   <ItemGroup>

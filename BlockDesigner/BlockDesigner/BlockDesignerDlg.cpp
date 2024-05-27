@@ -66,7 +66,7 @@ void CBlockDesignerDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_PRISM_BASE_ZOOM_SLIDER, m_ctlPrismStaticZoomSlider);
 	DDX_Control(pDX, IDC_INCREMENT_SPIN, m_ctlIncrementSpinBtn);
 	DDX_Control(pDX, IDC_INCREMENT_EDIT, m_ctlIncremetnEdit);
-
+	DDX_Control(pDX, ID_PRISMVIEW3D, m_ctlPrismView3DStatic);
 }
 
 void CBlockDesignerDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
