@@ -6,6 +6,7 @@
 #include <gtc/matrix_transform.hpp>
 #include <vector>
 #include "Poly2D.h"
+#include "ExtrudeParameters.h"
 
 static const char* gMeshVert =
 "#version 330 core\n"
@@ -102,9 +103,9 @@ BOOL PrismView3DStatic::Create(LPCTSTR lpszText, DWORD dwStyle, const RECT& rect
 	return rval;
 }
 
-void PrismView3DStatic::SetMesh(const Poly2D& poly)
+void PrismView3DStatic::SetMesh(const Poly2D& poly, const ExtrudeParameters& params)
 {
-	m_Mesh.ExtrudeFromPoly2D(poly, 1.0f);
+	m_Mesh.ExtrudeFromPoly2D(poly, params);
 	m_bMeshSet = true;
 	/* load into opengl */
 	if (m_VAO)
@@ -140,6 +141,9 @@ void PrismView3DStatic::SetMesh(const Poly2D& poly)
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+
+	Invalidate(FALSE);
+
 }
 
 void PrismView3DStatic::OnPaint()
@@ -162,7 +166,6 @@ void PrismView3DStatic::OnPaint()
 
 	SwapBuffers(dc);
 
-	Invalidate(FALSE);
 }
 
 BOOL PrismView3DStatic::OnEraseBkgnd(CDC*)
@@ -351,4 +354,7 @@ void PrismView3DStatic::UpdateDrag(const glm::vec2& lastPt)
 	// Update the mouse position for the next rotation
 	m_LastDragPos.x = xPos;
 	m_LastDragPos.y = yPos;
+
+	Invalidate(FALSE);
+
 }

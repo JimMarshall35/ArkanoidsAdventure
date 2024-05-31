@@ -53,6 +53,8 @@ public:
 
 	afx_msg void OnPaint();
 	afx_msg BOOL OnEraseBkgnd(CDC*);
+
+	const Poly2D& GetPoly() { return m_Poly2D; }
 private:
 	void GetWindowRectInternal(LONG& t, LONG& l, LONG& b, LONG& r) const;
 	void CreateBrushesAndPens();

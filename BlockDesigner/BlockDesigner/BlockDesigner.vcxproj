@@ -194,6 +194,7 @@
     <ClInclude Include="BasicTypedefs.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Camera2D.h" />
+    <ClInclude Include="ExtrudeParameters.h" />
     <ClInclude Include="IGetWindowRect.h" />
     <ClInclude Include="IMouseDownAcceptor.h" />
     <ClInclude Include="MiscFunctions.h" />

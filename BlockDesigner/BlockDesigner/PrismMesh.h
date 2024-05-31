@@ -3,11 +3,12 @@
 #include <glm.hpp>
 
 class Poly2D;
+struct ExtrudeParameters;
 
 class PrismMesh
 {
 public:
-	void ExtrudeFromPoly2D(const Poly2D& poly, float extrudeLength);
+	void ExtrudeFromPoly2D(const Poly2D& poly, const ExtrudeParameters& params);
 
 	const std::vector<glm::vec3>& GetPositions() const { return m_Positions; }
 	const std::vector<glm::vec3>& GetNormals() const { return m_Normals; }
@@ -25,6 +26,9 @@ private:
 	
 	void DesignateSidesStart();
 	void DesignateSidesEnd();
+
+	void ScaleAndTranslateTopCap(const ExtrudeParameters& params);
+	void ScaleAndTranslateBottomCap(const ExtrudeParameters& params);
 private:
 	std::vector<glm::vec3> m_Positions;
 	std::vector<glm::vec3> m_Normals;

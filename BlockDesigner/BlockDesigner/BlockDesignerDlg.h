@@ -6,7 +6,7 @@
 #include "PrismBaseDrawerStatic.h"
 #include "PrismView3DStatic.h"
 #include "MouseEventDispatcher.h"
-
+#include "ExtrudeParameters.h"
 
 // CBlockDesignerDlg dialog
 class CBlockDesignerDlg : public CDialogEx
@@ -33,6 +33,21 @@ protected:
 	CSpinButtonCtrl m_ctlIncrementSpinBtn;
 	CEdit m_ctlIncremetnEdit;
 
+	CString m_ctlTopCapScaleX;
+	CString m_ctlTopCapScaleY;
+	CString m_ctlTopCapOffsetX;
+	CString m_ctlTopCapOffsetY;
+
+	CString m_ctlBottomCapScaleX;
+	CString m_ctlBottomCapScaleY;
+	CString m_ctlBottomCapOffsetX;
+	CString m_ctlBottomCapOffsetY;
+
+	CString m_ctlExtrudeAmount;
+
+	ExtrudeParameters m_ExtrudeParameters;
+
+
 	MouseEventDispatcher m_DragDispatcher;
 
 protected:
@@ -56,8 +71,21 @@ protected:
 
 	afx_msg void OnIncrementButtonPress();
 
+	afx_msg void OnChangeTopCapScaleX();
+	afx_msg void OnChangeTopCapScaleY();
+	afx_msg void OnChangeTopCapOffsetX();
+	afx_msg void OnChangeTopCapOffsetY(); 
+	
+	afx_msg void OnChangeBottomCapScaleX();
+	afx_msg void OnChangeBottomCapScaleY();
+	afx_msg void OnChangeBottomCapOffsetX();
+	afx_msg void OnChangeBottomCapOffsetY();
+
+	afx_msg void OnChangeExtrudeAmount();
 
 	void HandlePrismStaticZoomScroll(UINT nSBCode, UINT nPos);
+
+	bool ValidateAndSetFloat(CString& input, float& output, const CString& fallbackVal);
 
 	DECLARE_MESSAGE_MAP()
 };

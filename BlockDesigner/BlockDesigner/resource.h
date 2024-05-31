@@ -14,6 +14,16 @@
 #define IDC_INCREMENT_SPIN              1007
 #define IDC_INCREMENT_LABEL             1008
 #define ID_PRISMVIEW3D                  1010
+#define IDC_TOP_CAP_SCALE_X             1011
+#define IDC_TOP_CAP_SCALE_Y             1012
+#define IDC_TOP_CAP_OFFSET_X            1013
+#define IDC_TOP_CAP_OFFSET_Y            1014
+#define IDC_BOTTOM_CAP_SCALE_X          1015
+#define IDC_BOTTOM_CAP_SCALE_Y          1016
+#define IDC_BOTTOM_CAP_OFFSET_X         1017
+#define IDC_BOTTOM_CAP_OFFSET_Y         1018
+#define IDC_EDIT10                      1019
+#define IDC_EXTRUDE_AMOUNT              1019
 
 // Next default values for new objects
 // 
@@ -21,7 +31,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        130
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1011
+#define _APS_NEXT_CONTROL_VALUE         1012
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

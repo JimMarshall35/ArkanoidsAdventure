@@ -9,6 +9,8 @@
 #include "afxdialogex.h"
 #include "resource.h"
 #include <winuser.h>
+#include <cwchar>
+#include <cerrno>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -67,6 +69,19 @@ void CBlockDesignerDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_INCREMENT_SPIN, m_ctlIncrementSpinBtn);
 	DDX_Control(pDX, IDC_INCREMENT_EDIT, m_ctlIncremetnEdit);
 	DDX_Control(pDX, ID_PRISMVIEW3D, m_ctlPrismView3DStatic);
+
+	DDX_Text(pDX, IDC_TOP_CAP_SCALE_X, m_ctlTopCapScaleX);
+	DDX_Text(pDX, IDC_TOP_CAP_SCALE_Y, m_ctlTopCapScaleY);
+	DDX_Text(pDX, IDC_TOP_CAP_OFFSET_X, m_ctlTopCapOffsetX);
+	DDX_Text(pDX, IDC_TOP_CAP_OFFSET_Y, m_ctlTopCapOffsetY);
+
+	DDX_Text(pDX, IDC_BOTTOM_CAP_SCALE_X, m_ctlBottomCapScaleX);
+	DDX_Text(pDX, IDC_BOTTOM_CAP_SCALE_Y, m_ctlBottomCapScaleY);
+	DDX_Text(pDX, IDC_BOTTOM_CAP_OFFSET_X, m_ctlBottomCapOffsetX);
+	DDX_Text(pDX, IDC_BOTTOM_CAP_OFFSET_Y, m_ctlBottomCapOffsetY);
+
+	DDX_Text(pDX, IDC_EXTRUDE_AMOUNT, m_ctlExtrudeAmount);
+
 }
 
 void CBlockDesignerDlg::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
@@ -102,6 +117,19 @@ BEGIN_MESSAGE_MAP(CBlockDesignerDlg, CDialogEx)
 	ON_WM_MOUSEMOVE()
 	ON_BN_CLICKED(IDC_INCREMENT_SPIN, &CBlockDesignerDlg::OnIncrementButtonPress)
 
+	ON_EN_KILLFOCUS(IDC_TOP_CAP_SCALE_X, OnChangeTopCapScaleX)
+	ON_EN_KILLFOCUS(IDC_TOP_CAP_SCALE_Y, OnChangeTopCapScaleY)
+
+	ON_EN_KILLFOCUS(IDC_TOP_CAP_OFFSET_X, OnChangeTopCapOffsetX)
+	ON_EN_KILLFOCUS(IDC_TOP_CAP_OFFSET_Y, OnChangeTopCapOffsetY)
+
+	ON_EN_KILLFOCUS(IDC_BOTTOM_CAP_SCALE_X, OnChangeBottomCapScaleX)
+	ON_EN_KILLFOCUS(IDC_BOTTOM_CAP_SCALE_Y, OnChangeBottomCapScaleY)
+
+	ON_EN_KILLFOCUS(IDC_BOTTOM_CAP_OFFSET_X, OnChangeBottomCapOffsetX)
+	ON_EN_KILLFOCUS(IDC_BOTTOM_CAP_OFFSET_Y, OnChangeBottomCapOffsetY)
+
+	ON_EN_KILLFOCUS(IDC_EXTRUDE_AMOUNT, OnChangeExtrudeAmount)
 
 END_MESSAGE_MAP()
 
@@ -253,8 +281,25 @@ BOOL CBlockDesignerDlg::OnInitDialog()
 
 	m_DragDispatcher.RegisterDragAcceptor(&m_ctlPrismView3DStatic, MouseButton::Right);
 
+	m_ctlBottomCapOffsetX = _T("0.0");
+	m_ctlBottomCapOffsetY = _T("0.0");
+	m_ctlBottomCapScaleX = _T("1.0");
+	m_ctlBottomCapScaleY = _T("1.0");
 
-	m_ctlPrismBaseDrawer.SetMeshCreatedDelegate([this](const Poly2D& poly) { m_ctlPrismView3DStatic.SetMesh(poly); });
+	m_ctlTopCapOffsetX = _T("0.0");
+	m_ctlTopCapOffsetY = _T("0.0");
+	m_ctlTopCapScaleX = _T("1.0");
+	m_ctlTopCapScaleY = _T("1.0");
+
+	m_ctlExtrudeAmount = _T("1.0");
+
+	UpdateData(FALSE);
+
+	m_ctlPrismBaseDrawer.SetMeshCreatedDelegate([this](const Poly2D& poly)
+	{ 
+		m_ctlPrismView3DStatic.SetMesh(poly, m_ExtrudeParameters); 
+
+	});
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
@@ -329,6 +374,98 @@ void CBlockDesignerDlg::OnIncrementButtonPress()
 	printf("fdo");
 }
 
+bool CBlockDesignerDlg::ValidateAndSetFloat(CString& input, float& output, const CString& fallbackVal)
+{
+	UpdateData(TRUE);
+
+	wchar_t* c = nullptr;
+	float val = std::wcstof(input, &c);
+	LPCWSTR cstr = input;
+	if (c == &cstr[input.GetLength()])
+	{
+		output = val;
+		return true;
+	}
+	else
+	{
+		input = fallbackVal;
+		UpdateData(FALSE);
+	}
+	return false;
+}
+
+void CBlockDesignerDlg::OnChangeTopCapScaleX()
+{
+	if (ValidateAndSetFloat(m_ctlTopCapScaleX, m_ExtrudeParameters.TopCapScaleX, _T("1.0")) && m_ctlPrismView3DStatic.IsMeshSet())
+	{
+		m_ctlPrismView3DStatic.SetMesh(m_ctlPrismBaseDrawer.GetPoly(), m_ExtrudeParameters);
+	}
+}
+
+void CBlockDesignerDlg::OnChangeTopCapScaleY()
+{
+	if (ValidateAndSetFloat(m_ctlTopCapScaleY, m_ExtrudeParameters.TopCapScaleY, _T("1.0")) && m_ctlPrismView3DStatic.IsMeshSet())
+	{
+		m_ctlPrismView3DStatic.SetMesh(m_ctlPrismBaseDrawer.GetPoly(), m_ExtrudeParameters);
+	}
+}
+
+void CBlockDesignerDlg::OnChangeTopCapOffsetX()
+{
+	if (ValidateAndSetFloat(m_ctlTopCapOffsetX, m_ExtrudeParameters.TopCapOffsetX, _T("0.0")) && m_ctlPrismView3DStatic.IsMeshSet())
+	{
+		m_ctlPrismView3DStatic.SetMesh(m_ctlPrismBaseDrawer.GetPoly(), m_ExtrudeParameters);
+	}
+}
+
+void CBlockDesignerDlg::OnChangeTopCapOffsetY()
+{
+	if (ValidateAndSetFloat(m_ctlTopCapOffsetY, m_ExtrudeParameters.TopCapOffsetY, _T("0.0")) && m_ctlPrismView3DStatic.IsMeshSet())
+	{
+		m_ctlPrismView3DStatic.SetMesh(m_ctlPrismBaseDrawer.GetPoly(), m_ExtrudeParameters);
+	}
+}
+
+void CBlockDesignerDlg::OnChangeBottomCapScaleX()
+{
+	if (ValidateAndSetFloat(m_ctlBottomCapScaleX, m_ExtrudeParameters.BottomCapScaleX, _T("1.0")) && m_ctlPrismView3DStatic.IsMeshSet())
+	{
+		m_ctlPrismView3DStatic.SetMesh(m_ctlPrismBaseDrawer.GetPoly(), m_ExtrudeParameters);
+	}
+}
+
+void CBlockDesignerDlg::OnChangeBottomCapScaleY()
+{
+	if (ValidateAndSetFloat(m_ctlBottomCapScaleY, m_ExtrudeParameters.BottomCapScaleY, _T("1.0")) && m_ctlPrismView3DStatic.IsMeshSet())
+	{
+		m_ctlPrismView3DStatic.SetMesh(m_ctlPrismBaseDrawer.GetPoly(), m_ExtrudeParameters);
+	}
+}
+
+void CBlockDesignerDlg::OnChangeBottomCapOffsetX()
+{
+	if (ValidateAndSetFloat(m_ctlBottomCapOffsetX, m_ExtrudeParameters.BottomCapOffsetX, _T("0.0")) && m_ctlPrismView3DStatic.IsMeshSet())
+	{
+		m_ctlPrismView3DStatic.SetMesh(m_ctlPrismBaseDrawer.GetPoly(), m_ExtrudeParameters);
+	}
+}
+
+void CBlockDesignerDlg::OnChangeBottomCapOffsetY()
+{
+	if (ValidateAndSetFloat(m_ctlBottomCapOffsetY, m_ExtrudeParameters.BottomCapOffsetY, _T("0.0")) && m_ctlPrismView3DStatic.IsMeshSet())
+	{
+		m_ctlPrismView3DStatic.SetMesh(m_ctlPrismBaseDrawer.GetPoly(), m_ExtrudeParameters);
+	}
+}
+
+void CBlockDesignerDlg::OnChangeExtrudeAmount()
+{
+	if (ValidateAndSetFloat(m_ctlExtrudeAmount, m_ExtrudeParameters.ExtrudeAmount, _T("1.0")) && m_ctlPrismView3DStatic.IsMeshSet())
+	{
+		m_ctlPrismView3DStatic.SetMesh(m_ctlPrismBaseDrawer.GetPoly(), m_ExtrudeParameters);
+	}
+}
+
 void CBlockDesignerDlg::HandlePrismStaticZoomScroll(UINT nSBCode, UINT nPos)
 {
 	int p = m_ctlPrismStaticZoomSlider.GetPos();
@@ -340,19 +477,5 @@ void CBlockDesignerDlg::HandlePrismStaticZoomScroll(UINT nSBCode, UINT nPos)
 	}
 	m_ctlPrismBaseDrawer.SetNewZoom(newZoom);
 	m_ctlPrismBaseDrawer.InvalidateRect(NULL, TRUE);
-	/*switch (nSBCode)
-	{
-	case TB_LINEUP:
-	case TB_LINEDOWN:
-	case TB_PAGEUP:
-	case TB_PAGEDOWN:
-	case TB_THUMBPOSITION:
-	case TB_TOP:
-	case TB_BOTTOM:
-	case TB_THUMBTRACK:
-	case TB_ENDTRACK:
-	default:
-		break;
-	}*/
 }
 

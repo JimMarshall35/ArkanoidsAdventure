@@ -7,6 +7,7 @@
 #include "IDragAcceptor.h"
 
 class Poly2D;
+struct ExtrudeParameters;
 
 enum
 {
@@ -23,13 +24,15 @@ public:
 	~PrismView3DStatic();
 	virtual BOOL Create(LPCTSTR lpszText, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID = 0xffff) override;
 
-	void SetMesh(const Poly2D& mesh);
+	void SetMesh(const Poly2D& mesh, const ExtrudeParameters& params);
 
 	// Inherited via IDragAcceptor
 	virtual void GetWindowRect(LONG& t, LONG& l, LONG& b, LONG& r) const override;
 	virtual void StartDrag(const glm::vec2& pt, MouseButton btn) override;
 	virtual void StopDrag(const glm::vec2& pt) override;
 	virtual void UpdateDrag(const glm::vec2& lastPt) override;
+	
+	bool IsMeshSet() { return m_bMeshSet; }
 private:
 	afx_msg void OnPaint();
 	afx_msg BOOL OnEraseBkgnd(CDC*);
