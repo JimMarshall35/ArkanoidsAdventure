@@ -13,12 +13,14 @@ static const char* gMeshVert =
 "#version 330 core\n"
 "layout(location = 0) in vec3 aPos;\n"
 "layout(location = 1) in vec3 aNormal;\n"
+"layout(location = 2) in vec2 aUv;\n"
 
 "out vec3 FragPos;\n"
 "out vec3 FragWorldPos;\n"
 "out vec3 Normal;\n"
 "out vec3 LightPos;\n"
 "out vec3 WorldSpaceNormal;\n"
+"out vec2 Uv;\n"
 
 "uniform vec3 lightPos;\n" // we now define the uniform in the vertex shader and pass the 'view space' lightpos to the fragment shader. lightPos is currently in world space.
 
@@ -35,6 +37,7 @@ static const char* gMeshVert =
 	"WorldSpaceNormal = vec3(model * vec4(aNormal, 0.0));\n"
 
 	"LightPos = vec3(view * vec4(lightPos, 1.0)); // Transform world-space light position to view-space light position\n"
+	"Uv = aUv;\n"
 "}\n";
 
 static const char* gMeshFrag =
@@ -46,6 +49,7 @@ static const char* gMeshFrag =
 "in vec3 Normal;\n"
 "in vec3 LightPos;\n" // extra in variable, since we need the light position in view space we calculate this in the vertex shader
 "in vec3 WorldSpaceNormal;\n"
+"in vec2 Uv;\n"
 
 "uniform vec3 lightColor;\n"
 "uniform vec3 objectColor;\n"
@@ -53,6 +57,7 @@ static const char* gMeshFrag =
 "uniform float specularStrength;\n"
 "uniform float diffuseStrength;\n"
 "uniform float shininess;\n"
+"uniform sampler2D diffuseAtlas;\n"
 
 "void main()\n"
 "{\n"
@@ -73,9 +78,25 @@ static const char* gMeshFrag =
 	"float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);\n"
 	"vec3 specular = specularStrength * spec * lightColor;\n"
 
-	"vec3 result = ( ambient + diffuse + specular) * pixel_colour;\n"
-	"FragColor = vec4(result, 1.0);\n"
+	//"vec3 result = ( ambient + diffuse + specular) * pixel_colour;\n"
+	//"FragColor = vec4(result, 1.0);\n"
+	"vec4 colour = texture(diffuseAtlas, Uv);\n"
+	"FragColor = vec4((ambient + diffuse + specular),1.0) * colour;\n"
 "}\n";
+
+static bool OpenGlGPULoadTexture(const unsigned char* data, unsigned int width, unsigned int height, unsigned int* id)
+{
+	glGenTextures(1, id);
+	glBindTexture(GL_TEXTURE_2D, *id);
+	// set the texture wrapping/filtering options (on the currently bound texture object)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR); // GL_NEAREST is the better filtering option for this game
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR); // as gives better more "pixelated" (less "smoothed out") textures
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	return true;
+}
 
 IMPLEMENT_DYNAMIC(PrismView3DStatic, CStatic)
 
@@ -112,17 +133,20 @@ void PrismView3DStatic::SetMesh(const Poly2D& poly, const ExtrudeParameters& par
 	if (m_VAO)
 	{
 		glDeleteVertexArrays(1, &m_VAO);
-		glDeleteBuffers(3, m_GLBuffers);
+		glDeleteBuffers(4, m_GLBuffers);
+		glDeleteTextures(1, &m_Texture);
 	}
-	glGenBuffers(3, m_GLBuffers);
+	glGenBuffers(4, m_GLBuffers);
 	glGenVertexArrays(1, &m_VAO);
 	unsigned int postions = m_GLBuffers[POSITION_BUFFER_INDEX];
 	unsigned int normals = m_GLBuffers[NORMAL_BUFFER_INDEX];
 	unsigned int EBO = m_GLBuffers[EBO_INDEX];
+	unsigned int uvs = m_GLBuffers[UV_BUFFER_INDEX];
 
 
 	const std::vector<glm::vec3>& posData = m_Mesh.GetPositions();
 	const std::vector<glm::vec3>& normData = m_Mesh.GetNormals();
+	const std::vector<glm::vec2>& uvData = m_Mesh.GetUVs();
 	const std::vector<int>& indexData = m_Mesh.GetIndices();
 
 	glBindVertexArray(m_VAO);
@@ -137,6 +161,11 @@ void PrismView3DStatic::SetMesh(const Poly2D& poly, const ExtrudeParameters& par
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
 	glEnableVertexAttribArray(1);
 
+	glBindBuffer(GL_ARRAY_BUFFER, uvs);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * uvData.size(), &uvData[0], GL_STATIC_DRAW);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*)0);
+	glEnableVertexAttribArray(2);
+
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * indexData.size(), &indexData[0], GL_STATIC_DRAW);
 
@@ -144,7 +173,10 @@ void PrismView3DStatic::SetMesh(const Poly2D& poly, const ExtrudeParameters& par
 	glBindVertexArray(0);
 
 	Invalidate(FALSE);
-	SaveAsObj(m_Mesh, "mesh.obj");
+
+	OpenGlGPULoadTexture(m_Mesh.GetTextureData(), m_Mesh.GetTextureWidth(), m_Mesh.GetTextureHeight(), &m_Texture);
+	
+	//SaveAsObj(m_Mesh, "mesh.obj");
 }
 
 void PrismView3DStatic::OnPaint()
@@ -253,6 +285,7 @@ void PrismView3DStatic::SetProjectionMatrix()
 void PrismView3DStatic::DrawMesh()
 {
 	m_MeshShader.use();
+
 	m_MeshShader.setMat4("view", m_Cam.GetViewMatrix());
 	glBindVertexArray(m_VAO);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_GLBuffers[EBO_INDEX]);

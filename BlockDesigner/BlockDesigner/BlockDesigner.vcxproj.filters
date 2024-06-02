@@ -90,6 +90,18 @@
     <ClInclude Include="ExtrudeParameters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="xatlas.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="xatlas_c.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Rasterize.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image_write.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BlockDesigner.cpp">
@@ -129,6 +141,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PrismView3DStatic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="xatlas.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Rasterize.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

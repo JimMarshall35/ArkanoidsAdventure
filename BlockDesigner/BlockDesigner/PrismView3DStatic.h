@@ -13,7 +13,8 @@ enum
 {
 	POSITION_BUFFER_INDEX,
 	NORMAL_BUFFER_INDEX,
-	EBO_INDEX
+	EBO_INDEX,
+	UV_BUFFER_INDEX,
 };
 
 class PrismView3DStatic : public CStatic, public IDragAcceptor
@@ -56,8 +57,9 @@ private:
 	bool m_bMeshSet = false;
 	glm::vec2 m_LastDragPos;
 
-	unsigned int m_GLBuffers[3];
+	unsigned int m_GLBuffers[4];
 	unsigned int m_VAO = 0;
+	unsigned int m_Texture = -1;
 
 	float m_ViewportWidth;
 	float m_ViewportHeight;

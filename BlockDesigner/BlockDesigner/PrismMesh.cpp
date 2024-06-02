@@ -3,6 +3,16 @@
 #include "Poly2D.h"
 #include "MiscFunctions.h"
 #include "ExtrudeParameters.h"
+#include "xatlas.h"
+#include "Rasterize.h"
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
+
+static void RandomColor(uint8_t* color)
+{
+	for (int i = 0; i < 3; i++)
+		color[i] = uint8_t((rand() % 255 + 192) * 0.5f);
+}
 
 static glm::vec3 CalculateMeshCenter(const std::vector<glm::vec3>& vertPositions)
 {
@@ -67,8 +77,8 @@ void PrismMesh::ExtrudeFromPoly2D(const Poly2D& poly, const ExtrudeParameters& p
 		bool bFlipped = false;
 		glm::vec3 norm = CalculateCorrectNormal(
 			m_Positions[polyIndices[ind]],
-			m_Positions[polyIndices[ind+1]],
-			m_Positions[polyIndices[ind+2]], 
+			m_Positions[polyIndices[ind + 1]],
+			m_Positions[polyIndices[ind + 2]],
 			meshCenterForBottomCap, bFlipped);
 
 		if (bFlipped)
@@ -83,10 +93,10 @@ void PrismMesh::ExtrudeFromPoly2D(const Poly2D& poly, const ExtrudeParameters& p
 			PushIndex(polyIndices[ind + 1]);
 			PushIndex(polyIndices[ind + 2]);
 		}
-		
+
 	}
 	DesignateBottomCapEnd();
-	
+
 	DesignateTopCapStart();
 	for (const glm::vec2& pt : poly.GetPoints())
 	{
@@ -102,18 +112,18 @@ void PrismMesh::ExtrudeFromPoly2D(const Poly2D& poly, const ExtrudeParameters& p
 	ScaleAndTranslateBottomCap(params);
 
 	glm::vec3 meshCenter = CalculateMeshCenter(m_Positions);
-	
+
 	DesignateSidesStart();
 	for (int i = m_BottomCapVertsStart; i < m_BottomCapVertsEnd; i++)
 	{
 		glm::vec3 b1 = m_Positions[i];
 		int b2Ind = i + 1;
 		glm::vec3 b2 = m_Positions[b2Ind < m_BottomCapVertsEnd ? b2Ind : m_BottomCapVertsStart];
-	
+
 		glm::vec3 t1 = m_Positions[i + m_TopCapVertsStart];
 		int t2Ind = i + 1 + m_TopCapVertsStart;
 		glm::vec3 t2 = m_Positions[t2Ind < m_TopCapVertsEnd ? t2Ind : m_TopCapVertsStart];
-	
+
 		// tri1: b1 -> t1 -> b2
 		size_t t1Start = m_Positions.size();
 		bool bFlipped = false;
@@ -130,7 +140,7 @@ void PrismMesh::ExtrudeFromPoly2D(const Poly2D& poly, const ExtrudeParameters& p
 			PushVert(t1, normal);
 			PushVert(b2, normal);
 		}
-		
+
 		m_Indices.push_back(t1Start);
 		m_Indices.push_back(t1Start + 1);
 		m_Indices.push_back(t1Start + 2);
@@ -150,12 +160,14 @@ void PrismMesh::ExtrudeFromPoly2D(const Poly2D& poly, const ExtrudeParameters& p
 			PushVert(b2, normal);
 			PushVert(t1, normal);
 		}
-		
+
 		m_Indices.push_back(t2Start);
 		m_Indices.push_back(t2Start + 1);
 		m_Indices.push_back(t2Start + 2);
 	}
 	DesignateSidesEnd();
+
+	GenerateUVsAndTexture();
 
 }
 
@@ -265,4 +277,82 @@ void PrismMesh::ScaleAndTranslateBottomCap(const ExtrudeParameters& params)
 		params.BottomCapScaleY,
 		params.BottomCapOffsetX,
 		params.BottomCapOffsetY);
+}
+
+void PrismMesh::GenerateUVsAndTexture()
+{
+	m_UVs.resize(m_Positions.size());
+
+	xatlas::Atlas* pAtlas = xatlas::Create();
+	xatlas::MeshDecl meshDecl;
+	meshDecl.vertexPositionData = m_Positions.data();
+	meshDecl.vertexNormalData = m_Indices.data();
+	meshDecl.indexData = m_Indices.data();
+	meshDecl.indexFormat = xatlas::IndexFormat::UInt32;
+	meshDecl.vertexCount = m_Positions.size();
+	meshDecl.indexCount = m_Indices.size();
+	meshDecl.vertexNormalStride = sizeof(glm::vec3);
+	meshDecl.vertexPositionStride = sizeof(glm::vec3);
+	xatlas::AddMeshError error = xatlas::AddMesh(pAtlas, meshDecl);
+	xatlas::AddMeshJoin(pAtlas);
+
+	xatlas::ChartOptions co;
+	xatlas::PackOptions po;
+	po.texelsPerUnit = 100;
+	xatlas::Generate(pAtlas, co, po);
+	xatlas::Mesh& m = pAtlas->meshes[0];
+
+	assert(m.indexCount == (uint32_t)m_Indices.size());
+
+	for (int i = 0; i < m.vertexCount; i++)
+	{
+		const xatlas::Vertex& v = m.vertexArray[i];
+		m_UVs[v.xref] = glm::vec2(v.uv[0] / pAtlas->width, v.uv[1] / pAtlas->height);
+	}
+
+	const uint32_t imageDataSize = pAtlas->width * pAtlas->height * 3;
+	m_Texture.resize(pAtlas->atlasCount * imageDataSize);
+
+	const uint8_t white[] = { 255, 255, 255 };
+	const uint32_t faceCount = m.indexCount / 3;
+	uint32_t faceFirstIndex = 0;
+	for (uint32_t f = 0; f < faceCount; f++)
+	{
+		int32_t atlasIndex = -1;
+		int verts[255][2];
+		for (int i = 0; i < 3; i++)
+		{
+			const xatlas::Vertex& v = m.vertexArray[m.indexArray[faceFirstIndex + i]];
+			atlasIndex = v.atlasIndex; // The same for every vertex in the face.
+			verts[i][0] = int(v.uv[0]);
+			verts[i][1] = int(v.uv[1]);
+		}
+
+		if (atlasIndex < 0)
+		{
+			continue; // Skip faces that weren't atlased.
+		}
+
+		uint8_t color[3];
+		RandomColor(color);
+		uint8_t* imageData = &m_Texture[atlasIndex * imageDataSize];
+
+		Rasterizer::RasterizeTriangle(imageData, pAtlas->width, verts[0], verts[1], verts[2], color);
+		for (uint32_t j = 0; j < 3; j++)
+		{
+			Rasterizer::RasterizeLine(imageData, pAtlas->width, verts[j], verts[(j + 1) % 3], white);
+		}
+		faceFirstIndex += 3;
+	}
+
+	m_TextureWidth = pAtlas->width;
+	m_TextureHeight = pAtlas->height;
+
+	for (uint32_t i = 0; i < pAtlas->atlasCount; i++) {
+		char filename[256];
+		snprintf(filename, sizeof(filename), "example_tris%02u.tga", i);
+		stbi_write_tga(filename, pAtlas->width, pAtlas->height, 3, &m_Texture[i * imageDataSize]);
+	}
+
+	xatlas::Destroy(pAtlas);
 }
