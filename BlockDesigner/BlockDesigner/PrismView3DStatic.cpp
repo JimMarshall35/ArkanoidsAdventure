@@ -7,6 +7,7 @@
 #include <vector>
 #include "Poly2D.h"
 #include "ExtrudeParameters.h"
+#include "SerializeObj.h"
 
 static const char* gMeshVert =
 "#version 330 core\n"
@@ -143,7 +144,7 @@ void PrismView3DStatic::SetMesh(const Poly2D& poly, const ExtrudeParameters& par
 	glBindVertexArray(0);
 
 	Invalidate(FALSE);
-
+	SaveAsObj(m_Mesh, "mesh.obj");
 }
 
 void PrismView3DStatic::OnPaint()
@@ -295,6 +296,8 @@ void PrismView3DStatic::InitRenderer()
 	SetLight({ 0,100.0f,100.0f }, { 1.0f,1.0f,1.0f });
 	SetMaterial({ 1.0f,0.0f,0.0f }, 0.2f, 0.5f, 0.2f, 8.0f);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 }
 
 void PrismView3DStatic::GetWindowRect(LONG& t, LONG& l, LONG& b, LONG& r) const
