@@ -44,3 +44,26 @@ void Poly2D::Triangulate()
 	}
 	ASSERT(m_Indices.size() % 3 == 0);
 }
+
+bool Poly2D::ContainsPoint(glm::vec2 pt) const
+{
+	LineSegment2D lineFromOutside({ 1000.0, 1000.0 }, pt);
+	auto GetNextIndex = [this](int thisI) -> int
+	{
+		if (thisI + 1 >= m_Points.size())
+		{
+			return 0;
+		}
+		return thisI + 1;
+	};
+	int intersectCount = 0;
+	for (int i = 0; i < m_Points.size(); i++)
+	{
+		LineSegment2D line(m_Points[i], m_Points[GetNextIndex(i)]);
+		if (LineSegment2D::Intersects(lineFromOutside, line))
+		{
+			++intersectCount;
+		}
+	}
+	return (intersectCount % 2) != 0;
+}

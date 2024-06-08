@@ -97,3 +97,44 @@ glm::vec3 CalcNormal(const glm::vec3& t1, const glm::vec3& t2, const glm::vec3& 
     return glm::normalize(glm::cross(A, B));
 }
 
+LineSegment2D::LineSegment2D(glm::vec2 p1, glm::vec2 p2)
+    :m_P1(p1), m_P2(p2)
+{
+}
+
+// Returns 1 if the lines intersect, otherwise 0. In addition, if the lines 
+// intersect the intersection point may be stored in the floats i_x and i_y.
+char get_line_intersection(float p0_x, float p0_y, float p1_x, float p1_y,
+    float p2_x, float p2_y, float p3_x, float p3_y, float* i_x, float* i_y)
+{
+    float s1_x, s1_y, s2_x, s2_y;
+    s1_x = p1_x - p0_x;     s1_y = p1_y - p0_y;
+    s2_x = p3_x - p2_x;     s2_y = p3_y - p2_y;
+
+    float s, t;
+    s = (-s1_y * (p0_x - p2_x) + s1_x * (p0_y - p2_y)) / (-s2_x * s1_y + s1_x * s2_y);
+    t = (s2_x * (p0_y - p2_y) - s2_y * (p0_x - p2_x)) / (-s2_x * s1_y + s1_x * s2_y);
+
+    if (s >= 0 && s <= 1 && t >= 0 && t <= 1)
+    {
+        // Collision detected
+        if (i_x != NULL)
+            *i_x = p0_x + (t * s1_x);
+        if (i_y != NULL)
+            *i_y = p0_y + (t * s1_y);
+        return 1;
+    }
+
+    return 0; // No collision
+}
+
+bool LineSegment2D::Intersects(const LineSegment2D& line, const LineSegment2D& line2, glm::vec2* intercept /*= nullptr*/)
+{
+    glm::vec2 intersect;
+    char collision = get_line_intersection(line.m_P1.x, line.m_P1.y, line.m_P2.x, line.m_P2.y, line2.m_P1.x, line2.m_P1.y, line2.m_P2.x, line2.m_P2.y, &intersect.x, &intersect.y);
+    if (intercept)
+    {
+        *intercept = intersect;
+    }
+    return (bool)collision;
+}

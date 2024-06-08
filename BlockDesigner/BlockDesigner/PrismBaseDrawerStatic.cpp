@@ -53,6 +53,12 @@ void PrismBaseDrawerStatic::SetMeshCreatedDelegate(PolyCreatedDelegate onMeshCre
 	m_OnPolyCreasted = onMeshCreated;
 }
 
+void PrismBaseDrawerStatic::Clear()
+{
+	m_Poly2D.Clear();
+	InvalidateRect(NULL);
+}
+
 
 void PrismBaseDrawerStatic::OnPaint()
 {

@@ -36,6 +36,7 @@ public:
 	void SetNewZoom(float zoom);
 	void SetNewIncrement(int newIncrement);
 	void SetMeshCreatedDelegate(PolyCreatedDelegate onMeshCreated);
+	void Clear();
 
 	// Inherited via IDragAcceptor
 	virtual void StartDrag(const glm::vec2& pt, MouseButton btn) override;

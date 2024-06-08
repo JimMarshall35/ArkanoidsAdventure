@@ -34,6 +34,7 @@ public:
 	virtual void UpdateDrag(const glm::vec2& lastPt) override;
 	
 	bool IsMeshSet() { return m_bMeshSet; }
+	void Clear();
 private:
 	afx_msg void OnPaint();
 	afx_msg BOOL OnEraseBkgnd(CDC*);

@@ -20,6 +20,8 @@ public:
 	int GetTextureBytes() { return m_Texture.size(); }
 
 private:
+	glm::vec3 CalculateCorrectNormal(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, const glm::vec3& meshCenter, bool& outbFlipped);
+
 	void PushVert(const glm::vec3& pos, const glm::vec3& normal);
 	void PushIndex(int index);
 
@@ -28,7 +30,7 @@ private:
 	
 	void DesignateTopCapStart();
 	void DesignateTopCapEnd();
-	
+	  
 	void DesignateSidesStart();
 	void DesignateSidesEnd();
 

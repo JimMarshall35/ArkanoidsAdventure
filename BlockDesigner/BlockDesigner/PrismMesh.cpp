@@ -43,7 +43,7 @@ static glm::vec3 CalculateTriangleCenter(const glm::vec3& p1, const glm::vec3& p
 	};
 }
 
-static glm::vec3 CalculateCorrectNormal(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, const glm::vec3& meshCenter, bool& outbFlipped)
+glm::vec3 PrismMesh::CalculateCorrectNormal(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, const glm::vec3& meshCenter, bool& outbFlipped)
 {
 	glm::vec3 normal = CalcNormal(p1, p2, p3);
 	glm::vec3 faceCenter = CalculateTriangleCenter(p1, p2, p3);
@@ -128,42 +128,39 @@ void PrismMesh::ExtrudeFromPoly2D(const Poly2D& poly, const ExtrudeParameters& p
 		size_t t1Start = m_Positions.size();
 		bool bFlipped = false;
 		glm::vec3 normal = CalculateCorrectNormal(b1, t1, b2, meshCenter, bFlipped);
+		PushVert(b1, normal);
+		PushVert(b2, normal);
+		PushVert(t1, normal);
 		if (bFlipped)
 		{
-			PushVert(b1, normal);
-			PushVert(b2, normal);
-			PushVert(t1, normal);
+			m_Indices.push_back(t1Start);
+			m_Indices.push_back(t1Start + 1);
+			m_Indices.push_back(t1Start + 2);
 		}
 		else
 		{
-			PushVert(b1, normal);
-			PushVert(t1, normal);
-			PushVert(b2, normal);
-		}
 
-		m_Indices.push_back(t1Start);
-		m_Indices.push_back(t1Start + 1);
-		m_Indices.push_back(t1Start + 2);
+			m_Indices.push_back(t1Start);
+			m_Indices.push_back(t1Start + 2);
+			m_Indices.push_back(t1Start + 1);
+		}
 
 		// tri2: t2 -> b2 -> t1
 		size_t t2Start = m_Positions.size();
 		normal = CalculateCorrectNormal(t2, b2, t1, meshCenter, bFlipped);
+		PushVert(t2, normal);
 		if (bFlipped)
 		{
-			PushVert(t2, normal);
-			PushVert(t1, normal);
-			PushVert(b2, normal);
+			m_Indices.push_back(t2Start);
+			m_Indices.push_back(t1Start + 2);
+			m_Indices.push_back(t1Start + 1);
 		}
 		else
 		{
-			PushVert(t2, normal);
-			PushVert(b2, normal);
-			PushVert(t1, normal);
+			m_Indices.push_back(t2Start);
+			m_Indices.push_back(t1Start + 1);
+			m_Indices.push_back(t1Start + 2);
 		}
-
-		m_Indices.push_back(t2Start);
-		m_Indices.push_back(t2Start + 1);
-		m_Indices.push_back(t2Start + 2);
 	}
 	DesignateSidesEnd();
 
@@ -307,11 +304,15 @@ void PrismMesh::GenerateUVsAndTexture()
 	for (int i = 0; i < m.vertexCount; i++)
 	{
 		const xatlas::Vertex& v = m.vertexArray[i];
-		m_UVs[v.xref] = glm::vec2(v.uv[0] / pAtlas->width, v.uv[1] / pAtlas->height);
+		m_UVs[v.xref] = glm::vec2(v.uv[0] / pAtlas->width,  v.uv[1] / pAtlas->height);
 	}
 
+	m_TextureWidth = pAtlas->width;
+	m_TextureHeight = pAtlas->height;
 	const uint32_t imageDataSize = pAtlas->width * pAtlas->height * 3;
 	m_Texture.resize(pAtlas->atlasCount * imageDataSize);
+	ASSERT(pAtlas->atlasCount == 1);
+	memset(m_Texture.data(), 0, sizeof(uint8_t) * m_Texture.size());
 
 	const uint8_t white[] = { 255, 255, 255 };
 	const uint32_t faceCount = m.indexCount / 3;
@@ -345,8 +346,6 @@ void PrismMesh::GenerateUVsAndTexture()
 		faceFirstIndex += 3;
 	}
 
-	m_TextureWidth = pAtlas->width;
-	m_TextureHeight = pAtlas->height;
 
 	for (uint32_t i = 0; i < pAtlas->atlasCount; i++) {
 		char filename[256];

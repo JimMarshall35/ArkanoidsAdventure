@@ -131,6 +131,8 @@ BEGIN_MESSAGE_MAP(CBlockDesignerDlg, CDialogEx)
 
 	ON_EN_KILLFOCUS(IDC_EXTRUDE_AMOUNT, OnChangeExtrudeAmount)
 
+	ON_BN_CLICKED(IDC_CLEAR_BTN, OnClearButtonClick)
+
 END_MESSAGE_MAP()
 
 
@@ -464,6 +466,12 @@ void CBlockDesignerDlg::OnChangeExtrudeAmount()
 	{
 		m_ctlPrismView3DStatic.SetMesh(m_ctlPrismBaseDrawer.GetPoly(), m_ExtrudeParameters);
 	}
+}
+
+void CBlockDesignerDlg::OnClearButtonClick()
+{
+	m_ctlPrismBaseDrawer.Clear();
+	m_ctlPrismView3DStatic.Clear();
 }
 
 void CBlockDesignerDlg::HandlePrismStaticZoomScroll(UINT nSBCode, UINT nPos)

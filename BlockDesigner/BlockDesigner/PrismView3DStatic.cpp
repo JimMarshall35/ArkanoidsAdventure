@@ -36,7 +36,7 @@ static const char* gMeshVert =
 	"Normal = mat3(transpose(inverse(view * model))) * aNormal;\n"
 	"WorldSpaceNormal = vec3(model * vec4(aNormal, 0.0));\n"
 
-	"LightPos = vec3(view * vec4(lightPos, 1.0)); // Transform world-space light position to view-space light position\n"
+	"LightPos = vec3(view * vec4(lightPos, 1.0));\n" // Transform world-space light position to view-space light position
 	"Uv = aUv;\n"
 "}\n";
 
@@ -176,7 +176,13 @@ void PrismView3DStatic::SetMesh(const Poly2D& poly, const ExtrudeParameters& par
 
 	OpenGlGPULoadTexture(m_Mesh.GetTextureData(), m_Mesh.GetTextureWidth(), m_Mesh.GetTextureHeight(), &m_Texture);
 	
-	//SaveAsObj(m_Mesh, "mesh.obj");
+	SaveAsObj(m_Mesh, "mesh.obj");
+}
+
+void PrismView3DStatic::Clear()
+{
+	m_bMeshSet = false;
+	Invalidate(FALSE);
 }
 
 void PrismView3DStatic::OnPaint()
@@ -285,6 +291,8 @@ void PrismView3DStatic::SetProjectionMatrix()
 void PrismView3DStatic::DrawMesh()
 {
 	m_MeshShader.use();
+	glActiveTexture(GL_TEXTURE0); // activate the texture unit first before binding texture
+	glBindTexture(GL_TEXTURE_2D, m_Texture);
 
 	m_MeshShader.setMat4("view", m_Cam.GetViewMatrix());
 	glBindVertexArray(m_VAO);
@@ -292,7 +300,6 @@ void PrismView3DStatic::DrawMesh()
 	glDrawElements(GL_TRIANGLES, m_Mesh.GetIndices().size(), GL_UNSIGNED_INT, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
-
 }
 
 void PrismView3DStatic::SetLight(const glm::vec3& position, const glm::vec3& colour)
@@ -327,10 +334,12 @@ void PrismView3DStatic::InitRenderer()
 	SetProjectionMatrix();
 	SetMeshModelMatrix({ 0,0,0 });
 	SetLight({ 0,100.0f,100.0f }, { 1.0f,1.0f,1.0f });
-	SetMaterial({ 1.0f,0.0f,0.0f }, 0.2f, 0.5f, 0.2f, 8.0f);
+	SetMaterial({ 1.0f,0.0f,0.0f }, 0.4f, 0.5f, 0.2f, 8.0f);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
+	glPixelStorei(GL_PACK_ALIGNMENT, 1);
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 }
 
 void PrismView3DStatic::GetWindowRect(LONG& t, LONG& l, LONG& b, LONG& r) const

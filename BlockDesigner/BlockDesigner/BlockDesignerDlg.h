@@ -83,6 +83,8 @@ protected:
 
 	afx_msg void OnChangeExtrudeAmount();
 
+	afx_msg void OnClearButtonClick();
+
 	void HandlePrismStaticZoomScroll(UINT nSBCode, UINT nPos);
 
 	bool ValidateAndSetFloat(CString& input, float& output, const CString& fallbackVal);
