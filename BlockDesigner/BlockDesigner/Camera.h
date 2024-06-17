@@ -24,6 +24,8 @@ public:
     glm::vec3 GetUpVector() const { return m_upVector; }
     glm::vec3 GetLookAt() const { return m_lookAt; }
 
+    void SetLookAt(const glm::vec3& pt) { m_lookAt = pt; UpdateViewMatrix(); }
+
     // Camera forward is -z
     glm::vec3 GetViewDir() const { return -glm::transpose(m_viewMatrix)[2]; }
     glm::vec3 GetRightVector() const { return glm::transpose(m_viewMatrix)[0]; }

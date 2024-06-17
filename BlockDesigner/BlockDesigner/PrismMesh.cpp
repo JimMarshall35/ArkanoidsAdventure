@@ -43,6 +43,11 @@ static glm::vec3 CalculateTriangleCenter(const glm::vec3& p1, const glm::vec3& p
 	};
 }
 
+glm::vec3 PrismMesh::GetCentroid()
+{
+	return CalculateMeshCenter(m_Positions);
+}
+
 glm::vec3 PrismMesh::CalculateCorrectNormal(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, const Poly2D& bottomCap, bool& outbFlipped)
 {
 	auto GetBottomCapPoint = [&]() -> glm::vec3
@@ -109,8 +114,6 @@ void PrismMesh::ExtrudeFromPoly2D(const Poly2D& poly, const ExtrudeParameters& p
 
 	ScaleAndTranslateTopCap(params);
 	ScaleAndTranslateBottomCap(params);
-
-	glm::vec3 meshCenter = CalculateMeshCenter(m_Positions);
 
 	DesignateSidesStart();
 	for (int i = m_BottomCapVertsStart; i < m_BottomCapVertsEnd; i++)

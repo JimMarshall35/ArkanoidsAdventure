@@ -176,6 +176,8 @@ void PrismView3DStatic::SetMesh(const Poly2D& poly, const ExtrudeParameters& par
 
 	OpenGlGPULoadTexture(m_Mesh.GetTextureData(), m_Mesh.GetTextureWidth(), m_Mesh.GetTextureHeight(), &m_Texture);
 	
+	m_Cam.SetLookAt(m_Mesh.GetCentroid());
+
 	SaveAsObj(m_Mesh, "mesh.obj");
 }
 
@@ -379,9 +381,9 @@ void PrismView3DStatic::UpdateDrag(const glm::vec2& lastPt)
 
 	static const glm::vec3 up{ 0.0f,0.0f,1.0f };
 	// Extra step to handle the problem when the camera direction is the same as the up vector
-	float cosAngle = glm::dot(m_Cam.GetViewDir(), up);
+	/*float cosAngle = glm::dot(m_Cam.GetViewDir(), up);
 	if (cosAngle * sgn(deltaAngleY) > 0.99f)
-		deltaAngleY = 0;
+		deltaAngleY = 0;*/
 
 	// step 2: Rotate the camera around the pivot point on the first axis.
 	glm::mat4x4 rotationMatrixX(1.0f);

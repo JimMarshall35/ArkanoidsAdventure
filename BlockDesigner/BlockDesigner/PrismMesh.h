@@ -18,6 +18,7 @@ public:
 	int GetTextureWidth() { return m_TextureWidth; }
 	int GetTextureHeight() { return m_TextureHeight; }
 	int GetTextureBytes() { return m_Texture.size(); }
+	glm::vec3 GetCentroid();
 
 private:
 	glm::vec3 CalculateCorrectNormal(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, const Poly2D& bottomCap, bool& outbFlipped);
