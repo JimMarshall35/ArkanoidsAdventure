@@ -109,9 +109,7 @@ PrismView3DStatic::PrismView3DStatic()
 	:m_Cam(glm::vec3{ 5.0f,0.0f,0.0f }, glm::vec3{ 0.0f,0.0f,0.0f }, glm::vec3{ 0.0f,0.0f,1.0f }),
 	m_MeshShader()
 {
-	m_GLBuffers[0] = 0;
-	m_GLBuffers[1] = 0;
-	m_GLBuffers[2] = 0;
+	memset(&m_GLBuffers[0], 0, sizeof(m_GLBuffers));
 }
 
 PrismView3DStatic::~PrismView3DStatic()
