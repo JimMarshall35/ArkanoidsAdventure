@@ -3,6 +3,7 @@
 #include "polypartition.h"
 #include "MiscFunctions.h"
 #include <list>
+#include <set>
 
 void Poly2D::PushPoint(const glm::vec2& pt)
 {
@@ -43,11 +44,13 @@ void Poly2D::Triangulate()
 		}
 	}
 	ASSERT(m_Indices.size() % 3 == 0);
+	//bool test = ContainsPoint({ 0,0 });
 }
 
 bool Poly2D::ContainsPoint(glm::vec2 pt) const
 {
-	LineSegment2D lineFromOutside({ 1000.0, 1000.0 }, pt);
+	LineSegment2D lineFromOutside({ INFINITY, INFINITY }, pt);
+	std::vector<glm::vec2> intersects;
 	auto GetNextIndex = [this](int thisI) -> int
 	{
 		if (thisI + 1 >= m_Points.size())
@@ -55,15 +58,57 @@ bool Poly2D::ContainsPoint(glm::vec2 pt) const
 			return 0;
 		}
 		return thisI + 1;
+	};	
+	auto intersectsContains = [&intersects](const glm::vec2& pt)
+	{
+		for (const glm::vec2& inter : intersects)
+		{
+			if (AreSame(inter.x, pt.x) && AreSame(inter.y, pt.y))
+			{
+				return true;
+			}
+		}
+		return  false;
 	};
+
 	int intersectCount = 0;
+
 	for (int i = 0; i < m_Points.size(); i++)
 	{
 		LineSegment2D line(m_Points[i], m_Points[GetNextIndex(i)]);
-		if (LineSegment2D::Intersects(lineFromOutside, line))
+		glm::vec2 pt;
+		if (LineSegment2D::Intersects(lineFromOutside, line, &pt))
 		{
-			++intersectCount;
+			if (!intersectsContains(pt))
+			{
+				intersects.push_back(pt);
+				++intersectCount;
+			}
 		}
 	}
 	return (intersectCount % 2) != 0;
+}
+
+Poly2D Poly2D::GetScaledAndTranslated(float scaleX, float scaleY, float offsetX, float offsetY) const
+{
+	Poly2D r = *this;
+	float xTotal = 0;
+	float yTotal = 0;
+	int num = 0;
+	for (const glm::vec2& v : r.m_Points)
+	{
+		xTotal += v.x;
+		yTotal += v.y;
+		num++;
+	}
+	glm::vec2 centroid = { xTotal / (float)num, yTotal / (float)num };
+	for (glm::vec2& v : r.m_Points)
+	{
+		v += -centroid;
+		v.x *= scaleX;
+		v.y *= scaleY;
+		v += centroid;
+		v += glm::vec2{ offsetX, offsetY };
+	}
+	return r;
 }

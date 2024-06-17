@@ -43,15 +43,24 @@ static glm::vec3 CalculateTriangleCenter(const glm::vec3& p1, const glm::vec3& p
 	};
 }
 
-glm::vec3 PrismMesh::CalculateCorrectNormal(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, const glm::vec3& meshCenter, bool& outbFlipped)
+glm::vec3 PrismMesh::CalculateCorrectNormal(const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3, const Poly2D& bottomCap, bool& outbFlipped)
 {
-	glm::vec3 normal = CalcNormal(p1, p2, p3);
-	glm::vec3 faceCenter = CalculateTriangleCenter(p1, p2, p3);
-	glm::vec3 mesh2FaceCenterDir = glm::normalize(faceCenter - meshCenter);
-	float len = glm::length(mesh2FaceCenterDir);
-	float dot = glm::dot(normal, mesh2FaceCenterDir);
+	auto GetBottomCapPoint = [&]() -> glm::vec3
+	{
+		if (AreSame(p1.z, 0)) return p1;
+		if (AreSame(p2.z, 0)) return p2;
+		if (AreSame(p3.z, 0)) return p3;
+		ASSERT(false);
+		return { 0,0,0 };
+	};
 	outbFlipped = false;
-	if (dot < 0.0f)
+	glm::vec3 normal = CalcNormal(p1, p2, p3);
+	glm::vec3 bottomCapPt = GetBottomCapPoint();
+	glm::vec2 ptAsVec2 = { bottomCapPt.x, bottomCapPt.y };
+	glm::vec2 normAsVec2 = glm::normalize(glm::vec2(normal.x, normal.y));
+	const float smallNum = 10e-3;
+	glm::vec2 pt2Test = ptAsVec2 + (normAsVec2 * smallNum);
+	if (!bottomCap.ContainsPoint(pt2Test))
 	{
 		normal *= -1.0f;
 		outbFlipped = true;
@@ -66,6 +75,11 @@ void PrismMesh::ExtrudeFromPoly2D(const Poly2D& poly, const ExtrudeParameters& p
 	m_Normals.clear();
 
 	DesignateBottomCapStart();
+	Poly2D transformedBottom = poly.GetScaledAndTranslated(params.TopCapScaleX,
+		params.TopCapScaleY,
+		params.TopCapOffsetX,
+		params.TopCapOffsetY);
+
 	for (const glm::vec2& pt : poly.GetPoints())
 	{
 		PushVert(glm::vec3(pt, 0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
@@ -74,26 +88,9 @@ void PrismMesh::ExtrudeFromPoly2D(const Poly2D& poly, const ExtrudeParameters& p
 	const std::vector<int>& polyIndices = poly.GetIndices();
 	for (int ind = 0; ind < polyIndices.size(); ind += 3)
 	{
-		bool bFlipped = false;
-		glm::vec3 norm = CalculateCorrectNormal(
-			m_Positions[polyIndices[ind]],
-			m_Positions[polyIndices[ind + 1]],
-			m_Positions[polyIndices[ind + 2]],
-			meshCenterForBottomCap, bFlipped);
-
-		if (bFlipped)
-		{
-			PushIndex(polyIndices[ind + 2]);
-			PushIndex(polyIndices[ind + 1]);
-			PushIndex(polyIndices[ind + 0]);
-		}
-		else
-		{
-			PushIndex(polyIndices[ind + 0]);
-			PushIndex(polyIndices[ind + 1]);
-			PushIndex(polyIndices[ind + 2]);
-		}
-
+		PushIndex(polyIndices[ind + 2]);
+		PushIndex(polyIndices[ind + 1]);
+		PushIndex(polyIndices[ind + 0]);
 	}
 	DesignateBottomCapEnd();
 
@@ -102,9 +99,11 @@ void PrismMesh::ExtrudeFromPoly2D(const Poly2D& poly, const ExtrudeParameters& p
 	{
 		PushVert(glm::vec3(pt, params.ExtrudeAmount), glm::vec3(0.0f, 0.0f, 1.0f));
 	}
-	for (int ind : poly.GetIndices())
+	for (int ind = 0; ind < polyIndices.size(); ind += 3)
 	{
-		PushIndex(ind + m_BottomCapVertsEnd);
+		PushIndex(polyIndices[ind + 0] + m_BottomCapVertsEnd);
+		PushIndex(polyIndices[ind + 1] + m_BottomCapVertsEnd);
+		PushIndex(polyIndices[ind + 2] + m_BottomCapVertsEnd);
 	}
 	DesignateTopCapEnd();
 
@@ -127,7 +126,7 @@ void PrismMesh::ExtrudeFromPoly2D(const Poly2D& poly, const ExtrudeParameters& p
 		// tri1: b1 -> t1 -> b2
 		size_t t1Start = m_Positions.size();
 		bool bFlipped = false;
-		glm::vec3 normal = CalculateCorrectNormal(b1, t1, b2, meshCenter, bFlipped);
+		glm::vec3 normal = CalculateCorrectNormal(b1, t1, b2, transformedBottom, bFlipped);
 		PushVert(b1, normal);
 		PushVert(b2, normal);
 		PushVert(t1, normal);
@@ -147,7 +146,7 @@ void PrismMesh::ExtrudeFromPoly2D(const Poly2D& poly, const ExtrudeParameters& p
 
 		// tri2: t2 -> b2 -> t1
 		size_t t2Start = m_Positions.size();
-		normal = CalculateCorrectNormal(t2, b2, t1, meshCenter, bFlipped);
+		normal = CalculateCorrectNormal(t2, b2, t1, transformedBottom, bFlipped);
 		PushVert(t2, normal);
 		if (bFlipped)
 		{
