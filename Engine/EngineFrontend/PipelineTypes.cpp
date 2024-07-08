@@ -4,7 +4,16 @@
 
 int NumSemanticsSet(PipelinePropertySemantics semantics)
 {
-	return __popcnt16(semantics);
+	//return __popcnt16((uint16_t)semantics);
+	int r = 0;
+	for (int i = 0; i < 16; i++)
+	{
+		if (semantics & (1 << i))
+		{
+			r++;
+		}
+	}
+	return r;
 }
 
 EString GetPipelineSemName(PipelinePropertySemantics semantics)

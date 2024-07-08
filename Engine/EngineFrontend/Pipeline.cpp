@@ -1,31 +1,32 @@
 #include "Pipeline.h"
 #include "PipelineMeshData.h"
 
-void PipeLine::SetShaderCode(EVec<char>&& vertShaderCode, EVec<char>&& fragShaderCode)
+PipeLineStage::PipeLineStage(const PipelineStageInitArgs args)
+	:Name(args.name),
+	RenderTarget(args.hFrameBuffer),
+	RequiredOutputBuffers(args.requiredRenderTargetBuffers),
+	VertShaderCode(std::move(args.vertShaderCode)),
+	FragShaderCode(std::move(args.fragShaderCode)),
+	Semantics(args.Semantics)
 {
-	VertShaderCode = vertShaderCode;
-	FragShaderCode = fragShaderCode;
 }
 
-void PipeLine::SetShaderCode(EVec<char>& vertShaderCode, EVec<char>& fragShaderCode)
+void PipeLineStage::PushPerVertexAttribute(const PipelinePropertyName& prop)
 {
-	VertShaderCode = vertShaderCode;
-	FragShaderCode = fragShaderCode;
-}
-
-void PipeLine::PushPerVertexAttribute(const PipelinePropertyName& prop)
-{
+	CheckNewProperty(prop);
 	PerVertexAttributes.push_back(prop);
 }
 
-void PipeLine::PushPerInstanceAttribute(const PipelinePropertyName& prop)
+void PipeLineStage::PushPerInstanceAttribute(const PipelinePropertyName& prop)
 {
+	CheckNewProperty(prop);
 	PerInstanceAttributes.push_back(prop);
 }
 
-void PipeLine::PushPerInstanceUniformAttribute(const PipelinePropertyName& prop)
+void PipeLineStage::PushUniformAttribute(const PipelinePropertyName& prop)
 {
-	PerInstanceUniformAttributes.push_back(prop);
+	CheckNewProperty(prop);
+	Uniforms.push_back(prop);
 }
 
 bool AreMultipleSemanticsSet(uint16_t val, EVec<PipelineError>& errorOut, const EString& name)
@@ -38,10 +39,10 @@ bool AreMultipleSemanticsSet(uint16_t val, EVec<PipelineError>& errorOut, const 
 	return matches != 1;
 }
 
-void PipeLine::CheckNewProperty(const PipelinePropertyName& newName)
+void PipeLineStage::CheckNewProperty(const PipelinePropertyName& newName)
 {
 	AreMultipleSemanticsSet(newName.Semantics, Errors, newName.Name);
-	if (Semantics & newName.Semantics)
+	if (newName.Semantics < psCustomAttributesBegin && (Semantics & newName.Semantics))
 	{
 		PipelineError error{};
 		error.Type = PipelineErrorType::DuplicateSemantic;
@@ -52,12 +53,16 @@ void PipeLine::CheckNewProperty(const PipelinePropertyName& newName)
 	}
 }
 
-bool PipeLine::IsMeshCompatible(const PipelineMeshData& meshData) const
+bool PipeLineStage::IsMeshCompatible(const PipelineMeshData& meshData) const
+{
+	return IsMeshSemanticsCompatible(meshData.GetSemantics());
+}
+
+bool PipeLineStage::IsMeshSemanticsCompatible(PipelinePropertySemantics meshData) const
 {
 	// mesh is compatible if pipeline fulfils all its semantic requirements
-	uint16_t mesh = (int16_t)meshData.GetSemantics();
-	uint16_t pipeline = (int16_t)Semantics;
-	uint16_t r = (~pipeline) & mesh;
-	return r == 0; 
+	uint16_t r = (~Semantics) & meshData;
+	return r == 0;
+
 }
  

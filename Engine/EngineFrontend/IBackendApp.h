@@ -8,15 +8,7 @@
 class BackendAPI;
 class PipeLine;
 class PipelineMeshData;
-
-#define ENGINE_NULL_HANDLE 0
-typedef uint32_t HDrawable;
-typedef uint32_t HMesh;
-
-typedef uint32_t HPipeline;
-typedef uint32_t HPipelineUniformProperty;
-typedef uint32_t HPipelinePerInstanceProperty;
-typedef uint32_t HTexture;
+struct TextureData;
 
 struct BackendInputState
 {
@@ -40,48 +32,57 @@ struct BackendError
 };
 
 typedef BackendAPI (*BackEndAppFactory)(void);
-typedef void(*BackendErrorHandlerFn)(BackendError error);
+typedef void(*BackendErrorHandlerFn)(const BackendError& error);
+typedef void(*BackendWindowResizeFn)(int newW, int newH);
 
-typedef void                                   (*VoidFn)                           (void);
-typedef bool                                   (*BoolFn)                           (void);
-typedef double                                 (*GetTimeFn)                        (void);
+typedef void(*PerDrawUniformSetterFn)(HPipeline pipeline, void* pUserData, int pipelineStage);
+typedef void(*PerInstanceUniformSetterFn)(HDrawable drawable, HPipeline pipeline, int pipelineStage, void* pDrawableUserData, void* PipelineUserData);
+typedef void(*PerInstanceAttributeSetterFn)(HDrawable drawable, HPipeline pipeline, int pipelineStage, void* pDrawableUserData, void* PipelineUserData, void* pInstanceDataToWrite);
 
-typedef void                                   (*PollInputFn)                      (BackendInputState&);
-typedef HPipeline                              (*UploadPipelineFn)                 (const PipeLine& p);
-typedef HMesh                                  (*UploadMeshFn)                     (HPipeline pipeline, const PipelineMeshData& mesh);
-typedef HDrawable                              (*CreateDrawableFn)                   (HPipeline pipeline, HMesh mesh);
-typedef void                                   (*RegisterErrorHandlerFn)           (BackendErrorHandlerFn);
-typedef HPipeline                              (*ChangeDrawablePipelineFn)         (HDrawable mesh, HPipeline newPipeline); // returns old pipeline
-typedef HPipelinePerInstanceProperty           (*GetPipelinePerInstancePropHFn)    (HPipeline, const EString& name);
-typedef HPipelineUniformProperty               (*GetPipelineUniformPropertyHFn)    (HPipeline, const EString& name);
-typedef void                                   (*SetPipelineUniform_Vec2Fn)        (HPipelineUniformProperty, const glm::vec2&);
-typedef void                                   (*SetPipelineUniform_Vec3Fn)        (HPipelineUniformProperty, const glm::vec3&);
-typedef void                                   (*SetPipelineUniform_Vec4Fn)        (HPipelineUniformProperty, const glm::vec4&);
-typedef void                                   (*SetPipelineUniform_Mat4Fn)        (HPipelineUniformProperty, const glm::mat4&);
-typedef void                                   (*SetPipelineUniform_FloatFn)       (HPipelineUniformProperty, float);
-typedef void                                   (*SetPipelineUniform_UInt32Fn)      (HPipelineUniformProperty, uint32_t);
-typedef void                                   (*SetPipelineUniform_TextureFn)     (HPipelineUniformProperty, HTexture);
-typedef void                                   (*SetPipelinePerInstance_Vec2Fn)    (HPipelinePerInstanceProperty, const glm::vec2&);
-typedef void                                   (*SetPipelinePerInstance_Vec3Fn)    (HPipelinePerInstanceProperty, const glm::vec3&);
-typedef void                                   (*SetPipelinePerInstance_Vec4Fn)    (HPipelinePerInstanceProperty, const glm::vec4&);
-typedef void                                   (*SetPipelinePerInstance_Mat4Fn)    (HPipelinePerInstanceProperty, const glm::mat4&);
-typedef void                                   (*SetPipelinePerInstance_FloatFn)   (HPipelinePerInstanceProperty, float);
-typedef void                                   (*SetPipelinePerInstance_UInt32Fn)  (HPipelinePerInstanceProperty, uint32_t);
-typedef void                                   (*SetPipelinePerInstance_TextureFn) (HPipelinePerInstanceProperty, HTexture);
-typedef void                                   (*DrawDrawablesFn)                  (HDrawable* drawables, size_t numDrawables);
-typedef void                                   (*DestroyDrawableFn)                (HDrawable drawable);
-typedef void                                   (*DestroyMeshFn)                    (HMesh drawable);
-typedef void                                   (*DestroyPipelineFn)                (HPipeline drawable);
+typedef void                                   (*VoidFn)                              (void);
+typedef bool                                   (*BoolFn)                              (void);
+typedef double                                 (*GetTimeFn)                           (void);
+typedef void                                   (*BoolArgFn)                           (bool);
+typedef void                                   (*InitWindowFn)                        (int& outW, int& outH);
+typedef void                                   (*PollInputFn)                         (BackendInputState&);
+typedef void                                   (*RegisterWindowResizeHandlerFn)       (BackendWindowResizeFn fn);
+typedef HPipeline                              (*UploadPipelineFn)                    (const PipeLine& p, void* pUserData);
+typedef HMesh                                  (*UploadMeshFn)                        (HPipeline pipeline, const PipelineMeshData& mesh);
+typedef HDrawable                              (*CreateDrawableFn)                    (HPipeline pipeline, HMesh meshe, void* pUserData);
+typedef HPipeline                              (*GetDrawablePipelineFn)               (HDrawable drawable);
+typedef void                                   (*RegisterErrorHandlerFn)              (BackendErrorHandlerFn);
+typedef HPipeline                              (*ChangeDrawablePipelineFn)            (HDrawable mesh, HPipeline newPipeline); // returns old pipeline
+typedef HPipelinePerInstanceProperty           (*GetPipelinePerInstancePropHFn)       (HPipeline, const EString& name);
+typedef HPipelineUniformProperty               (*GetPipelineUniformPropertyHFn)       (HPipeline, const EString& name, int stage);
+typedef void                                   (*SetPipelineUniform_Vec2Fn)           (HPipeline, HPipelineUniformProperty, int pipelineStage, const glm::vec2&);
+typedef void                                   (*SetPipelineUniform_Vec3Fn)           (HPipeline, HPipelineUniformProperty, int pipelineStage, const glm::vec3&);
+typedef void                                   (*SetPipelineUniform_Vec4Fn)           (HPipeline, HPipelineUniformProperty, int pipelineStage, const glm::vec4&);
+typedef void                                   (*SetPipelineUniform_Mat4Fn)           (HPipeline, HPipelineUniformProperty, int pipelineStage, const glm::mat4&);
+typedef void                                   (*SetPipelineUniform_FloatFn)          (HPipeline, HPipelineUniformProperty, int pipelineStage, float);
+typedef void                                   (*SetPipelineUniform_UInt32Fn)         (HPipeline, HPipelineUniformProperty, int pipelineStage, uint32_t);
+typedef void                                   (*SetPipelineUniform_TextureFn)        (HPipeline, HPipelineUniformProperty, int pipelineStage, HTexture);
+
+
+typedef void                                   (*DrawDrawablesFn)                     (HDrawable* drawables, size_t numDrawables);
+typedef void                                   (*DestroyDrawableFn)                   (HDrawable drawable);
+typedef void                                   (*DestroyMeshFn)                       (HMesh drawable);
+typedef void                                   (*DestroyPipelineFn)                   (HPipeline drawable);
+typedef void                                   (*RegisterPerFrawUniformSetterFn)      (HPipeline, PerDrawUniformSetterFn);
+typedef void                                   (*RegisterPerInstanceUniformSetterFn)  (HDrawable, PerInstanceUniformSetterFn);
+typedef void                                   (*RegisterPerInstanceAttributeSetterFn)(HDrawable, PerInstanceAttributeSetterFn);
+typedef void                                   (*SetDrawInstanced)                    (HDrawable, bool bDrawInstanced);
+typedef HTexture                               (*UploadTextureFn)                     (const TextureData& data);
 
 struct BackendAPI 
 {
 	// window, input, ect
-	VoidFn InitWindow = nullptr;
+	InitWindowFn InitWindow = nullptr;
 	VoidFn InitRenderer = nullptr;
 	BoolFn ShouldGameContinue = nullptr;
 	VoidFn Cleanup = nullptr;
 	GetTimeFn GetTime = nullptr;
 	PollInputFn PollInput = nullptr;
+	RegisterWindowResizeHandlerFn RegisterResize = nullptr;
 
 	// error handling
 	RegisterErrorHandlerFn RegisterErrorHandler = nullptr;
@@ -90,8 +91,8 @@ struct BackendAPI
 	UploadPipelineFn UploadPipeline = nullptr;
 	UploadMeshFn UploadMesh = nullptr;
 	CreateDrawableFn CreateDrawable = nullptr;
-	ChangeDrawablePipelineFn ChangeDrawablePipeline = nullptr;
-	GetPipelinePerInstancePropHFn GetPipelinePerInstancePropertyH = nullptr;
+	GetDrawablePipelineFn GetDrawablePipeline = nullptr;
+	ChangeDrawablePipelineFn ChangeMeshPipelineFn = nullptr;
 	GetPipelineUniformPropertyHFn GetPipelineUniformPropertyH = nullptr;
 
 	SetPipelineUniform_Vec2Fn SetPipelineUniform_Vec2 = nullptr;
@@ -102,13 +103,6 @@ struct BackendAPI
 	SetPipelineUniform_UInt32Fn SetPipelineUniform_UInt32 = nullptr;
 	SetPipelineUniform_TextureFn SetPipelineUniform_Texture = nullptr;
 
-	SetPipelinePerInstance_Vec2Fn SetPipelinePerInstance_Vec2 = nullptr;
-	SetPipelinePerInstance_Vec3Fn SetPipelinePerInstance_Vec3 = nullptr;
-	SetPipelinePerInstance_Vec4Fn SetPipelinePerInstance_Vec4 = nullptr;
-	SetPipelinePerInstance_Mat4Fn SetPipelinePerInstance_Mat4 = nullptr;
-	SetPipelinePerInstance_FloatFn SetPipelinePerInstance_Float = nullptr;
-	SetPipelinePerInstance_UInt32Fn SetPipelinePerInstance_UInt32 = nullptr;
-	SetPipelinePerInstance_TextureFn SetPipelinePerInstance_Texture = nullptr;
 	DrawDrawablesFn DrawDrawables = nullptr;
 
 	DestroyDrawableFn DestroyDrawable = nullptr;
@@ -116,4 +110,12 @@ struct BackendAPI
 	DestroyPipelineFn DestroyPipeline = nullptr;
 	VoidFn PreRender = nullptr;
 	VoidFn PostRender = nullptr;
+
+	RegisterPerFrawUniformSetterFn RegisterPerDrawUniformSetter = nullptr;
+	RegisterPerInstanceUniformSetterFn RegisterPerInstanceUniformSetter = nullptr;
+	RegisterPerInstanceAttributeSetterFn RegisterPerInstanceAttributeSetter = nullptr;
+
+	SetDrawInstanced SetDrawInstanced = nullptr;
+
+	UploadTextureFn UploadTexture = nullptr;
 };

@@ -24,9 +24,6 @@
     <ClCompile Include="Exports.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OGLRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="WindowsVulkanBackendExports.h">
@@ -37,9 +34,6 @@
     </ClInclude>
     <ClInclude Include="Exports.h">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OGLRenderer.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

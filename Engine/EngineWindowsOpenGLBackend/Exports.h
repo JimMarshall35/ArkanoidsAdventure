@@ -8,6 +8,7 @@
 
 #include "IBackendApp.h"
 
+
 extern "C"
 {
 	WGL_BACKEND_API BackendAPI GetApp();

@@ -149,13 +149,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Exports.cpp" />
-    <ClCompile Include="OGLRenderer.cpp" />
     <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="VulkanApp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Exports.h" />
-    <ClInclude Include="OGLRenderer.h" />
     <ClInclude Include="Pipeline.h" />
     <ClInclude Include="WindowsVulkanBackendExports.h" />
   </ItemGroup>

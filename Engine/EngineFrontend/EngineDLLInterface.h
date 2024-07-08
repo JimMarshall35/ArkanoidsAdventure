@@ -1,13 +1,7 @@
 #pragma once
-#ifdef ENGINEFRONTEND_EXPORTS
-#define ENGINE_FRONTEND_API __declspec(dllexport)
-#else
-#define ENGINE_FRONTEND_API __declspec(dllimport)
-
-#endif
-
+#include "ExportMacro.h"
 #include "EngineLib.h"
-class BackendAPI;
+struct BackendAPI;
 
 struct EngineInitArgs
 {
@@ -18,7 +12,7 @@ struct EngineInitArgs
 namespace  Engine
 {
 	void ENGINE_FRONTEND_API Run(const EngineInitArgs& args);
-
+	const BackendAPI& GetAPI();
 };
 
 

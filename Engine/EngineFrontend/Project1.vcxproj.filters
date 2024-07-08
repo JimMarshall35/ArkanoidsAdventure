@@ -19,12 +19,15 @@
     <Filter Include="Source Files\RendererFrontend">
       <UniqueIdentifier>{cd222006-82db-4adf-942d-9f9a2b80128d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Library">
+      <UniqueIdentifier>{a16c87c2-b09c-4d6e-a266-c88b2cd7ecf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Library">
+      <UniqueIdentifier>{7a9d7110-644f-4254-b458-519e8ea874c7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EngineDLLInterface.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EngineLib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="IBackendApp.h">
@@ -39,11 +42,32 @@
     <ClInclude Include="PipelineTypes.h">
       <Filter>Header Files\RendererFrontend</Filter>
     </ClInclude>
+    <ClInclude Include="OBJ\ObjFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ObjectPool.h">
+      <Filter>Header Files\Library</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineLib.h">
+      <Filter>Header Files\Library</Filter>
+    </ClInclude>
+    <ClInclude Include="ExportMacro.h">
+      <Filter>Header Files\Library</Filter>
+    </ClInclude>
+    <ClInclude Include="Autolist.h">
+      <Filter>Header Files\Library</Filter>
+    </ClInclude>
+    <ClInclude Include="TestPipeline.h">
+      <Filter>Header Files\RendererFrontend</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Files\RendererFrontend</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Pipeline.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="IBackendApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -55,6 +79,21 @@
     </ClCompile>
     <ClCompile Include="PipelineTypes.cpp">
       <Filter>Source Files\RendererFrontend</Filter>
+    </ClCompile>
+    <ClCompile Include="OBJ\ObjFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Pipeline.cpp">
+      <Filter>Source Files\RendererFrontend</Filter>
+    </ClCompile>
+    <ClCompile Include="TestPipeline.cpp">
+      <Filter>Source Files\RendererFrontend</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files\RendererFrontend</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

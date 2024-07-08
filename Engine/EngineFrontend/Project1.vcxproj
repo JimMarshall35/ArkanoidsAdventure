@@ -144,19 +144,30 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Autolist.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="EngineDLLInterface.h" />
     <ClInclude Include="EngineLib.h" />
+    <ClInclude Include="ExportMacro.h" />
+    <ClInclude Include="ObjectPool.h" />
+    <ClInclude Include="OBJ\ObjFile.h" />
     <ClInclude Include="Pipeline.h" />
     <ClInclude Include="IBackendApp.h" />
     <ClInclude Include="PipelineMeshData.h" />
     <ClInclude Include="PipelineTypes.h" />
+    <ClInclude Include="TestPipeline.h" />
+    <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="EngineDLLInterface.cpp" />
     <ClCompile Include="IBackendApp.cpp" />
+    <ClCompile Include="OBJ\ObjFile.cpp" />
     <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="PipelineMeshData.cpp" />
     <ClCompile Include="PipelineTypes.cpp" />
+    <ClCompile Include="TestPipeline.cpp" />
+    <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WindowsVulkanBackend\ConsoleApplication1.vcxproj">

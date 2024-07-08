@@ -3,20 +3,31 @@
 #include "EngineLib.h"
 #include <variant>
 #include <glm/glm.hpp>
+#include "ExportMacro.h"
 
-class PipelineMeshBuffer
+class ENGINE_FRONTEND_API PipelineMeshBuffer
 {
 public:
-	void SetBufferData(const EVec<glm::vec2>& data, PipelinePropertySemantics semantics);
-	void SetBufferData(const EVec<unsigned int>& data, PipelinePropertySemantics semantics);
-	void SetBufferData(const EVec<glm::vec3>& data, PipelinePropertySemantics semantics);
-	void SetBufferData(const EVec<glm::vec4>& data, PipelinePropertySemantics semantics);
-	void SetBufferData(const EVec<glm::mat4>& data, PipelinePropertySemantics semantics);
-	void SetBufferData(const EVec<float>& data, PipelinePropertySemantics semantics);
-	bool Valid()const { return Errors.size(); }
+	void SetData(const EVec<glm::vec2>& data, PipelinePropertySemantics semantics);
+	void SetData(const EVec<unsigned int>& data, PipelinePropertySemantics semantics);
+	void SetData(const EVec<glm::vec3>& data, PipelinePropertySemantics semantics);
+	void SetData(const EVec<glm::vec4>& data, PipelinePropertySemantics semantics);
+	void SetData(const EVec<glm::mat4>& data, PipelinePropertySemantics semantics);
+	void SetData(const EVec<float>& data, PipelinePropertySemantics semantics);
+
+	const EVec<unsigned int>& GetData_u32() { return std::get<EVec<unsigned int>>(Data); }
+	const EVec<float>& GetData_f32()        { return std::get<EVec<float>>(Data); }
+	const EVec<glm::vec2>& GetData_V2()     { return std::get<EVec<glm::vec2>>(Data); }
+	const EVec<glm::vec3>& GetData_V3()     { return std::get<EVec<glm::vec3>>(Data); }
+	const EVec<glm::vec4>& GetData_V4()     { return std::get<EVec<glm::vec4>>(Data); }
+	const EVec<glm::mat4>& GetData_M4()     { return std::get<EVec<glm::mat4>>(Data); }
+
+	PipelinePropertyType GetType() const { return Type; }
+	bool Valid()const { return Errors.size() == 0; }
 	const EVec<PipelineError>& GetErrors() const { return Errors; };
 	const void* GetStart() const;
 	PipelinePropertySemantics GetSemantics() const { return Semantics; }
+	size_t GetElementCount() const;
 private:
 	template<typename T>
 	void SetBufferDataInternal(const EVec<T>& data, PipelinePropertySemantics semanticsSet, const EString& type, PipelinePropertyType PT, const EVec<PipelinePropertySemantics>& allowedSemantics)
@@ -31,9 +42,9 @@ private:
 		}
 		else
 		{
-			EVec<T>& v = std::get<EVec<T>>(Data);
-			v = data;
 			Type = PT;
+			Data = data;
+			Semantics = semanticsSet;
 		}
 	}
 	bool CheckBufferDataSetRequest(const EVec<PipelinePropertySemantics>& allowedSemantics, PipelinePropertySemantics semanticsSet);
@@ -51,14 +62,24 @@ private:
 	EVec<PipelineError> Errors;
 };
 
-class PipelineMeshData
+class ENGINE_FRONTEND_API PipelineMeshData
 {
 public:
+	PipelineMeshData() {}
+	PipelineMeshData(const char* name);
 	void TryAddBuffer(const PipelineMeshBuffer& buffer);
 	PipelinePropertySemantics GetSemantics() const;
+	EVec<PipelineMeshBuffer>& GetBuffers() { return Buffers; }
+	const EVec<PipelineMeshBuffer>& GetBuffers() const { return Buffers; }
+
+	bool HasErrors() const { return !Errors.empty(); }
+	const EVec<PipelineError>& GetErrors() { return Errors; }
+	const EString& GetName() const { return Name; }
+
 private:
 	EVec<PipelineMeshBuffer> Buffers;
 	EVec<PipelineError> Errors;
+	EString Name;
 
 };
 

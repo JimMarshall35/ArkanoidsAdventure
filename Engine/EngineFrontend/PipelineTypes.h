@@ -2,6 +2,24 @@
 #include <cstdint>
 #include "EngineLib.h"
 
+typedef size_t HFrameBuffer;
+#define ENGINE_NULL_HANDLE 0
+typedef size_t HDrawable;
+typedef size_t HMesh;
+
+typedef size_t HPipeline;
+typedef size_t HPipelineUniformProperty;
+typedef size_t HPipelinePerInstanceProperty;
+typedef size_t HTexture;
+
+enum RenderTargetBufType
+{
+	RTBUF_COLOUR = (1 << 0),
+	RTBUF_DEPTH = (1 << 1),
+	RTBUF_STENCIL = (1 << 2)
+};
+
+
 enum class PipelinePropertyType
 {
 	Unknwon,
@@ -11,7 +29,8 @@ enum class PipelinePropertyType
 	Mat4,
 	Float,
 	UInt32,
-	Texture
+	Texture,
+	NUM_TYPE
 };
 
 
@@ -33,6 +52,7 @@ enum PipelinePropertySemantics : std::uint16_t
 	psUniformLightsArray = (1 << 9),
 	psUniformColourTexture = (1 << 10),
 
+	psCustomAttributesBegin,
 	psUniformCustom = (1 << 11),
 	psPerInstanceCustomVal = (1 << 12),
 	psPerVertexCustomVal = (1 << 13),
