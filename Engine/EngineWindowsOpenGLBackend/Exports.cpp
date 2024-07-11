@@ -18,7 +18,7 @@ extern "C"
 			&Sys::GetTime,
 			&Sys::PollInput,
 			&Sys::RegisterWindowResizeHandler,
-			&Error::RegisterErrorHandler,
+			&Log::RegisterErrorHandler,
 			&OGL::UploadPipeline,
 			&OGL::UploadMesh,
 			&OGL::CreateDrawable,
@@ -42,7 +42,9 @@ extern "C"
 			&OGL::RegisterPerInstanceUniformSetter,
 			&OGL::RegisterPerInstanceAttributeSetter,
 			&OGL::SetDrawInstanced,
-			&OGL::UploadTexture
+			&OGL::UploadTexture,
+			&OGL::GetDrawableUserData,
+			&OGL::GetPipelineUserData
 		};
 	}
 }

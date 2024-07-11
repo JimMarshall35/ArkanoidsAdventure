@@ -70,7 +70,7 @@ static const char* gMeshFrag =
 	"float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);\n"
 	"vec3 specular = specularStrength * spec * lightColor;\n"
 
-	"vec4 colour = vec4(1.0,0.0,0.0, 1.0);\n"//texture(diffuseAtlas, Uv);\n"
+	"vec4 colour = texture(diffuseAtlas, Uv);\n"
 	"FragColor = vec4((ambient + diffuse + specular),1.0) * colour;\n"
 "}\n";
 
@@ -114,7 +114,7 @@ void PerInstanceUniformSetter(HDrawable drawable, HPipeline pipeline, int pipeli
 	api.SetPipelineUniform_Float(hPipeline, hSpecularStrength, 0, pUni->speculatStrength);
 	api.SetPipelineUniform_Float(hPipeline, hDiffuseStrength, 0, pUni->diffuseStrength);
 	api.SetPipelineUniform_Float(hPipeline, hShininess, 0, pUni->shininess);
-	//api.SetPipelineUniform_Float(hPipeline, hDiffuseAtlas, 0, pUni->hTexture);
+	api.SetPipelineUniform_Texture(hPipeline, hDiffuseAtlas, 0, pUni->hTexture);
 
 }
 
@@ -205,13 +205,13 @@ HPipeline BuildTestPipeline(PipeLine& outPipe, const BackendAPI& api)
 	uShininess.Name = "shininess";
 	uShininess.PropType = PipelinePropertyType::Float;
 	uShininess.Semantics = psUniformCustom;
-	stage.PushUniformAttribute(uShininess);/*
+	stage.PushUniformAttribute(uShininess);
 
 	uDiffuseAtlas.location = 0;
 	uDiffuseAtlas.Name = "diffuseAtlas";
 	uDiffuseAtlas.PropType = PipelinePropertyType::Texture;
 	uDiffuseAtlas.Semantics = psUniformColourTexture;
-	stage.PushUniformAttribute(uDiffuseAtlas);*/
+	stage.PushUniformAttribute(uDiffuseAtlas);
 	
 	outPipe.PushStage(stage);
 

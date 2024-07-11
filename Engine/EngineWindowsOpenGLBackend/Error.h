@@ -2,9 +2,9 @@
 
 #include "IBackendApp.h"
 
-namespace Error
+namespace Log
 {
-	void ErrorMsg(const BackendError& error);
+	void LogMsg(const BackendLog& error);
 	void RegisterErrorHandler(BackendErrorHandlerFn handler);
 
 };

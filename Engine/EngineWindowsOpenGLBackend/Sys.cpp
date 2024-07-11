@@ -1,12 +1,13 @@
 #include "Sys.h"
 #include "glad/glad.h"
-
 #include <GLFW/glfw3.h>
 #include "IBackendApp.h"
+#include "OGLRenderer.h"
+
 namespace Sys
 {
-	static const uint32_t WIDTH = 800;
-	static const uint32_t HEIGHT = 600;
+	static uint32_t WIDTH = 800;
+	static uint32_t HEIGHT = 600;
 
 	static GLFWwindow* gWindow = nullptr;
 	static BackendWindowResizeFn ResizeHandler = nullptr;
@@ -18,6 +19,9 @@ namespace Sys
 
 	void OnResize(GLFWwindow* win, int w, int h)
 	{
+		WIDTH = w;
+		HEIGHT = h;
+		OGL::OnResize(w, h);
 		if (ResizeHandler)
 		{
 			ResizeHandler(w, h);
@@ -55,7 +59,7 @@ namespace Sys
 
 	bool ShouldGameContinue() { return !glfwWindowShouldClose(gWindow); }
 	void Cleanup() {}
-	double GetTime() { return glfwGetTime(); }
+	double GetTime() { return glfwGetTime() * 1000.0; }
 	void PollInput(BackendInputState& s)
 	{
 		glfwPollEvents();

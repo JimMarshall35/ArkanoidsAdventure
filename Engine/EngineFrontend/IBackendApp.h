@@ -22,17 +22,19 @@ enum class BackendErrorSeverity
 {
 	Info,
 	Warning,
-	Error
+	Error,
+	Unknown,
+	Num
 };
 
-struct BackendError
+struct BackendLog
 {
 	EString Msg;
 	BackendErrorSeverity Severity;
 };
 
 typedef BackendAPI (*BackEndAppFactory)(void);
-typedef void(*BackendErrorHandlerFn)(const BackendError& error);
+typedef void(*BackendErrorHandlerFn)(const BackendLog& error);
 typedef void(*BackendWindowResizeFn)(int newW, int newH);
 
 typedef void(*PerDrawUniformSetterFn)(HPipeline pipeline, void* pUserData, int pipelineStage);
@@ -72,6 +74,8 @@ typedef void                                   (*RegisterPerInstanceUniformSette
 typedef void                                   (*RegisterPerInstanceAttributeSetterFn)(HDrawable, PerInstanceAttributeSetterFn);
 typedef void                                   (*SetDrawInstanced)                    (HDrawable, bool bDrawInstanced);
 typedef HTexture                               (*UploadTextureFn)                     (const TextureData& data);
+typedef void*                                  (*GetDrawableUserDataFn)               (HDrawable drawable);
+typedef void*                                  (*GetPipelineUserDataFn)               (HDrawable drawable);
 
 struct BackendAPI 
 {
@@ -118,4 +122,7 @@ struct BackendAPI
 	SetDrawInstanced SetDrawInstanced = nullptr;
 
 	UploadTextureFn UploadTexture = nullptr;
+
+	GetDrawableUserDataFn GetDrawableUserData = nullptr;
+	GetPipelineUserDataFn GetPipelineUserData = nullptr;
 };

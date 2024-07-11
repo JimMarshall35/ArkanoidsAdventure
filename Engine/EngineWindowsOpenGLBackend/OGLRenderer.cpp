@@ -27,6 +27,7 @@ namespace OGL
 		PipeLine Pipeline;
 		void* pUserData = nullptr;
 		EVec<EMap<EString, std::pair<HPipelineUniformProperty, Shader*>>> UniformProperties; // by stage
+		EVec<EMap<HPipelineUniformProperty, const PipelinePropertyName*>> HandleToInfoMap;
 		PerDrawUniformSetterFn PerDrawUnformSetterFn = nullptr;
 		GLuint InstancedBufferData = 0;
 	};
@@ -62,20 +63,50 @@ namespace OGL
 	EObjectPool<OGLMesh, MESH_POOL_SIZE> gMeshPool;
 	EObjectPool<OGLDrawable, DRAWABLE_POOL_SIZE> gDrawablePool;
 
-	//////////////////////////////////////////////////////////////////////// Internal helpers
+	//////////////////////////////////////////////////////////////////////// Error Handler
 
-	
+	void GLAPIENTRY
+		MessageCallback(GLenum source,
+			GLenum type,
+			GLuint id,
+			GLenum severity,
+			GLsizei length,
+			const GLchar* message,
+			const void* userParam)
+	{
+		static char buf[2048];
+		size_t index = severity - GL_DEBUG_SEVERITY_HIGH;
+		
+		static const BackendErrorSeverity LUT[4] =
+		{
+			BackendErrorSeverity::Error,
+			BackendErrorSeverity::Warning,
+			BackendErrorSeverity::Info,
+			BackendErrorSeverity::Unknown
+		};
+		if (index >= 3)
+		{
+			index = 3;
+		}
+
+		sprintf_s(buf, 2048, "GL CALLBACK : % s type = 0x % x, severity = 0x % x, message = % s\n",
+			(type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
+			type, severity, message);
+		Log::LogMsg({ buf, LUT[index]});
+	}
+
+	//////////////////////////////////////////////////////////////////////// Internal helpers
 
 	static OGLPipeline* GetPipeline(HPipeline hPipeline)
 	{
 		if (hPipeline - 1 >= gPipelinePool.GetCapcity())
 		{
-			Error::ErrorMsg({ "[GetPipeline] pipeline handle out of range: " + std::to_string(hPipeline), BackendErrorSeverity::Error });
+			Log::LogMsg({ "[GetPipeline] pipeline handle out of range: " + std::to_string(hPipeline), BackendErrorSeverity::Error });
 			return nullptr;
 		}
 		if (!gPipelinePool.IsIndexAlive(hPipeline - 1))
 		{
-			Error::ErrorMsg({ "handle corresponds to dead index", BackendErrorSeverity::Error });
+			Log::LogMsg({ "handle corresponds to dead index", BackendErrorSeverity::Error });
 			return nullptr;
 		}
 		
@@ -86,12 +117,12 @@ namespace OGL
 	{
 		if (hPipeline - 1 >= gMeshPool.GetCapcity())
 		{
-			Error::ErrorMsg({ "[GetMesh] pipeline handle out of range: " + std::to_string(hPipeline), BackendErrorSeverity::Error });
+			Log::LogMsg({ "[GetMesh] pipeline handle out of range: " + std::to_string(hPipeline), BackendErrorSeverity::Error });
 			return nullptr;
 		}
 		if (!gMeshPool.IsIndexAlive(hPipeline - 1))
 		{
-			Error::ErrorMsg({ EString("[GetMesh] handle ")+std::to_string(hPipeline)+EString("corresponds to dead index"), BackendErrorSeverity::Error });
+			Log::LogMsg({ EString("[GetMesh] handle ")+std::to_string(hPipeline)+EString("corresponds to dead index"), BackendErrorSeverity::Error });
 			return nullptr;
 		}
 
@@ -102,12 +133,12 @@ namespace OGL
 	{
 		if (hDrawable - 1 >= gDrawablePool.GetCapcity())
 		{
-			Error::ErrorMsg({ "[GetDrawable] drawable handle out of range: " + std::to_string(hDrawable), BackendErrorSeverity::Error });
+			Log::LogMsg({ "[GetDrawable] drawable handle out of range: " + std::to_string(hDrawable), BackendErrorSeverity::Error });
 			return nullptr;
 		}
 		if (!gMeshPool.IsIndexAlive(hDrawable - 1))
 		{
-			Error::ErrorMsg({ EString("[GetDrawable] handle ") + std::to_string(hDrawable) + EString("corresponds to dead index"), BackendErrorSeverity::Error });
+			Log::LogMsg({ EString("[GetDrawable] handle ") + std::to_string(hDrawable) + EString("corresponds to dead index"), BackendErrorSeverity::Error });
 			return nullptr;
 		}
 
@@ -190,7 +221,7 @@ namespace OGL
 
 		if (stage < 0 || stage >= pPipeline->Pipeline.GetStages().size())
 		{
-			Error::ErrorMsg(BackendError{ "[GetPerInstanceStagingBufferSizeRequired] stage index out of range" });
+			Log::LogMsg(BackendLog{ "[GetPerInstanceStagingBufferSizeRequired] stage index out of range" });
 			return rVal;
 		}
 		const PipeLineStage& stagePair = pPipeline->Pipeline.GetStages()[stage];
@@ -239,8 +270,10 @@ namespace OGL
 		for (const PipeLineStage& stage : newStages)
 		{
 			pNewPipeline->UniformProperties.push_back({});
+			pNewPipeline->HandleToInfoMap.push_back({});
 
 			EMap<EString, std::pair<HPipelineUniformProperty, Shader*>>& thisStage = pNewPipeline->UniformProperties.back();
+			EMap<HPipelinePerInstanceProperty, const PipelinePropertyName*>& thisHToInfo = pNewPipeline->HandleToInfoMap.back();
 			const Shader& shader = pNewPipeline->StagesShaders[i];
 			shader.use();
 			const EVec<PipelinePropertyName>& names = stage.GetUniformAttributes();
@@ -250,12 +283,13 @@ namespace OGL
 				GLint loc = shader.GetUniformLocation(name.Name.c_str());
 				if (loc == -1)
 				{
-					Error::ErrorMsg({ EString("Uniform with name ") + name.Name + EString(" not found in shader"), BackendErrorSeverity::Error });
+					Log::LogMsg({ EString("Uniform with name ") + name.Name + EString(" not found in shader"), BackendErrorSeverity::Error });
 					bError = false;
 					continue;
 				}
 				thisStage[name.Name].first = loc;
 				thisStage[name.Name].second = (Shader*)&shader;
+				thisHToInfo[loc] = &name;
 			}
 			i++;
 		}
@@ -277,7 +311,7 @@ namespace OGL
 		{
 			if (!stage.IsMeshCompatible(mesh))
 			{
-				Error::ErrorMsg({ stage.GetName() + EString(" incompatible with mesh ") + mesh.GetName(), BackendErrorSeverity::Warning });
+				Log::LogMsg({ stage.GetName() + EString(" incompatible with mesh ") + mesh.GetName(), BackendErrorSeverity::Warning });
 				bIncompatible = true;
 			}
 		}
@@ -289,7 +323,7 @@ namespace OGL
 		OGLMesh* pMesh;
 		if (!gMeshPool.AllocateNew(index, pMesh))
 		{
-			Error::ErrorMsg({ "[UploadMesh] Mesh Pool full ", BackendErrorSeverity::Warning });
+			Log::LogMsg({ "[UploadMesh] Mesh Pool full ", BackendErrorSeverity::Warning });
 
 			return ENGINE_NULL_HANDLE;
 		}
@@ -399,7 +433,7 @@ namespace OGL
 		OGLDrawable* pDrawable;
 		if (!gDrawablePool.AllocateNew(index, pDrawable))
 		{
-			Error::ErrorMsg({ "[CreateDrawable] Drawable Pool full ", BackendErrorSeverity::Warning });
+			Log::LogMsg({ "[CreateDrawable] Drawable Pool full ", BackendErrorSeverity::Warning });
 			return ENGINE_NULL_HANDLE;
 		}
 		pDrawable->CurrentMesh = mesh;
@@ -645,13 +679,16 @@ namespace OGL
 
 	void InitRenderer()
 	{
-		printf("initialising opengl renderer");
+		Log::LogMsg({ "initialising opengl renderer", BackendErrorSeverity::Info });
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 		glPixelStorei(GL_PACK_ALIGNMENT, 1);
 		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		glViewport(0, 0, Sys::GetW(), Sys::GetH());
+		glEnable(GL_DEBUG_OUTPUT);
+		glDebugMessageCallback(MessageCallback, 0);
+
 	}
 
 	void PreRender()
@@ -671,12 +708,12 @@ namespace OGL
 
 		if (stage < 0 || stage >= pPipe->UniformProperties.size())
 		{
-			Error::ErrorMsg(BackendError{ EString("[GetPipelineUniformPropertyH] stage index out of range: ") + std::to_string(stage), BackendErrorSeverity::Error });
+			Log::LogMsg(BackendLog{ EString("[GetPipelineUniformPropertyH] stage index out of range: ") + std::to_string(stage), BackendErrorSeverity::Error });
 			return ENGINE_NULL_HANDLE;
 		}
 		if (pPipe->UniformProperties[stage].find(name) == pPipe->UniformProperties[stage].end())
 		{
-			Error::ErrorMsg(BackendError{ EString("[GetPipelineUniformPropertyH] can't find uniform with name: ") + name, BackendErrorSeverity::Error });
+			Log::LogMsg(BackendLog{ EString("[GetPipelineUniformPropertyH] can't find uniform with name: ") + name, BackendErrorSeverity::Error });
 			return ENGINE_NULL_HANDLE;
 		}
 		return pPipe->UniformProperties[stage].at(name).first;
@@ -691,14 +728,13 @@ namespace OGL
 	void SetPipelineUniform_Vec3(HPipeline pipeline, HPipelineUniformProperty hProp, int pipelineStage, const glm::vec3& v)
 	{
 		Shader& shader = GetShaderForStage(pipeline, pipelineStage);
-		shader.setVec2Direct(hProp, v);
-
+		shader.setVec3Direct(hProp, v);
 	}
 
 	void SetPipelineUniform_Vec4(HPipeline pipeline, HPipelineUniformProperty hProp, int pipelineStage, const glm::vec4& v)
 	{
 		Shader& shader = GetShaderForStage(pipeline, pipelineStage);
-		shader.setVec2Direct(hProp, v);
+		shader.setVec4Direct(hProp, v);
 	}
 
 	void SetPipelineUniform_Mat4(HPipeline pipeline, HPipelineUniformProperty hProp, int pipelineStage, const glm::mat4& v)
@@ -722,7 +758,16 @@ namespace OGL
 
 	void SetPipelineUniform_Texture(HPipeline pipeline, HPipelineUniformProperty hProp, int pipelineStage, HTexture v)
 	{
-
+		Shader& shader = GetShaderForStage(pipeline, pipelineStage);
+		OGLPipeline* pl = GetPipeline(pipeline);
+		int textureUnit = pl->HandleToInfoMap[pipelineStage][hProp]->location;
+		if (textureUnit > 15)
+		{
+			Log::LogMsg({ "attempting to set a texture unit beyond the 16 guaranteed by openGL. YOU FUCKED UP!", BackendErrorSeverity::Warning });
+		}
+		shader.SetIntDirect(hProp, textureUnit);   // we only should need to do this once, or perhaps even not at all
+		glActiveTexture(GL_TEXTURE0 + textureUnit);
+		glBindTexture(GL_TEXTURE_2D, v);
 	}
 	
 	void RegisterPerDrawUniformSetter(HPipeline hPipe, PerDrawUniformSetterFn fn)
@@ -748,8 +793,70 @@ namespace OGL
 		OGLDrawable* pDrawable = GetDrawable(hDrawable);
 		pDrawable->bDrawInstanced = bInstanced;
 	}
+
 	HTexture UploadTexture(const TextureData& data)
 	{
-		return HTexture();
+		unsigned int texture;
+		glGenTextures(1, &texture);
+		glBindTexture(GL_TEXTURE_2D, texture);
+
+		GLuint inFormat, storeFormat;
+		inFormat = 0; storeFormat = 0;
+		
+		GLenum clampLUT[(size_t)TextureClamp::NumOptions] = {
+			GL_REPEAT,
+			GL_MIRRORED_REPEAT,
+			GL_CLAMP_TO_EDGE,
+			GL_CLAMP_TO_BORDER
+		};
+
+		GLenum filterLUT[(size_t)TextureFiltering::NumOptions] = {
+			GL_NEAREST,
+			GL_LINEAR,
+			GL_NEAREST_MIPMAP_NEAREST,
+			GL_LINEAR_MIPMAP_NEAREST,
+			GL_NEAREST_MIPMAP_LINEAR,
+			GL_LINEAR_MIPMAP_LINEAR
+		};
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, clampLUT[(size_t)data.TextureClampS]);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, clampLUT[(size_t)data.TextureClampT]);
+		if (data.TextureClampS == TextureClamp::ClampToBorder || data.TextureClampT == TextureClamp::ClampToBorder)
+		{
+			glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, &data.borderColour[0]);
+		}
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterLUT[(size_t)data.MinifyFiltering]);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterLUT[(size_t)data.MagnifyFiltering]);
+
+		switch (data.Format)
+		{
+		case TexFormat::R8G8B8:
+			inFormat = GL_RGB;
+			storeFormat = GL_RGB;
+			break;
+		case TexFormat::R8G8B8A8:
+			inFormat = GL_RGBA;
+			storeFormat = GL_RGBA;
+			break;
+		}
+		glTexImage2D(GL_TEXTURE_2D, 0, storeFormat, data.WidthPx, data.HeightPx, 0, inFormat, GL_UNSIGNED_BYTE, data.pData);
+		glGenerateMipmap(GL_TEXTURE_2D);
+		
+		return HTexture(texture);
+	}
+
+	void* GetDrawableUserData(HDrawable drawable)
+	{
+		return GetDrawable(drawable)->pUserData;
+	}
+
+	void* GetPipelineUserData(HPipeline pipeline)
+	{
+		return GetPipeline(pipeline)->pUserData;
+	}
+	
+	void OnResize(int w, int h)
+	{
+		glViewport(0, 0, w, h);
 	}
 }

@@ -1,9 +1,9 @@
 #include "Error.h"
-namespace Error
+namespace Log
 {
 	static BackendErrorHandlerFn gErrorHandler = nullptr;
 
-	void ErrorMsg(const BackendError& error)
+	void LogMsg(const BackendLog& error)
 	{
 		if (gErrorHandler)
 		{

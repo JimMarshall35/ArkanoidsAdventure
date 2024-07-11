@@ -31,4 +31,10 @@ namespace OGL
 	void RegisterPerInstanceAttributeSetter(HDrawable hDrawable, PerInstanceAttributeSetterFn fn);
 	void SetDrawInstanced(HDrawable hDrawable, bool bInstanced);
 	HTexture UploadTexture(const TextureData& data);
+
+	void* GetDrawableUserData(HDrawable drawable);
+	void* GetPipelineUserData(HPipeline pipeline);
+
+	/* INTERNAL */
+	void OnResize(int w, int h);
 }

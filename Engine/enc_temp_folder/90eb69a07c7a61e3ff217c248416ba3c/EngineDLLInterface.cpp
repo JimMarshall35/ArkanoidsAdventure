@@ -27,16 +27,16 @@ namespace Engine
         switch (error.Severity)
         {
         case BackendErrorSeverity::Error:
-            printf("\u001b[31m[BACKEND ERROR]\u001b[0m ");
+            printf("\u001b[31m[ERROR]\u001b[0m ");
             break;
         case BackendErrorSeverity::Info:
-            printf("\u001b[32m[BACKEND INFO]\u001b[0m ");
+            printf("\u001b[32m[INFO]\u001b[0m ");
             break;
         case BackendErrorSeverity::Warning:
-            printf("\u001b[33m[BACKEND WARNING]\u001b[0m ");
+            printf("\u001b[33m[WARNING]\u001b[0m ");
             break;
         case BackendErrorSeverity::Unknown:
-            printf("\u001b[96m[BACKEND UNKNOWN]\u001b[0m ");
+            printf("\u001b[96m[UNKNOWN]\u001b[0m ");
             break;
         default:
             assert(false);
