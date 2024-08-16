@@ -79,11 +79,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)glm;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)glm;$(SolutionDir)entt-3.13.2\src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)glm;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)glm;$(SolutionDir)entt-3.13.2\src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -155,6 +155,7 @@
     <ClInclude Include="IBackendApp.h" />
     <ClInclude Include="PipelineMeshData.h" />
     <ClInclude Include="PipelineTypes.h" />
+    <ClInclude Include="Scene.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="TestPipeline.h" />
     <ClInclude Include="Texture.h" />
@@ -167,6 +168,7 @@
     <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="PipelineMeshData.cpp" />
     <ClCompile Include="PipelineTypes.cpp" />
+    <ClCompile Include="Scene.cpp" />
     <ClCompile Include="TestPipeline.cpp" />
     <ClCompile Include="Texture.cpp" />
   </ItemGroup>

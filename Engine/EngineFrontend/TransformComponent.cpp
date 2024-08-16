@@ -1,0 +1,144 @@
+#pragma once
+#include "TransformComponent.h"
+
+glm::mat4 Transform::getLocalModelMatrix()
+{
+	const glm::mat4 transformX = glm::rotate(glm::mat4(1.0f), glm::radians(m_eulerRot.x), glm::vec3(1.0f, 0.0f, 0.0f));
+	const glm::mat4 transformY = glm::rotate(glm::mat4(1.0f), glm::radians(m_eulerRot.y), glm::vec3(0.0f, 1.0f, 0.0f));
+	const glm::mat4 transformZ = glm::rotate(glm::mat4(1.0f), glm::radians(m_eulerRot.z), glm::vec3(0.0f, 0.0f, 1.0f));
+
+	// Y * X * Z
+	const glm::mat4 rotationMatrix = transformY * transformX * transformZ;
+
+	// translation * rotation * scale (also know as TRS matrix)
+	return glm::translate(glm::mat4(1.0f), m_pos) * rotationMatrix * glm::scale(glm::mat4(1.0f), m_scale);
+}
+
+void Transform::AddChild(entt::entity parent, entt::entity child)
+{
+	EAssert(Scn::IsSceneLoaded());
+	Scn::Scene& scn = Scn::GetScene();
+	Transform* childTransform = scn.Reg.try_get<Transform>(child);
+	Transform* parentTransform = scn.Reg.try_get<Transform>(parent);
+	bool bOK = false;
+
+	if (!childTransform)
+	{
+		bOK = false;
+		Err::ReportError({ "Transform::AddChild: entity you're trying to add as a child transform to doesn't have transform component", Err::FrontendErrorSeverity::Warning });
+	}
+
+	if (!parentTransform)
+	{
+		bOK = false;
+		Err::ReportError({ "Transform::AddChild: entity you're trying to add as a parent transform to doesn't have transform component", Err::FrontendErrorSeverity::Warning });
+	}
+
+	if (std::find(parentTransform->m_children.begin(), parentTransform->m_children.end(), child) != parentTransform->m_children.end())
+	{
+		bOK = false;
+		Err::ReportError({ "Transform::AddChild already added as child", Err::FrontendErrorSeverity::Warning });
+	}
+
+	if (!bOK)
+	{
+		return;
+	}
+
+	if (childTransform->m_hParent != entt::null)
+	{
+		Transform* parentTransform = scn.Reg.try_get<Transform>(parent);
+		auto itr = std::find(parentTransform->m_children.begin(), parentTransform->m_children.end(), child);
+		parentTransform->m_children.erase(itr);
+	}
+
+	childTransform->m_hParent = parent;
+	parentTransform->m_children.push_back(child);
+}
+
+void Transform::setLocalPosition(const glm::vec3& newPosition)
+{
+	m_pos = newPosition;
+	m_isDirty = true;
+}
+
+void Transform::setLocalRotation(const glm::vec3& newRotation)
+{
+	m_eulerRot = newRotation;
+	m_isDirty = true;
+}
+
+void Transform::setLocalScale(const glm::vec3& newScale)
+{
+	m_scale = newScale;
+	m_isDirty = true;
+}
+
+const glm::vec3& Transform::getLocalPosition() const
+{
+	return m_pos;
+}
+
+const glm::vec3& Transform::getGlobalPosition() const
+{
+	return m_modelMatrix[3];
+}
+const glm::vec3& Transform::getLocalRotation() const
+{
+	return m_eulerRot;
+}
+glm::vec3 Transform::getRight() const
+{
+	return m_modelMatrix[0];
+}
+void Transform::computeModelMatrix()
+{
+	m_modelMatrix = getLocalModelMatrix();
+	if (m_hParent != entt::null)
+	{
+		EAssert(Scn::IsSceneLoaded());
+		Scn::Scene& scn = Scn::GetScene();
+		Transform* parentTransform = scn.Reg.try_get<Transform>(m_hParent);
+		if (parentTransform->m_isDirty)
+		{
+			parentTransform->computeModelMatrix();
+		}
+		m_modelMatrix = parentTransform->m_modelMatrix * m_modelMatrix;
+	}
+	m_isDirty = false;
+}
+
+glm::vec3 Transform::getUp() const
+{
+	return m_modelMatrix[1];
+}
+
+glm::vec3 Transform::getBackward() const
+{
+	return m_modelMatrix[2];
+}
+
+const glm::vec3& Transform::getLocalScale() const
+{
+	return m_scale;
+}
+
+glm::vec3 Transform::getForward() const
+{
+	return -m_modelMatrix[2];
+}
+
+const glm::mat4& Transform::getModelMatrix() const
+{
+	return m_modelMatrix;
+}
+
+glm::vec3 Transform::getGlobalScale() const
+{
+	return { glm::length(getRight()), glm::length(getUp()), glm::length(getBackward()) };
+}
+
+bool Transform::isDirty() const
+{
+	return m_isDirty;
+}

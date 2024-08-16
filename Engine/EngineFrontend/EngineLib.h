@@ -5,6 +5,10 @@
 #include <map>
 #include <set>
 #include  <cstdlib> 
+#include <cassert>
+
+#define EAssert(a) assert(a)
+
 typedef std::string EString;
 typedef std::wstring EWString;
 

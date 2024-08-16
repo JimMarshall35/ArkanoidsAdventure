@@ -21,6 +21,7 @@ public:
     glm::vec3 GetEye() const { return m_eye; }
     glm::vec3 GetUpVector() const { return m_upVector; }
     glm::vec3 GetLookAt() const { return m_lookAt; }
+    glm::vec3 GetFront() const { return glm::normalize(m_lookAt - m_eye); }
 
     void SetLookAt(const glm::vec3& pt) { m_lookAt = pt; UpdateViewMatrix(); }
 

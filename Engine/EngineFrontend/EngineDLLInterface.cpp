@@ -10,6 +10,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include "Texture.h"
+#include "Scene.h"
 
 #define MS_PER_UPDATE 20.0f
 #define S_PER_UPDATE (MS_PER_UPDATE / 1000.0f)
@@ -22,6 +23,7 @@ namespace Engine
     int gWidth = 800;
     int gHeight = 600;
 
+    
     static void ErrorHandler(const BackendLog& error)
     {
         switch (error.Severity)
@@ -107,6 +109,13 @@ namespace Engine
 
     void MainLoop()
     {
+        /*
+            Camera(glm::vec3 eye, glm::vec3 lookat, glm::vec3 upVector)
+        : m_eye(std::move(eye))
+        , m_lookAt(std::move(lookat))
+        , m_upVector(std::move(upVector))
+    {
+        */
         Camera cam = Camera(glm::vec3(5, 0, 0), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3{ 0.0f,0.0f,1.0f });
         cam.SetLookAt({ 0.0f,0.0f,0.0f });
 
@@ -123,7 +132,7 @@ namespace Engine
 
         gBackendAPI.InitRenderer();
         
-
+        Scn::Scene;
 #pragma region Testing
 
         EVec<EString> errors;
