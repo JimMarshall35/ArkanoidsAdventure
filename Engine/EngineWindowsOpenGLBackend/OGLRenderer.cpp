@@ -298,9 +298,9 @@ namespace OGL
 		                      // remember to subtract 1 when using to index into pool
 	}
 
-	HMesh UploadMesh(HPipeline hPipeline, const PipelineMeshData& mesh)
+	HMesh UploadMesh(const PipelineMeshData& mesh)
 	{
-		OGLPipeline* oglPipeline = GetPipeline(hPipeline);
+		/*OGLPipeline* oglPipeline = GetPipeline(hPipeline);
 		if (!oglPipeline)
 		{
 			return ENGINE_NULL_HANDLE;
@@ -318,7 +318,7 @@ namespace OGL
 		if (bIncompatible)
 		{
 			return ENGINE_NULL_HANDLE;
-		}
+		}*/
 		size_t index;
 		OGLMesh* pMesh;
 		if (!gMeshPool.AllocateNew(index, pMesh))

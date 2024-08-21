@@ -1,6 +1,7 @@
 #include "PipelineMeshData.h"
 #include <algorithm>
-
+#include "FrontendError.h"
+#include "IArchive.h"
 
 void PipelineMeshBuffer::SetData(const EVec<glm::vec2>& data, PipelinePropertySemantics semantics)
 {
@@ -111,6 +112,10 @@ size_t PipelineMeshBuffer::GetElementCount() const
 	return 0;
 }
 
+void PipelineMeshBuffer::Serialize(IArchive& archive)
+{
+}
+
 const void* PipelineMeshBuffer::GetStart() const
 {
 #define A(T) (const void*)std::get<EVec<T>>(Data).data()
@@ -187,6 +192,18 @@ void PipelineMeshData::TryAddBuffer(const PipelineMeshBuffer& buffer)
 		return;
 	}
 	Buffers.push_back(buffer);
+	if (buffer.GetSemantics() == psPerVertexPos)
+	{
+		if (buffer.GetType() != PipelinePropertyType::Vec3)
+		{
+			Err::ReportError(Err::FrontendErrorSeverity::Error, "invalid semantics: psPeVertexPos should be vec3");
+			return;
+		}
+		EAssert(!m_bBoundingSphereSet);
+		m_bBoundingSphereSet = true;
+		m_Sphere = RitterBoundingSphere(buffer.GetData_V3());
+	}
+
 }
 
 PipelinePropertySemantics PipelineMeshData::GetSemantics() const
@@ -197,5 +214,19 @@ PipelinePropertySemantics PipelineMeshData::GetSemantics() const
 		s |= (uint16_t)buffer.GetSemantics();
 	}
 	return PipelinePropertySemantics(s);
+}
+
+void PipelineMeshData::Serialize(IArchive& archive)
+{
+	const int version = 1;
+	if (archive.IsStoring())
+	{
+		archive.PushObj("PipelineMeshData");
+		archive.PopObj();
+	}
+	else
+	{
+
+	}
 }
 

@@ -5,8 +5,10 @@
 #include "Scene.h"
 #include "EngineLib.h"
 #include "FrontendError.h"
+#include "ComponentReg.h"
+#include "ExportMacro.h"
 
-class Transform
+class ENGINE_FRONTEND_API Transform
 {
 protected:
 	//Local space information
@@ -26,6 +28,7 @@ protected:
 	glm::mat4 getLocalModelMatrix();
 	
 public:
+	//friend bool operator==(const Transform& a, const Transform& b);
 	static void AddChild(entt::entity parent, entt::entity child);
 	void computeModelMatrix();
 	void setLocalPosition(const glm::vec3& newPosition);
@@ -42,4 +45,30 @@ public:
 	glm::vec3 getForward() const;
 	glm::vec3 getGlobalScale() const;
 	bool isDirty() const;
+	static void SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, EntityReg& reg);
 };
+
+//bool operator==(const Transform& a, const Transform& b)
+//{
+//	bool bChildrenSame = a.m_children.size() == b.m_children.size();
+//	if (bChildrenSame)
+//	{
+//		for (int i = 0; i < a.m_children.size(); i++)
+//		{
+//			if (a.m_children[i] != b.m_children[i])
+//			{
+//				bChildrenSame = false;
+//			}
+//		}
+//	}
+//	return
+//		bChildrenSame &&
+//		a.m_pos == b.m_pos &&
+//		a.m_eulerRot == b.m_eulerRot &&
+//		a.m_scale == b.m_scale &&
+//		a.m_modelMatrix == b.m_modelMatrix &&
+//		a.m_isDirty == b.m_isDirty &&
+//		a.m_hParent == b.m_hParent;
+//}
+
+META_DECL(Transform)

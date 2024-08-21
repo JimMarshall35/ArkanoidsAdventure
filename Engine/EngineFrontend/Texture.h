@@ -38,6 +38,7 @@ enum class TextureClamp
 
 struct TextureData
 {
+	EString Name;
 	size_t WidthPx = 0;
 	size_t HeightPx = 0;
 	TexFormat Format = TexFormat::R8G8B8;

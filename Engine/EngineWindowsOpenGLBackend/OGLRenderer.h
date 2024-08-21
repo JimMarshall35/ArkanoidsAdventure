@@ -4,7 +4,7 @@ class Pipeline;
 namespace OGL
 {
 	HPipeline UploadPipeline(const PipeLine& p, void* pUserData);
-	HMesh UploadMesh(HPipeline hPipeline, const PipelineMeshData& mesh);
+	HMesh UploadMesh(const PipelineMeshData& mesh);
 	HPipeline GetDrawablePipeline(HDrawable drawable);
 	HDrawable CreateDrawable(HPipeline pipeline, HMesh mesh, void* pUserData);
 	HPipeline ChangeDrawablePipeline(HDrawable d, HPipeline newPipeline);

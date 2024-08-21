@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -79,11 +79,11 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)glm;$(SolutionDir)entt-3.13.2\src;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)glm;$(SolutionDir)entt-3.13.2\src;&amp;(SolutionDir)pugixml-1.14;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)glm;$(SolutionDir)entt-3.13.2\src;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)glm;$(SolutionDir)entt-3.13.2\src;&amp;(SolutionDir)pugixml-1.14;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -117,7 +117,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);ENGINEFRONTEND_EXPORTS;ENGINEFRONTEND_EXPORTS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);ENGINEFRONTEND_EXPORTS;ENGINEFRONTEND_EXPORTS;CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -132,7 +132,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);ENGINEFRONTEND_EXPORTS;ENGINEFRONTEND_EXPORTS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);ENGINEFRONTEND_EXPORTS;ENGINEFRONTEND_EXPORTS;CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -144,33 +144,55 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AABB.h" />
     <ClInclude Include="Autolist.h" />
+    <ClInclude Include="CameraComponent.h" />
+    <ClInclude Include="ComponentReg.h" />
+    <ClInclude Include="FrontendError.h" />
+    <ClInclude Include="IArchive.h" />
+    <ClInclude Include="pugiconfig.hpp" />
+    <ClInclude Include="pugixml.hpp" />
+    <ClInclude Include="Sphere.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="EngineDLLInterface.h" />
     <ClInclude Include="EngineLib.h" />
     <ClInclude Include="ExportMacro.h" />
+    <ClInclude Include="Frustum.h" />
+    <ClInclude Include="MeshComponent.h" />
     <ClInclude Include="ObjectPool.h" />
     <ClInclude Include="OBJ\ObjFile.h" />
     <ClInclude Include="Pipeline.h" />
     <ClInclude Include="IBackendApp.h" />
     <ClInclude Include="PipelineMeshData.h" />
     <ClInclude Include="PipelineTypes.h" />
+    <ClInclude Include="Plane.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="TestPipeline.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TransformComponent.h" />
+    <ClInclude Include="XMLArchive.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CameraComponent.cpp" />
+    <ClCompile Include="ComponentReg.cpp" />
     <ClCompile Include="EngineDLLInterface.cpp" />
+    <ClCompile Include="FrontendError.cpp" />
+    <ClCompile Include="Frustum.cpp" />
     <ClCompile Include="IBackendApp.cpp" />
+    <ClCompile Include="MeshComponent.cpp" />
     <ClCompile Include="OBJ\ObjFile.cpp" />
     <ClCompile Include="Pipeline.cpp" />
     <ClCompile Include="PipelineMeshData.cpp" />
     <ClCompile Include="PipelineTypes.cpp" />
+    <ClCompile Include="pugixml.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="TestPipeline.cpp" />
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TransformComponent.cpp" />
+    <ClCompile Include="XMLArchive.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WindowsVulkanBackend\ConsoleApplication1.vcxproj">

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<Scene>
+	<Entities i32Val="1">
+		<Entity>
+			<Transform>
+				<Version i32Val="1" />
+				<Pos x="123" y="456" z="789" />
+				<Rotation x="42" y="0" z="21" />
+				<Scale x="1" y="1" z="1" />
+				<Model v0v0="1" v0v0="1" v0v1="0" v0v2="0" v0v3="0" v1v0="0" v1v1="1" v1v2="0" v1v3="0" v2v0="0" v2v1="0" v2v2="1" v2v3="0" v3v0="0" v3v1="0" v3v2="0" v3v3="1" />
+				<IsDirty boolVal="true" />
+				<Parent ID="4294967295" />
+				<Children u64Val="0" />
+			</Transform>
+		</Entity>
+		<Entity>
+			<Transform>
+				<Version i32Val="1" />
+				<Pos x="420" y="69" z="42" />
+				<Rotation x="1" y="2" z="3" />
+				<Scale x="1" y="1" z="1" />
+				<Model v0v0="1" v0v0="1" v0v1="0" v0v2="0" v0v3="0" v1v0="0" v1v1="1" v1v2="0" v1v3="0" v2v0="0" v2v1="0" v2v2="1" v2v3="0" v3v0="0" v3v1="0" v3v2="0" v3v3="1" />
+				<IsDirty boolVal="true" />
+				<Parent ID="4294967295" />
+				<Children u64Val="0" />
+			</Transform>
+			<MeshComponent i32Val="1">
+				<HMesh u64Val="0" />
+				<HPipeline u64Val="0" />
+				<HDrawable u64Val="0" />
+			</MeshComponent>
+		</Entity>
+	</Entities>
+</Scene>

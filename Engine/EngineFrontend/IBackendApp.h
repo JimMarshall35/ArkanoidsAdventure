@@ -49,7 +49,7 @@ typedef void                                   (*InitWindowFn)                  
 typedef void                                   (*PollInputFn)                         (BackendInputState&);
 typedef void                                   (*RegisterWindowResizeHandlerFn)       (BackendWindowResizeFn fn);
 typedef HPipeline                              (*UploadPipelineFn)                    (const PipeLine& p, void* pUserData);
-typedef HMesh                                  (*UploadMeshFn)                        (HPipeline pipeline, const PipelineMeshData& mesh);
+typedef HMesh                                  (*UploadMeshFn)                        (const PipelineMeshData& mesh);
 typedef HDrawable                              (*CreateDrawableFn)                    (HPipeline pipeline, HMesh meshe, void* pUserData);
 typedef HPipeline                              (*GetDrawablePipelineFn)               (HDrawable drawable);
 typedef void                                   (*RegisterErrorHandlerFn)              (BackendErrorHandlerFn);

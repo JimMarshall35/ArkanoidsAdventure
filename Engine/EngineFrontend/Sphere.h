@@ -1,4 +1,5 @@
 #pragma once
+#include "EngineLib.h"
 #include <glm/glm.hpp>
 
 struct Sphere
@@ -7,3 +8,4 @@ struct Sphere
 	float radius;
 };
 
+Sphere RitterBoundingSphere(const EVec<glm::vec3> points);

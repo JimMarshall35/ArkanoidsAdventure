@@ -148,9 +148,9 @@ namespace Engine
         }
         free((void*)fileData);
 
-        PipeLine p;
+        PipeLine p("test");
         HPipeline hTest = BuildTestPipeline(p, gBackendAPI);
-        HMesh hMesh = gBackendAPI.UploadMesh(hTest, md);
+        HMesh hMesh = gBackendAPI.UploadMesh(md);
         PerInstanceUniforms perInstanceUni;
         hDrawable = GetTestPipelineDrawable(hMesh, &perInstanceUni);
         perInstanceUni.ambientStrength = 0.4f;

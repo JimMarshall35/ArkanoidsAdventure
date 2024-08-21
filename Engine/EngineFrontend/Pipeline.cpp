@@ -65,4 +65,8 @@ bool PipeLineStage::IsMeshSemanticsCompatible(PipelinePropertySemantics meshData
 	return r == 0;
 
 }
- 
+
+PipeLine::PipeLine(const char* name)
+	:Name(name)
+{
+}

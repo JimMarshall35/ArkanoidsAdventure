@@ -86,9 +86,12 @@ private:
 class ENGINE_FRONTEND_API PipeLine
 {
 public:
+	PipeLine(const char* name);
 	void PushStage(PipeLineStage& stage) { Stages.push_back(stage); }
 	void PushStage(PipeLineStage&& stage) { Stages.push_back(stage); }
 	const EVec<PipeLineStage>& GetStages() const { return Stages; }
+	const char* GetName() { return Name.c_str(); }
 private:
 	EVec<PipeLineStage> Stages;
+	EString Name;
 };

@@ -1,5 +1,6 @@
 #pragma once
 #include "TransformComponent.h"
+#include "IArchive.h"
 
 glm::mat4 Transform::getLocalModelMatrix()
 {
@@ -18,8 +19,8 @@ void Transform::AddChild(entt::entity parent, entt::entity child)
 {
 	EAssert(Scn::IsSceneLoaded());
 	Scn::Scene& scn = Scn::GetScene();
-	Transform* childTransform = scn.Reg.try_get<Transform>(child);
-	Transform* parentTransform = scn.Reg.try_get<Transform>(parent);
+	Transform* childTransform = scn.entities.GetReg().try_get<Transform>(child);
+	Transform* parentTransform = scn.entities.GetReg().try_get<Transform>(parent);
 	bool bOK = false;
 
 	if (!childTransform)
@@ -47,7 +48,7 @@ void Transform::AddChild(entt::entity parent, entt::entity child)
 
 	if (childTransform->m_hParent != entt::null)
 	{
-		Transform* parentTransform = scn.Reg.try_get<Transform>(parent);
+		Transform* parentTransform = scn.entities.GetReg().try_get<Transform>(parent);
 		auto itr = std::find(parentTransform->m_children.begin(), parentTransform->m_children.end(), child);
 		parentTransform->m_children.erase(itr);
 	}
@@ -98,7 +99,7 @@ void Transform::computeModelMatrix()
 	{
 		EAssert(Scn::IsSceneLoaded());
 		Scn::Scene& scn = Scn::GetScene();
-		Transform* parentTransform = scn.Reg.try_get<Transform>(m_hParent);
+		Transform* parentTransform = scn.entities.GetReg().try_get<Transform>(m_hParent);
 		if (parentTransform->m_isDirty)
 		{
 			parentTransform->computeModelMatrix();
@@ -142,3 +143,109 @@ bool Transform::isDirty() const
 {
 	return m_isDirty;
 }
+static void MetaReg(Comp::ComponentMeta* m)
+{
+	using namespace entt::literals;
+	entt::meta_factory<Transform> factory = entt::meta<Transform>().type("TransformComponent"_hs);
+	factory/*.ctor<HMesh, HPipeline, Entity>()*/
+		.data<&Transform::setLocalPosition, &Transform::getLocalPosition, entt::as_is_t>("position"_hs)
+		.data<&Transform::setLocalScale, &Transform::getLocalScale, entt::as_is_t>("scale"_hs)
+		.data<&Transform::setLocalRotation, &Transform::getLocalRotation, entt::as_is_t>("rotation"_hs);
+
+}
+
+void Transform::SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, EntityReg& reg)
+{
+	const i32 version = 1;
+	
+	if (ar->IsStoring())
+	{
+		Transform* t = reg.try_get<Transform>(e);
+		if (!t) return;
+
+		ar->PushObj("Transform");
+			ar->PushObj("Version");
+				*ar << 1;
+			ar->PopObj();
+			ar->PushObj("Pos");
+				*ar << t->m_pos;
+			ar->PopObj();
+			ar->PushObj("Rotation");
+				*ar << t->m_eulerRot;
+			ar->PopObj();
+			ar->PushObj("Scale");
+				*ar << t->m_scale;
+			ar->PopObj();
+			ar->PushObj("Model");
+				*ar << t->m_modelMatrix;
+			ar->PopObj();
+			ar->PushObj("IsDirty");
+				*ar << t->m_isDirty;
+			ar->PopObj();
+			ar->PushObj("Parent");
+				*ar << t->m_hParent;
+			ar->PopObj();
+			ar->PushObj("Children");
+				*ar << t->m_children.size();
+				for (Entity t : t->m_children)
+				{
+					ar->PushObj("Child");
+					*ar << t;
+					ar->PopObj();
+				}
+			ar->PopObj();
+		ar->PopObj();
+	}
+	else
+	{
+		if (!ar->PushObj("Transform")) return;
+			reg.emplace<Transform>(e);
+			Transform* t = reg.try_get<Transform>(e);
+			ar->PushObj("Version");
+				int version = 1;
+				*ar >> version;
+			ar->PopObj();
+			switch (version)
+			{
+			case 1:
+			{
+				ar->PushObj("Pos");
+					*ar >> t->m_pos;
+				ar->PopObj();
+				ar->PushObj("Rotation");
+					*ar >> t->m_eulerRot;
+				ar->PopObj();
+				ar->PushObj("Scale");
+					*ar >> t->m_scale;
+				ar->PopObj();
+				ar->PushObj("Model");
+					*ar >> t->m_modelMatrix;
+				ar->PopObj();
+				ar->PushObj("IsDirty");
+					*ar >> t->m_isDirty;
+				ar->PopObj();
+				ar->PushObj("Parent");
+					*ar >> t->m_hParent;
+				ar->PopObj();
+				ar->PushObj("Children");
+					size_t sz = 0;
+					*ar >> sz;//t->m_children.size();
+					t->m_children.resize(sz);
+					for (Entity& t : t->m_children)
+					{
+						ar->PushObj("Child");
+						*ar >> t;
+						ar->PopObj();
+					}
+				ar->PopObj();
+				break;
+			}
+			default:
+				break;
+			}
+		ar->PopObj();
+
+	}
+}
+
+META_IMPL(Transform, MetaReg, Transform::SerializeC)

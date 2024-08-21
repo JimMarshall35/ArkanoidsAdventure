@@ -21,6 +21,25 @@ Frustum CreateFrustumFromCamera(const Camera& cam, float aspect, float fovY, flo
     return frustum;
 }
 
+Frustum CreateFrustumFromCamera(const Transform& cam, float aspect, float fovY, float zNear, float zFar)
+{
+	Frustum     frustum;
+	const float halfVSide = zFar * tanf(fovY * .5f);
+	const float halfHSide = halfVSide * aspect;
+	glm::vec3 lookat = cam.getForward() + cam.getGlobalPosition();
+
+	const glm::vec3 frontMultFar = zFar * lookat;
+
+	frustum.nearFace = { cam.getGlobalPosition() + zNear * (cam.getForward()), cam.getForward() };
+	frustum.farFace = { cam.getGlobalPosition() + frontMultFar, -cam.getForward() };
+	frustum.rightFace = { cam.getGlobalPosition(), glm::cross(frontMultFar - cam.getRight() * halfHSide, cam.getUp()) };
+	frustum.leftFace = { cam.getGlobalPosition(), glm::cross(cam.getUp(),frontMultFar + cam.getRight() * halfHSide) };
+	frustum.topFace = { cam.getGlobalPosition(), glm::cross(cam.getRight(), frontMultFar - cam.getUp() * halfVSide) };
+	frustum.bottomFace = { cam.getGlobalPosition(), glm::cross(frontMultFar + cam.getUp() * halfVSide, cam.getRight()) };
+
+	return frustum;
+}
+
 
 static bool SphereOnOrForwardplane(const Plane& p, const Sphere& s)
 {

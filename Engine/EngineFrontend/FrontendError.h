@@ -20,4 +20,5 @@ namespace Err
 	};
 
 	void ReportError(const FrontendLog& err);
+	void ReportError(FrontendErrorSeverity es, const char* fmt, ...);
 }

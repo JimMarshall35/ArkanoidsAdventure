@@ -1,6 +1,7 @@
 #include "FrontendError.h"
 
-
+#include <stdarg.h>
+#define MAX_LOG_LENGTH 1024
 
 void Err::ReportError(const FrontendLog& err)
 {
@@ -22,4 +23,14 @@ void Err::ReportError(const FrontendLog& err)
         assert(false);
     }
     printf("%s\n", err.Msg.c_str());
+}
+
+void Err::ReportError(FrontendErrorSeverity es, const char* fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    char buf[MAX_LOG_LENGTH];
+    vsprintf_s(buf, fmt, args);
+    ReportError({ buf, es });
+    va_end(args);
 }

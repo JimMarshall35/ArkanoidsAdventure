@@ -1,0 +1,1 @@
+C:\Users\User1\source\repos\ArkanoidsAdventure\ArkanoidsAdventure\Engine\pugixml-1.14\scripts\vs2019\x64_Release\pugixml.lib
