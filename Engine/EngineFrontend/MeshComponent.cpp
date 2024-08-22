@@ -4,10 +4,13 @@
 #include "Scene.h"
 #include "IArchive.h"
 #include "FrontendError.h"
+#include "Pipeline.h"
 
-void MeshComponent::Create(HMesh mesh, HPipeline pipeline, entt::entity e)
+void MeshComponent::Create(HMesh mesh, PipeLine& pipeline, entt::entity e)
 {
-	m_hDrawable = Engine::GetAPI().CreateDrawable(pipeline, mesh, (void*)e);
+	m_hMesh = mesh;
+	m_hDrawable = pipeline.GetDrawable(mesh, e);
+	m_hPipeline = pipeline.GetH();
 }
 
 void MeshComponent::Destroy()

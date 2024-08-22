@@ -1,5 +1,8 @@
 #include "Pipeline.h"
 #include "PipelineMeshData.h"
+#include "EngineDLLInterface.h"
+#include "IBackendApp.h"
+#include "FrontendError.h"
 
 PipeLineStage::PipeLineStage(const PipelineStageInitArgs args)
 	:Name(args.name),
@@ -69,4 +72,50 @@ bool PipeLineStage::IsMeshSemanticsCompatible(PipelinePropertySemantics meshData
 PipeLine::PipeLine(const char* name)
 	:Name(name)
 {
+}
+
+void PipeLine::Create()
+{
+	const BackendAPI& api = Engine::GetAPI();
+	PipelineHandle = api.UploadPipeline(*this, this);
+	int nStage = 0;
+	for (const PipeLineStage& stage : Stages)
+	{
+		const EVec<PipelinePropertyName>&  props = stage.GetUniformAttributes();
+		for (const PipelinePropertyName& p : props)
+		{
+			if (UniformPropertyHandlesByName.find(p.Name) != UniformPropertyHandlesByName.end())
+			{
+				Err::ReportError(Err::FrontendErrorSeverity::Error, "already got a property handle for property '%s'. Did you call PipeLine::Create twice?");
+			}
+			UniformPropertyHandlesByName[p.Name] = api.GetPipelineUniformPropertyH(PipelineHandle, p.Name, nStage);
+		}
+		++nStage;
+	}
+}
+
+HPipelineUniformProperty PipeLine::TryGetUniformProperty(const char* name) const
+{
+	return HPipelineUniformProperty();
+}
+
+HDrawable PipeLine::GetDrawable(HMesh mesh, Entity e)
+{
+	const BackendAPI& api = Engine::GetAPI();
+	HDrawable hDrawable = api.CreateDrawable(PipelineHandle, mesh, (void*)e);
+	api.RegisterPerInstanceUniformSetter(hDrawable, &PerInstanceUniformSetter);
+	return hDrawable;
+}
+
+void PipeLine::PerDrawUnifomSetter(HPipeline pipeline, void* pUserData, int pipelineStage)
+{
+	PipeLine* p = (PipeLine*)pUserData;
+	p->PerDrawUniform(pipelineStage);
+}
+
+void PipeLine::PerInstanceUniformSetter(HDrawable drawable, HPipeline pipeline, int pipelineStage, void* pDrawableUserData, void* pPipelineUserData)
+{
+	PipeLine* p = (PipeLine*)pPipelineUserData;
+	Entity e = (Entity)pDrawableUserData;
+	p->PerInstanceUniform(pipelineStage, drawable, e);
 }

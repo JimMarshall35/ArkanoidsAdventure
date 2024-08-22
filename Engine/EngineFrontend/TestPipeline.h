@@ -1,18 +1,11 @@
 #pragma once
 #include "PipelineTypes.h"
 #include <glm/glm.hpp>
-struct BackendAPI;
-class PipeLine;
+#include "Pipeline.h"
+#include "ExportMacro.h"
+#include "ComponentReg.h"
 
-struct PerDrawUniforms
-{
-	glm::vec3 lightPos;
-	glm::vec3 lightColour;
-	glm::mat4 v;
-	glm::mat4 p;
-};
-
-struct PerInstanceUniforms
+struct TestPipelineMaterial
 {
 	glm::mat4 m;
 	float ambientStrength;
@@ -22,9 +15,19 @@ struct PerInstanceUniforms
 	HTexture hTexture;
 };
 
-HPipeline BuildTestPipeline(PipeLine& outPipe, const BackendAPI& api);
+META_DECL(TestPipelineMaterial)
 
-HDrawable GetTestPipelineDrawable(HMesh mesh, PerInstanceUniforms* pUniformPtr);
+class TestPipeline : public PipeLine
+{
+public:
 
+	TestPipeline();
+	// Inherited via PipeLine
+	virtual void PerDrawUniform(int pipelineStage) override;
 
-PerDrawUniforms& GetPipelineUniforms();
+	virtual void PerInstanceUniform(int pipelineStage, HDrawable drawable, Entity e) override;
+	virtual void Create() override;
+private:
+	HPipelineUniformProperty hLightPos, hLightColour, hModel, hView, hProjection, hAmbientStrength, hSpecularStrength, hDiffuseStrength, hShininess, hDiffuseAtlas;
+
+};

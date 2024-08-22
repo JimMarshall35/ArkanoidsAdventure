@@ -2,6 +2,12 @@
 #include "Pipeline.h"
 #include "IBackendApp.h"
 #include "EngineDLLInterface.h"
+#include "Scene.h"
+#include "PointLightComponent.h"
+#include "Lighting.h"
+#include "CameraComponent.h"
+#include "TransformComponent.h"
+#include "IArchive.h"
 
 static const char* gMeshVert =
 "#version 330 core\n"
@@ -75,17 +81,10 @@ static const char* gMeshFrag =
 "}\n";
 
 
-
-PerDrawUniforms gPerDrawUniforms;
-
-
-static HPipeline hPipeline = ENGINE_NULL_HANDLE;
-static HPipelineUniformProperty hLightPos, hLightColour, hModel, hView, hProjection, hAmbientStrength, hSpecularStrength, hDiffuseStrength, hShininess, hDiffuseAtlas;
-
 EVec<char> ToVector(const char* cString)
 {
 	EVec<char> data;
-	size_t l = strnlen_s(cString, INT_MAX);
+	size_t l = strnlen_s(cString, INT_MAX); 
 	data.resize(l + 1);
 	for (int i = 0; i < l; i++)
 	{
@@ -95,36 +94,9 @@ EVec<char> ToVector(const char* cString)
 	return data;
 }
 
-void PerDrawUnifomSetter(HPipeline pipeline, void* pUserData, int pipelineStage)
+TestPipeline::TestPipeline()
+	:PipeLine("Test")
 {
-	PerDrawUniforms* pUni = (PerDrawUniforms*)pUserData;
-	const BackendAPI& api = Engine::GetAPI();
-	api.SetPipelineUniform_Vec3(hPipeline, hLightPos, 0, pUni->lightPos);
-	api.SetPipelineUniform_Vec3(hPipeline, hLightColour, 0, pUni->lightColour);
-	api.SetPipelineUniform_Mat4(hPipeline, hView, 0, pUni->v);
-	api.SetPipelineUniform_Mat4(hPipeline, hProjection, 0, pUni->p);
-}
-
-void PerInstanceUniformSetter(HDrawable drawable, HPipeline pipeline, int pipelineStage, void* pDrawableUserData, void* PipelineUserData)
-{
-	PerInstanceUniforms* pUni = (PerInstanceUniforms*)pDrawableUserData;
-	const BackendAPI& api = Engine::GetAPI();
-	api.SetPipelineUniform_Mat4(hPipeline, hModel, 0, pUni->m);
-	api.SetPipelineUniform_Float(hPipeline, hAmbientStrength, 0, pUni->ambientStrength);
-	api.SetPipelineUniform_Float(hPipeline, hSpecularStrength, 0, pUni->speculatStrength);
-	api.SetPipelineUniform_Float(hPipeline, hDiffuseStrength, 0, pUni->diffuseStrength);
-	api.SetPipelineUniform_Float(hPipeline, hShininess, 0, pUni->shininess);
-	api.SetPipelineUniform_Texture(hPipeline, hDiffuseAtlas, 0, pUni->hTexture);
-
-}
-
-HPipeline BuildTestPipeline(PipeLine& outPipe, const BackendAPI& api)
-{
-	if (hPipeline != ENGINE_NULL_HANDLE)
-	{
-		assert(false);
-		return hPipeline;
-	}
 	PipelineStageInitArgs initArgs;
 	initArgs.fragShaderCode = ToVector(gMeshFrag);
 	initArgs.vertShaderCode = ToVector(gMeshVert);
@@ -212,36 +184,129 @@ HPipeline BuildTestPipeline(PipeLine& outPipe, const BackendAPI& api)
 	uDiffuseAtlas.PropType = PipelinePropertyType::Texture;
 	uDiffuseAtlas.Semantics = psUniformColourTexture;
 	stage.PushUniformAttribute(uDiffuseAtlas);
+
+	PushStage(stage);
+}
+
+void TestPipeline::PerDrawUniform(int pipelineStage)
+{
 	
-	outPipe.PushStage(stage);
-
-	HPipeline hPipe = api.UploadPipeline(outPipe, &gPerDrawUniforms);
-
-	hPipeline = hPipe;
-	// hLightPos, hLightColour, hModel, hView, hProjection, hAmbientStrength, hSpecularStrength, hDiffuseStrength, hShininess, hDiffuseAtlas;
-	hLightPos = api.GetPipelineUniformPropertyH(hPipe, uLightPos.Name, 0);
-	hLightColour = api.GetPipelineUniformPropertyH(hPipe, uLightColour.Name, 0);
-	hModel = api.GetPipelineUniformPropertyH(hPipe, uModel.Name, 0);
-	hView = api.GetPipelineUniformPropertyH(hPipe, uView.Name, 0);
-	hProjection = api.GetPipelineUniformPropertyH(hPipe, uProjection.Name, 0);
-	hAmbientStrength = api.GetPipelineUniformPropertyH(hPipe, uAmbientStrength.Name, 0);
-	hSpecularStrength = api.GetPipelineUniformPropertyH(hPipe, uSpecularStrength.Name, 0);
-	hDiffuseStrength = api.GetPipelineUniformPropertyH(hPipe, uDiffuseStrength.Name, 0);
-	hShininess = api.GetPipelineUniformPropertyH(hPipe, uShininess.Name, 0);
-	hDiffuseAtlas = api.GetPipelineUniformPropertyH(hPipe, uDiffuseAtlas.Name, 0);
-	api.RegisterPerDrawUniformSetter(hPipe, &PerDrawUnifomSetter);
-	return hPipeline;
-}
-
-HDrawable GetTestPipelineDrawable(HMesh mesh, PerInstanceUniforms* pUniformPtr)
-{
 	const BackendAPI& api = Engine::GetAPI();
-	HDrawable hDrawable = api.CreateDrawable(hPipeline, mesh, pUniformPtr);
-	api.RegisterPerInstanceUniformSetter(hDrawable, &PerInstanceUniformSetter);
-	return hDrawable;
+	Scn::Scene& scn = Scn::GetScene();
+	PointLightComponent plc;
+	glm::vec3 pos;
+	Light::GetPointLights(&plc, &pos, 1);
+	EntityReg& eReg = scn.entities.GetReg();
+	CameraComponent& cam = eReg.get<CameraComponent>(scn.activeCameraAntity);
+	Transform& transCam = eReg.get<Transform>(scn.activeCameraAntity);
+	glm::mat4x4 view = glm::lookAt(transCam.getGlobalPosition(), transCam.getForward(), transCam.getUp());
+	api.SetPipelineUniform_Vec3(PipelineHandle, hLightPos, 0, pos);
+	api.SetPipelineUniform_Vec3(PipelineHandle, hLightColour, 0, plc.colour);
+	api.SetPipelineUniform_Mat4(PipelineHandle, hView, 0, view);
+	api.SetPipelineUniform_Mat4(PipelineHandle, hProjection, 0, cam.GetProj());
 }
 
-PerDrawUniforms& GetPipelineUniforms()
+void TestPipeline::PerInstanceUniform(int pipelineStage, HDrawable drawable, Entity e)
 {
-	return gPerDrawUniforms;
+	//PerInstanceUniforms* pUni = (PerInstanceUniforms*)pDrawableUserData;
+	const BackendAPI& api = Engine::GetAPI();
+	Scn::Scene& scn = Scn::GetScene();
+	EntityReg& reg = scn.entities.GetReg();
+	Transform& t = reg.get<Transform>(e);
+	TestPipelineMaterial& m = reg.get<TestPipelineMaterial>(e);
+	api.SetPipelineUniform_Mat4(PipelineHandle, hModel, pipelineStage, t.getModelMatrix());
+	api.SetPipelineUniform_Mat4(PipelineHandle, hModel, pipelineStage, t.getModelMatrix());
+	
+	api.SetPipelineUniform_Float(PipelineHandle, hAmbientStrength, 0, m.ambientStrength);
+	api.SetPipelineUniform_Float(PipelineHandle, hSpecularStrength, 0, m.speculatStrength);
+	api.SetPipelineUniform_Float(PipelineHandle, hDiffuseStrength, 0, m.diffuseStrength);
+	api.SetPipelineUniform_Float(PipelineHandle, hShininess, 0, m.shininess);
+	api.SetPipelineUniform_Texture(PipelineHandle, hDiffuseAtlas, 0, m.hTexture);
+
 }
+
+void TestPipeline::Create()
+{
+	PipeLine::Create();
+	const BackendAPI& api = Engine::GetAPI();
+	hLightPos = UniformPropertyHandlesByName["lightPos"];
+	hLightColour = UniformPropertyHandlesByName["lightColor"]; 
+	hModel = UniformPropertyHandlesByName["model"];
+	hView = UniformPropertyHandlesByName["view"];
+	hProjection = UniformPropertyHandlesByName["projection"];
+	hAmbientStrength = UniformPropertyHandlesByName["ambientStrength"];
+	hSpecularStrength = UniformPropertyHandlesByName["specularStrength"]; 
+	hDiffuseStrength = UniformPropertyHandlesByName["diffuseStrength"];
+	hShininess = UniformPropertyHandlesByName["shininess"];
+	hDiffuseAtlas = UniformPropertyHandlesByName["diffuseAtlas"];
+}
+
+
+static void MetaReg(Comp::ComponentMeta* m){}
+
+static void SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, EntityReg& reg)
+{
+	const i32 version = 1;
+
+	if (ar->IsStoring())
+	{
+		if (TestPipelineMaterial* mc = reg.try_get<TestPipelineMaterial>(e))
+		{
+			ar->PushObj("TestPipelineMaterial");
+				*ar << version;
+				ar->PushObj("ambientStrength");
+					*ar << mc->ambientStrength;
+				ar->PopObj();
+				ar->PushObj("diffuseStrength");
+					*ar << mc->diffuseStrength;
+				ar->PopObj();
+				ar->PushObj("speculatStrength");
+					*ar << mc->speculatStrength;
+				ar->PopObj();
+				ar->PushObj("shininess");
+					*ar << mc->shininess;
+				ar->PopObj();
+				ar->PushObj("shininess");
+					*ar << mc->hTexture;
+				ar->PopObj();
+			ar->PopObj();
+		}
+	}
+	else
+	{
+		int fileVersion = 0;
+		if (!ar->PushObj("TestPipelineMaterial")) return;
+		reg.emplace<TestPipelineMaterial>(e);
+		TestPipelineMaterial* mc = reg.try_get<TestPipelineMaterial>(e);
+		*ar >> fileVersion;
+		switch (fileVersion)
+		{
+		case 1:
+		{
+			ar->PushObj("ambientStrength");
+				*ar << mc->ambientStrength;
+			ar->PopObj();
+			ar->PushObj("diffuseStrength");
+				*ar << mc->diffuseStrength;
+			ar->PopObj();
+			ar->PushObj("speculatStrength");
+				*ar << mc->speculatStrength;
+			ar->PopObj();
+			ar->PushObj("shininess");
+				*ar << mc->shininess;
+			ar->PopObj();
+			ar->PushObj("shininess");
+				*ar << mc->hTexture;
+			ar->PopObj();
+		}
+		default:
+
+			break;
+		}
+
+		ar->PopObj();
+	}
+}
+
+
+META_IMPL(TestPipelineMaterial, MetaReg, SerializeC)

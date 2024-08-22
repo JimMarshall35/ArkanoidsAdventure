@@ -2,6 +2,7 @@
 #include "EngineDLLInterface.h"
 #include "EngineLib.h"
 #include "PipelineTypes.h"
+#include "Autolist.h"
 #include <glm/glm.hpp>
 #include <type_traits>
 #include <numeric>
@@ -83,7 +84,7 @@ private:
 
 
 
-class ENGINE_FRONTEND_API PipeLine
+class ENGINE_FRONTEND_API PipeLine : public Autolist<PipeLine>
 {
 public:
 	PipeLine(const char* name);
@@ -91,7 +92,22 @@ public:
 	void PushStage(PipeLineStage&& stage) { Stages.push_back(stage); }
 	const EVec<PipeLineStage>& GetStages() const { return Stages; }
 	const char* GetName() { return Name.c_str(); }
+	virtual void Create();
+	HPipelineUniformProperty TryGetUniformProperty(const char* name) const;
+	HDrawable GetDrawable(HMesh mesh, Entity e);
+	HPipeline GetH() { return PipelineHandle; }
 private:
+
+	static void PerDrawUnifomSetter(HPipeline pipeline, void* pUserData, int pipelineStage);
+	static void PerInstanceUniformSetter(HDrawable drawable, HPipeline pipeline, int pipelineStage, void* pDrawableUserData, void* PipelineUserData);
+protected:
+	virtual void PerDrawUniform(int pipelineStage) = 0;
+	virtual void PerInstanceUniform(int pipelineStage, HDrawable drawable, Entity e) = 0;
+protected:
 	EVec<PipeLineStage> Stages;
 	EString Name;
+	EMap<EString, HPipelineUniformProperty> UniformPropertyHandlesByName;
+	HPipeline PipelineHandle;
 };
+
+

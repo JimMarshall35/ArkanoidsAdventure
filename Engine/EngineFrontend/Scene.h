@@ -69,7 +69,7 @@ namespace Scn
 		MeshReg meshReg;
 		EntityRegWrapper entities;
 		Entity rootTransformEntity;
-
+		Entity activeCameraAntity;
 	};
 
 	bool IsSceneLoaded();

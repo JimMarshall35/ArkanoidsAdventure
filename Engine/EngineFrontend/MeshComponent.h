@@ -9,6 +9,7 @@
 
 class Transform;
 class IArchive;
+class PipeLine;
 /// <summary>
 /// 
 /// </summary>
@@ -16,8 +17,8 @@ class ENGINE_FRONTEND_API MeshComponent
 {
 public:
 	MeshComponent(){}
-	MeshComponent(HMesh mesh, HPipeline pipeline, entt::entity e) { Create(mesh, pipeline, e); }
-	void Create(HMesh mesh, HPipeline pipeline, entt::entity e);
+	MeshComponent(HMesh mesh, PipeLine& pipeline, entt::entity e) { Create(mesh, pipeline, e); }
+	void Create(HMesh mesh, PipeLine& pipeline, entt::entity e);
 	void Destroy();
 
 	bool Created() { return m_hDrawable != ENGINE_NULL_HANDLE; }
