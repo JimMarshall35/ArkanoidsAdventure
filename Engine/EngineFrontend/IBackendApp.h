@@ -4,19 +4,15 @@
 #include <stdint.h>
 #include "EngineLib.h"
 #include "PipelineTypes.h"
+#include "InputFrontend.h"
+#include <array>
 
 class BackendAPI;
 class PipeLine;
 class PipelineMeshData;
 struct TextureData;
+struct BackendInputState;
 
-struct BackendInputState
-{
-	std::bitset<256> KeyboardState;
-	std::bitset<3> MouseButtonState;
-	glm::vec2 MousePosition;
-	int MouseWheelState;
-};
 
 enum class BackendErrorSeverity
 {
@@ -74,6 +70,7 @@ typedef void                                   (*RegisterPerInstanceUniformSette
 typedef void                                   (*RegisterPerInstanceAttributeSetterFn)(HDrawable, PerInstanceAttributeSetterFn);
 typedef void                                   (*SetDrawInstanced)                    (HDrawable, bool bDrawInstanced);
 typedef HTexture                               (*UploadTextureFn)                     (const TextureData& data);
+typedef void                                   (*DestroyTextureFn)                    (HTexture tex);
 typedef void*                                  (*GetDrawableUserDataFn)               (HDrawable drawable);
 typedef void*                                  (*GetPipelineUserDataFn)               (HDrawable drawable);
 
@@ -122,6 +119,7 @@ struct BackendAPI
 	SetDrawInstanced SetDrawInstanced = nullptr;
 
 	UploadTextureFn UploadTexture = nullptr;
+	DestroyTextureFn DestroyTexture = nullptr; 
 
 	GetDrawableUserDataFn GetDrawableUserData = nullptr;
 	GetPipelineUserDataFn GetPipelineUserData = nullptr;

@@ -43,6 +43,7 @@ extern "C"
 			&OGL::RegisterPerInstanceAttributeSetter,
 			&OGL::SetDrawInstanced,
 			&OGL::UploadTexture,
+			&OGL::DestroyTexture,
 			&OGL::GetDrawableUserData,
 			&OGL::GetPipelineUserData
 		};

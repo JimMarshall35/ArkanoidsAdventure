@@ -24,7 +24,7 @@ namespace OGL
 	struct OGLPipeline
 	{
 		EVec<Shader> StagesShaders;
-		PipeLine Pipeline;
+		const PipeLine* pPipeline;
 		void* pUserData = nullptr;
 		EVec<EMap<EString, std::pair<HPipelineUniformProperty, Shader*>>> UniformProperties; // by stage
 		EVec<EMap<HPipelineUniformProperty, const PipelinePropertyName*>> HandleToInfoMap;
@@ -219,12 +219,12 @@ namespace OGL
 		size_t rVal = 0;
 		OGLPipeline* pPipeline = GetPipeline(p);
 
-		if (stage < 0 || stage >= pPipeline->Pipeline.GetStages().size())
+		if (stage < 0 || stage >= pPipeline->pPipeline->GetStages().size())
 		{
 			Log::LogMsg(BackendLog{ "[GetPerInstanceStagingBufferSizeRequired] stage index out of range" });
 			return rVal;
 		}
-		const PipeLineStage& stagePair = pPipeline->Pipeline.GetStages()[stage];
+		const PipeLineStage& stagePair = pPipeline->pPipeline->GetStages()[stage];
 		const EVec<PipelinePropertyName>& perInstanceAttributes = stagePair.GetPerInstanceAttributes();
 		for (const PipelinePropertyName& name : perInstanceAttributes)
 		{
@@ -261,11 +261,11 @@ namespace OGL
 			pNewPipeline->StagesShaders.push_back(Shader());
 			pNewPipeline->StagesShaders[pNewPipeline->StagesShaders.size() - 1].LoadFromString(ps.GetVertShader().data(), ps.GetFragShader().data());
 		}
-		pNewPipeline->Pipeline = p;
+		pNewPipeline->pPipeline = &p;
 		pNewPipeline->pUserData = pUserData;
 
 		EVec<EMap<EString, std::pair<HPipelineUniformProperty, Shader*>>>& uniforms = pNewPipeline->UniformProperties;
-		const EVec<PipeLineStage>& newStages = pNewPipeline->Pipeline.GetStages();
+		const EVec<PipeLineStage>& newStages = pNewPipeline->pPipeline->GetStages();
 		int i = 0;
 		for (const PipeLineStage& stage : newStages)
 		{
@@ -340,8 +340,8 @@ namespace OGL
 	{
 		auto GetAttributeLocationFromSemantics = [](OGLPipeline* pPipeline, PipelinePropertySemantics vboSemantics) -> int
 		{
-			const PipeLine& p = pPipeline->Pipeline;
-			for (const PipeLineStage& stage : p.GetStages())
+			const PipeLine* p = pPipeline->pPipeline;
+			for (const PipeLineStage& stage : p->GetStages())
 			{
 				for (const PipelinePropertyName& name : stage.GetVertexAttributes())
 				{
@@ -396,10 +396,10 @@ namespace OGL
 			glEnableVertexAttribArray(location);
 		}
 
-		size_t stages = pPipeline->Pipeline.GetStages().size();
+		size_t stages = pPipeline->pPipeline->GetStages().size();
 		for (int i = 0; i < stages; i++)
 		{
-			const PipeLineStage& stage = pPipeline->Pipeline.GetStages()[i];
+			const PipeLineStage& stage = pPipeline->pPipeline->GetStages()[i];
 			const EVec<PipelinePropertyName>& names = stage.GetPerInstanceAttributes();
 			for (const PipelinePropertyName& name : names)
 			{
@@ -843,6 +843,11 @@ namespace OGL
 		glGenerateMipmap(GL_TEXTURE_2D);
 		
 		return HTexture(texture);
+	}
+
+	void DestroyTexture(HTexture tex)
+	{
+		glDeleteTextures(1, (const GLuint*)&tex);
 	}
 
 	void* GetDrawableUserData(HDrawable drawable)

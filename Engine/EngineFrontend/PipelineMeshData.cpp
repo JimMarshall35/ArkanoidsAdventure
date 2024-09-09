@@ -112,8 +112,217 @@ size_t PipelineMeshBuffer::GetElementCount() const
 	return 0;
 }
 
+void SerializeBufferData(IArchive& ar, PipelineMeshBuffer& buf)
+{
+	if (ar.IsStoring())
+	{
+		ar.PushObj("Data");
+			ar << buf.GetSizeInElements();
+			switch (buf.GetType())
+			{
+			case PipelinePropertyType::Float:
+				for (float f : buf.GetData_f32())
+				{
+					ar.PushObj("Data");
+						ar << f;
+					ar.PopObj();
+				}
+				break;
+			case PipelinePropertyType::Mat4:
+				for (const glm::mat4x4& f : buf.GetData_M4())
+				{
+					ar.PushObj("Data");
+						ar << f;
+					ar.PopObj();
+				}
+				break;
+			case PipelinePropertyType::UInt32:
+				for (u32 f : buf.GetData_u32())
+				{
+					ar.PushObj("Data");
+					ar << f;
+					ar.PopObj();
+				}
+				break;
+			case PipelinePropertyType::Vec2:
+				for (const glm::vec2& f : buf.GetData_V2())
+				{
+					ar.PushObj("Data");
+					ar << f;
+					ar.PopObj();
+				}
+				break;
+			case PipelinePropertyType::Vec3:
+				for (const glm::vec3& f : buf.GetData_V3())
+				{
+					ar.PushObj("Data");
+					ar << f;
+					ar.PopObj();
+				}
+				break;
+			case PipelinePropertyType::Vec4:
+				for (const glm::vec4& f : buf.GetData_V4())
+				{
+					ar.PushObj("Data");
+					ar << f;
+					ar.PopObj();
+				}
+				break;
+			default:
+				// @WARNING
+				break;
+			}
+		ar.PopObj();
+	}
+	else
+	{
+		ar.PushObj("Data");
+
+			size_t num;
+			ar >> num;
+			switch (buf.GetType())
+			{
+			case PipelinePropertyType::Float:
+			{
+				EVec<float> v;
+				for (int i = 0; i < num; i++)
+				{
+					ar.PushChild(i);
+						float f;
+						ar >> f;
+						v.push_back(f);
+					ar.PopObj();
+				}
+				buf.SetData(v, buf.GetSemantics());
+				break;
+			}
+			case PipelinePropertyType::Mat4:
+			{
+				EVec<glm::mat4> v;
+				for (int i = 0; i < num; i++)
+				{
+					ar.PushChild(i);
+					glm::mat4 f;
+					ar >> f;
+					v.push_back(f);
+					ar.PopObj();
+				}
+				buf.SetData(v, buf.GetSemantics());
+				break;
+			}
+			case PipelinePropertyType::UInt32:
+			{
+				EVec<u32> v;
+				for (int i = 0; i < num; i++)
+				{
+					ar.PushChild(i);
+					u32 f;
+					ar >> f;
+					v.push_back(f);
+					ar.PopObj();
+				}
+				buf.SetData(v, buf.GetSemantics());
+				break;
+			}
+			case PipelinePropertyType::Vec2:
+			{
+				EVec<u32> v;
+				for (int i = 0; i < num; i++)
+				{
+					ar.PushChild(i);
+					u32 f;
+					ar >> f;
+					v.push_back(f);
+					ar.PopObj();
+				}
+				buf.SetData(v, buf.GetSemantics());
+				break;
+			}
+			case PipelinePropertyType::Vec3:
+			{
+				EVec<glm::vec3> v;
+				for (int i = 0; i < num; i++)
+				{
+					ar.PushChild(i);
+					glm::vec3 f;
+					ar >> f;
+					v.push_back(f);
+					ar.PopObj();
+				}
+				buf.SetData(v, buf.GetSemantics());
+				break;
+			}
+			case PipelinePropertyType::Vec4:
+			{
+				EVec<glm::vec4> v;
+				for (int i = 0; i < num; i++)
+				{
+					ar.PushChild(i);
+					glm::vec4 f;
+					ar >> f;
+					v.push_back(f);
+					ar.PopObj();
+				}
+				buf.SetData(v, buf.GetSemantics());
+				break;
+			}
+			default:
+				// @WARNING
+				break;
+			}
+		ar.PopObj();
+	}
+}
+
 void PipelineMeshBuffer::Serialize(IArchive& archive)
 {
+	int version = 1;
+	if (archive.IsStoring())
+	{
+		archive.PushObj("Buffer");
+			archive << version;
+			archive.PushObj("Type");
+				archive << (u32)Type;
+			archive.PopObj();
+			archive.PushObj("Semantics");
+				archive << Semantics;
+			archive.PopObj();
+			SerializeBufferData(archive, *this);
+		archive.PopObj();
+	}
+	else
+	{
+		int v;
+		archive >> v;
+		switch (v)
+		{
+		case 1:
+			archive.PushObj("Type");
+				archive >> (u32&)Type;
+			archive.PopObj();
+			
+			archive.PushObj("Semantics");
+				archive >> (u16&)Semantics;
+			archive.PopObj();
+			SerializeBufferData(archive, *this);
+			break;
+		}
+	}
+}
+
+size_t PipelineMeshBuffer::GetSizeInElements()
+{
+	switch (Type)
+	{
+	case PipelinePropertyType::Unknwon:
+	default: assert(false); break;
+	case PipelinePropertyType::Vec2: return GetData_V2().size();
+	case PipelinePropertyType::Vec3: return GetData_V3().size();
+	case PipelinePropertyType::Vec4: return GetData_V4().size();
+	case PipelinePropertyType::Mat4: return GetData_M4().size();
+	case PipelinePropertyType::Float: return GetData_f32().size();
+	case PipelinePropertyType::UInt32: return GetData_u32().size();
+	}
 }
 
 const void* PipelineMeshBuffer::GetStart() const
@@ -222,11 +431,70 @@ void PipelineMeshData::Serialize(IArchive& archive)
 	if (archive.IsStoring())
 	{
 		archive.PushObj("PipelineMeshData");
+			archive << version;
+			archive.PushObj("Name");
+				archive << Name;
+			archive.PopObj();
+			archive.PushObj("Buffers");
+				archive << Buffers.size();
+				for (PipelineMeshBuffer& buf : Buffers)
+				{
+					buf.Serialize(archive);
+				}
+			archive.PopObj(); 
+			m_Sphere.Serialize(archive);
+			archive.PushObj("m_bBoundingSphereSet");
+				archive << m_bBoundingSphereSet;
+			archive.PopObj();
 		archive.PopObj();
 	}
 	else
 	{
+		archive.PushObj("PipelineMeshData");
+			int v;
+			archive >> v;
+			switch (v)
+			{
+			case 1:
+				archive.PushObj("Name");
+					archive << Name;
+				archive.PopObj();
+				archive.PushObj("Buffers");
+					size_t sz;
+					archive >> sz;
+					Buffers.resize(sz);
+					for (int i=0; i<sz; i++)
+					{
+						archive.PushChild(i);
+						Buffers[i].Serialize(archive);
+						archive.PopObj();
+					}
+				archive.PopObj();
+				m_Sphere.Serialize(archive);
+				archive.PushObj("m_bBoundingSphereSet");
+					archive >> m_bBoundingSphereSet;
+				archive.PopObj();
+				break;
+			default:
+				break;
+			}
+		archive.PopObj();
 
 	}
+}
+
+void PipelineMeshData::CalcBoundingSphere()
+{
+	auto bufItr = std::find_if(Buffers.begin(), Buffers.end(), [](const PipelineMeshBuffer & b) -> bool 
+	{
+		return (b.GetSemantics() & PipelinePropertySemantics::psPerVertexPos) != 0 && b.GetType() == PipelinePropertyType::Vec3;
+	});
+	if (bufItr == Buffers.end())
+	{
+		EAssert(false);
+		return;
+	}
+	const EVec<glm::vec3>& d = bufItr->GetData_V3();
+	m_Sphere = RitterBoundingSphere(d);
 }
 

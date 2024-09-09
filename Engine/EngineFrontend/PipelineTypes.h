@@ -2,15 +2,14 @@
 #include <cstdint>
 #include "EngineLib.h"
 
-typedef size_t HFrameBuffer;
-#define ENGINE_NULL_HANDLE 0
-typedef size_t HDrawable;
-typedef size_t HMesh;
+typedef Handle_t HFrameBuffer;
+typedef Handle_t HDrawable;
+typedef Handle_t HMesh;
 
-typedef size_t HPipeline;
-typedef size_t HPipelineUniformProperty;
-typedef size_t HPipelinePerInstanceProperty;
-typedef size_t HTexture;
+typedef Handle_t HPipeline;
+typedef Handle_t HPipelineUniformProperty;
+typedef Handle_t HPipelinePerInstanceProperty;
+typedef Handle_t HTexture;
 
 enum RenderTargetBufType
 {
@@ -20,7 +19,7 @@ enum RenderTargetBufType
 };
 
 
-enum class PipelinePropertyType
+enum class PipelinePropertyType : std::uint32_t
 {
 	Unknwon,
 	Vec2,

@@ -1,14 +1,14 @@
 #pragma once
 #include "EngineLib.h"
 #include <glm/glm.hpp>
-
-enum class TexFormat
+class IArchive;
+enum class TexFormat : u32
 {
 	R8G8B8,
 	R8G8B8A8
 };
 
-enum class TextureRowAlign
+enum class TextureRowAlign : u32
 {
 	Byte = 1,
 	EvenByte = 2,
@@ -16,7 +16,7 @@ enum class TextureRowAlign
 	DoubleWord = 8
 };
 
-enum class TextureFiltering
+enum class TextureFiltering : u32
 {
 	Nearest,
 	Linear,
@@ -27,7 +27,7 @@ enum class TextureFiltering
 	NumOptions
 };
 
-enum class TextureClamp
+enum class TextureClamp : u32
 {
 	Repeat,
 	MirroredRepeat,
@@ -38,6 +38,7 @@ enum class TextureClamp
 
 struct TextureData
 {
+	EString Path;
 	EString Name;
 	size_t WidthPx = 0;
 	size_t HeightPx = 0;
@@ -51,5 +52,6 @@ struct TextureData
 	bool bGenerateMipMaps = true;
 	size_t DataSize = 0;
 	uint8_t* pData = nullptr;
+	void Serialize(IArchive* ar);
 };
 

@@ -70,3 +70,10 @@ TEST(Serialization, BasicXMLArchiveTest) {
 	EXPECT_TRUE(CompareTransforms(transforms[1], t1));
 
 }
+
+TEST(Serialization, BasicXMLArchiveTest) {
+	Scn::Scene s;
+	EntityReg& r = s.entities.GetReg();
+	Entity e = r.create();
+
+}

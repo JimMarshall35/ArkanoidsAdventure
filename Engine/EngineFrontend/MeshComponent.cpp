@@ -15,8 +15,11 @@ void MeshComponent::Create(HMesh mesh, PipeLine& pipeline, entt::entity e)
 
 void MeshComponent::Destroy()
 {
-	Engine::GetAPI().DestroyDrawable(m_hDrawable);
-	m_hDrawable = ENGINE_NULL_HANDLE;
+	if (m_hDrawable != ENGINE_NULL_HANDLE)
+	{
+		Engine::GetAPI().DestroyDrawable(m_hDrawable);
+		m_hDrawable = ENGINE_NULL_HANDLE;
+	}
 }
 
 Sphere MeshComponent::GetMeshBoundingSphere() const
@@ -33,12 +36,12 @@ Sphere MeshComponent::GetMeshBoundingSphere() const
 
 static void MetaReg(Comp::ComponentMeta* m)
 {
-	using namespace entt::literals;
-	entt::meta_factory<MeshComponent> factory = entt::meta<MeshComponent>().type("MeshComponent"_hs);
-	factory.ctor<HMesh, HPipeline, Entity>()
-		.data<nullptr, &MeshComponent::GetMesh, entt::as_is_t>("mesh"_hs)
-		.data<nullptr, &MeshComponent::GetDrawable, entt::as_is_t>("drawable"_hs)
-		.data<nullptr, &MeshComponent::GetPipeline, entt::as_is_t>("pipeline"_hs);
+	//using namespace entt::literals;
+	//entt::meta_factory<MeshComponent> factory = entt::meta<MeshComponent>().type("MeshComponent"_hs);
+	//factory.ctor<HMesh, HPipeline, Entity>()
+	//	.data<nullptr, &MeshComponent::GetMesh, entt::as_is_t>("mesh"_hs)
+	//	.data<nullptr, &MeshComponent::GetDrawable, entt::as_is_t>("drawable"_hs)
+	//	.data<nullptr, &MeshComponent::GetPipeline, entt::as_is_t>("pipeline"_hs);
 }
 
 void MeshComponent::SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, EntityReg& reg)
@@ -91,9 +94,26 @@ void MeshComponent::SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, E
 				
 			ar->PopObj();
 		}
-		
 	}
-	
+}
+static void OnMeshCmpntDestroy(entt::registry& r, entt::entity e)
+{
+	MeshComponent& mc = r.get<MeshComponent>(e);
+	if (mc.m_hDrawable != ENGINE_NULL_HANDLE && mc.m_hMesh != ENGINE_NULL_HANDLE && mc.m_hPipeline != ENGINE_NULL_HANDLE)
+	{
+		mc.Destroy();
+	}
+};
+
+static void OnMeshComponentCreate(entt::registry& r, entt::entity e)
+{
+
+
 }
 
-META_IMPL(MeshComponent, MetaReg, MeshComponent::SerializeC)
+static void OnMeshComponentUpdate(entt::registry& r, entt::entity e)
+{
+
+}
+
+META_IMPL_EX(MeshComponent, MetaReg, MeshComponent::SerializeC, OnMeshComponentCreate, OnMeshCmpntDestroy, OnMeshComponentUpdate)

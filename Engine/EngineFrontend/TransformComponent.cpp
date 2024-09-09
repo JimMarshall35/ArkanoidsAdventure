@@ -10,14 +10,13 @@ glm::mat4 Transform::getLocalModelMatrix()
 
 	// Y * X * Z
 	const glm::mat4 rotationMatrix = transformY * transformX * transformZ;
-
 	// translation * rotation * scale (also know as TRS matrix)
 	return glm::translate(glm::mat4(1.0f), m_pos) * rotationMatrix * glm::scale(glm::mat4(1.0f), m_scale);
 }
 
 void Transform::AddChild(entt::entity parent, entt::entity child)
 {
-	EAssert(Scn::IsSceneLoaded());
+	//EAssert(Scn::IsSceneLoaded());
 	Scn::Scene& scn = Scn::GetScene();
 	Transform* childTransform = scn.entities.GetReg().try_get<Transform>(child);
 	Transform* parentTransform = scn.entities.GetReg().try_get<Transform>(parent);

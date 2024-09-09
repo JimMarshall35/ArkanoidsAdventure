@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 #include "IBackendApp.h"
 #include "OGLRenderer.h"
+#include "Input.h"
 
 namespace Sys
 {
@@ -44,6 +45,7 @@ namespace Sys
 
 		// Create Window with graphics context
 		gWindow = glfwCreateWindow(WIDTH, HEIGHT, "Engine", NULL, NULL);
+		BAInput::Init(gWindow);
 		if (gWindow == NULL)
 			return;
 
@@ -63,6 +65,7 @@ namespace Sys
 	void PollInput(BackendInputState& s)
 	{
 		glfwPollEvents();
+		BAInput::PollInput(s);
 	}
 
 	void SwapBuffers()

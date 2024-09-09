@@ -1,5 +1,5 @@
 #pragma once
-
+#include <glm/glm.hpp>
 struct PointLightComponent;
 
 namespace Light

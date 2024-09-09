@@ -11,6 +11,9 @@
 #include "stb_image.h"
 #include "Texture.h"
 #include "Scene.h"
+#include "CameraComponent.h"
+#include "DebugLoadBasicScene.h"
+#include "XMLArchive.h"
 
 #define MS_PER_UPDATE 20.0f
 #define S_PER_UPDATE (MS_PER_UPDATE / 1000.0f)
@@ -18,8 +21,7 @@
 namespace Engine
 {
     BackendAPI gBackendAPI;
-    BackendInputState gBackendInputState;
-    glm::mat4 gProj;
+    //glm::mat4 gProj;
     int gWidth = 800;
     int gHeight = 600;
 
@@ -50,12 +52,19 @@ namespace Engine
     {
         gWidth = newW;
         gHeight = newH;
-        gProj = glm::perspectiveFov(90.0f, (float)newW, (float)newH, 0.1f, 1000.0f);
+        CameraComponent::OnResize(newW, newH);
+        //gProj = glm::perspectiveFov(90.0f, (float)newW, (float)newH, 0.1f, 1000.0f);
     }
 
     const BackendAPI& GetAPI()
     {
         return gBackendAPI;
+    }
+
+    void GetWindowWidthAndHeight(int& pxW, int& pxH)
+    {
+        pxW = gWidth;
+        pxH = gHeight;
     }
 
 #pragma region Testing
@@ -97,45 +106,42 @@ namespace Engine
      
     void Update(float deltaT)
     {
+        Scn::GetScene().sysReg.Update(deltaT);
 
     }
 
     void Render()
     {
 #pragma region Testing
-        gBackendAPI.DrawDrawables(&hDrawable, 1);
+        //gBackendAPI.DrawDrawables(&hDrawable, 1);
 #pragma endregion
+        Scn::GetScene().sysReg.Draw();
     }
 
-    void MainLoop()
+    void MainLoop(const EngineInitArgs& args)
     {
-        /*
-            Camera(glm::vec3 eye, glm::vec3 lookat, glm::vec3 upVector)
-        : m_eye(std::move(eye))
-        , m_lookAt(std::move(lookat))
-        , m_upVector(std::move(upVector))
-    {
-        */
-        Camera cam = Camera(glm::vec3(5, 0, 0), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3{ 0.0f,0.0f,1.0f });
-        cam.SetLookAt({ 0.0f,0.0f,0.0f });
-
         gBackendAPI.InitWindow(gWidth, gHeight);
-        float FOV = 90.0f;//glm::pi<float>() * 0.25f;
-        float Aspect = (float)gWidth / (float)gHeight;
-        float Near = 0.1f;
-        float Far = 5000.0f;
-        // create a perspective projection matrix with a 90 degree field-of-view and widescreen aspect ratio
-        gProj = glm::perspective(FOV, Aspect, Near, Far);
+
 
         gBackendAPI.RegisterErrorHandler(&ErrorHandler);
         gBackendAPI.RegisterResize(&ResizeHandler);
 
         gBackendAPI.InitRenderer();
         
-        Scn::Scene;
+        if (args.InitialScenePath == "")
+        {
+            Scn::Scene& s = Scn::GetScene();
+            BasicScn::Load(s);
+        }
+        else
+        {
+            XMLArchive ar(args.InitialScenePath.c_str(), false);
+            Scn::SerializeScene(ar);
+        }
+        //Scn::Scene;
 #pragma region Testing
 
-        EVec<EString> errors;
+        /*EVec<EString> errors;
         long bufSize = 0;
         const char* fileData = LoadFileIntoBuffer("Shuriken.obj", bufSize);
         PipelineMeshData md;
@@ -179,7 +185,7 @@ namespace Engine
         HTexture t = gBackendAPI.UploadTexture(td);
         perInstanceUni.hTexture = t;
         
-        stbi_image_free(data);
+        stbi_image_free(data);*/
 #pragma endregion
 
         double previous = gBackendAPI.GetTime();
@@ -192,7 +198,7 @@ namespace Engine
             previous = current;
             lag += elapsed;
 
-            gBackendAPI.PollInput(gBackendInputState);
+            In::PollInput();
 
             while (lag >= MS_PER_UPDATE)
             {
@@ -228,7 +234,7 @@ namespace Engine
             {
                 fRunTimeLinkSuccess = TRUE;
                 gBackendAPI = (ProcAdd)();
-                MainLoop();
+                MainLoop(args);
             }
             // Free the DLL module.
             

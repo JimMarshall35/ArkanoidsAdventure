@@ -17,7 +17,7 @@ class ENGINE_FRONTEND_API MeshComponent
 {
 public:
 	MeshComponent(){}
-	MeshComponent(HMesh mesh, PipeLine& pipeline, entt::entity e) { Create(mesh, pipeline, e); }
+	//MeshComponent(HMesh mesh, PipeLine& pipeline, entt::entity e) { Create(mesh, pipeline, e); }
 	void Create(HMesh mesh, PipeLine& pipeline, entt::entity e);
 	void Destroy();
 
@@ -27,7 +27,7 @@ public:
 	HPipeline GetPipeline() const{ return m_hPipeline; }
 	Sphere GetMeshBoundingSphere() const;
 	static void SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, EntityReg& reg);
-private:
+//private:
 	HMesh m_hMesh = ENGINE_NULL_HANDLE;
 	HPipeline m_hPipeline = ENGINE_NULL_HANDLE;
 	HDrawable m_hDrawable = ENGINE_NULL_HANDLE;

@@ -10,6 +10,16 @@
 
 #define EAssert(a) assert(a)
 
+/* MFC and unreal engine style verify */
+#ifdef _DEBUG
+#define EVerify(a) EAssert(a)
+#else
+#define EVerify(a) a
+#endif
+
+#define ENGINE_NULL_HANDLE 0
+
+typedef size_t Handle_t;
 typedef std::int64_t i64;
 typedef std::uint64_t u64;
 typedef std::int32_t i32;
@@ -26,11 +36,10 @@ typedef entt::registry EntityReg;
 typedef std::string EString;
 typedef std::wstring EWString;
 
-template<typename T>
-using EAllocator = std::allocator<T>;
+using EBitVec = std::vector<bool>;
 
 template<typename T>
-using EVec = std::vector<T, EAllocator<T>>;
+using EVec = std::vector<T>;
 
 template<typename Tkey, typename Tval>
 using EMap = std::unordered_map<Tkey, Tval>;

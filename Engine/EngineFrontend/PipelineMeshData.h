@@ -24,6 +24,7 @@ public:
 	const EVec<glm::vec4>& GetData_V4() const     { return std::get<EVec<glm::vec4>>(Data); }
 	const EVec<glm::mat4>& GetData_M4() const     { return std::get<EVec<glm::mat4>>(Data); }
 
+	size_t GetSizeInElements();
 	PipelinePropertyType GetType() const { return Type; }
 	bool Valid()const { return Errors.size() == 0; }
 	const EVec<PipelineError>& GetErrors() const { return Errors; };
@@ -82,7 +83,7 @@ public:
 	const EString& GetName() const { return Name; }
 	const Sphere& GetBoundingSphere() const { EAssert(m_bBoundingSphereSet); return m_Sphere; }
 	void Serialize(IArchive& archive);
-
+	void CalcBoundingSphere();
 private:
 	EVec<PipelineMeshBuffer> Buffers;
 	EVec<PipelineError> Errors;

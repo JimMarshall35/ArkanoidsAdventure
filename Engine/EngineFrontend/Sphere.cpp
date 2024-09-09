@@ -1,8 +1,9 @@
 #include "Sphere.h"
 #include <cmath>
 #include <glm/gtx/norm.hpp>
+#include "IArchive.h"
 
-Sphere RitterBoundingSphere(const EVec<glm::vec3> vertices)
+Sphere RitterBoundingSphere(const EVec<glm::vec3>& vertices)
 {
     glm::vec3 vmin, vmax;
 
@@ -58,4 +59,33 @@ Sphere RitterBoundingSphere(const EVec<glm::vec3> vertices)
         }
     }
     return Sphere{ centre, radius };
+}
+
+void Sphere::Serialize(IArchive& a)
+{
+    if (a.IsStoring())
+    {
+        a.PushObj("Sphere");
+            a.PushObj("Center");
+                a << center;
+            a.PopObj();
+            a.PushObj("Radius");
+                a << radius;
+            a.PopObj();
+        a.PopObj();
+    }
+    else
+    {
+        a.PushObj("Sphere");
+            a.PushObj("Sphere");
+            a.PushObj("Center");
+                a >> center;
+            a.PopObj();
+            a.PushObj("Radius");
+                a >> radius;
+            a.PopObj();
+        a.PopObj();
+        a.PopObj();
+    }
+    
 }

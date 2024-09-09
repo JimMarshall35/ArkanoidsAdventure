@@ -80,6 +80,7 @@ static const char* gMeshFrag =
 	"FragColor = vec4((ambient + diffuse + specular),1.0) * colour;\n"
 "}\n";
 
+TestPipeline gTestPipelineInstance;
 
 EVec<char> ToVector(const char* cString)
 {
@@ -199,7 +200,7 @@ void TestPipeline::PerDrawUniform(int pipelineStage)
 	EntityReg& eReg = scn.entities.GetReg();
 	CameraComponent& cam = eReg.get<CameraComponent>(scn.activeCameraAntity);
 	Transform& transCam = eReg.get<Transform>(scn.activeCameraAntity);
-	glm::mat4x4 view = glm::lookAt(transCam.getGlobalPosition(), transCam.getForward(), transCam.getUp());
+	glm::mat4x4 view = cam.GetView(transCam);//glm::lookAt(transCam.getGlobalPosition(), transCam.getForward(), transCam.getUp());
 	api.SetPipelineUniform_Vec3(PipelineHandle, hLightPos, 0, pos);
 	api.SetPipelineUniform_Vec3(PipelineHandle, hLightColour, 0, plc.colour);
 	api.SetPipelineUniform_Mat4(PipelineHandle, hView, 0, view);
@@ -214,9 +215,7 @@ void TestPipeline::PerInstanceUniform(int pipelineStage, HDrawable drawable, Ent
 	EntityReg& reg = scn.entities.GetReg();
 	Transform& t = reg.get<Transform>(e);
 	TestPipelineMaterial& m = reg.get<TestPipelineMaterial>(e);
-	api.SetPipelineUniform_Mat4(PipelineHandle, hModel, pipelineStage, t.getModelMatrix());
-	api.SetPipelineUniform_Mat4(PipelineHandle, hModel, pipelineStage, t.getModelMatrix());
-	
+	api.SetPipelineUniform_Mat4(PipelineHandle, hModel, pipelineStage, t.getModelMatrix()); 	
 	api.SetPipelineUniform_Float(PipelineHandle, hAmbientStrength, 0, m.ambientStrength);
 	api.SetPipelineUniform_Float(PipelineHandle, hSpecularStrength, 0, m.speculatStrength);
 	api.SetPipelineUniform_Float(PipelineHandle, hDiffuseStrength, 0, m.diffuseStrength);
@@ -266,7 +265,7 @@ static void SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, EntityReg
 				ar->PushObj("shininess");
 					*ar << mc->shininess;
 				ar->PopObj();
-				ar->PushObj("shininess");
+				ar->PushObj("hTexture");
 					*ar << mc->hTexture;
 				ar->PopObj();
 			ar->PopObj();
@@ -295,7 +294,7 @@ static void SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, EntityReg
 			ar->PushObj("shininess");
 				*ar << mc->shininess;
 			ar->PopObj();
-			ar->PushObj("shininess");
+			ar->PushObj("hTexture");
 				*ar << mc->hTexture;
 			ar->PopObj();
 		}

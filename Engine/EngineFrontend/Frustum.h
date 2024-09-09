@@ -6,6 +6,7 @@ class Camera;
 struct Sphere;
 struct AABB;
 class Transform;
+struct CameraComponent;
 
 struct Frustum
 {
@@ -19,7 +20,7 @@ struct Frustum
     Plane nearFace;
 };
 
-Frustum CreateFrustumFromCamera(const Transform& cam, float aspect, float fovY, float zNear, float zFar);
+Frustum CreateFrustumFromCamera(const Transform& cam, CameraComponent& comComp, float aspect, float fovY, float zNear, float zFar);
 
 Frustum CreateFrustumFromCamera(const Camera& cam, float aspect, float fovY, float zNear, float zFar);
 

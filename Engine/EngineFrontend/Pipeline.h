@@ -96,6 +96,11 @@ public:
 	HPipelineUniformProperty TryGetUniformProperty(const char* name) const;
 	HDrawable GetDrawable(HMesh mesh, Entity e);
 	HPipeline GetH() { return PipelineHandle; }
+	static PipeLine* TryGetPipeline(const char* name);
+	static PipeLine* TryGetPipeline(HPipeline h);
+
+	static void IteratePipelines(bool(*callBack)(PipeLine* pn, void* pUser), void* pUser);
+	static int NumPipelines();
 private:
 
 	static void PerDrawUnifomSetter(HPipeline pipeline, void* pUserData, int pipelineStage);

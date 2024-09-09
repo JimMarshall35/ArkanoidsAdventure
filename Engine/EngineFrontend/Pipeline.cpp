@@ -70,8 +70,9 @@ bool PipeLineStage::IsMeshSemanticsCompatible(PipelinePropertySemantics meshData
 }
 
 PipeLine::PipeLine(const char* name)
-	:Name(name)
+	:Autolist<PipeLine>(true)//Name(name)
 {
+	Name = name;
 }
 
 void PipeLine::Create()
@@ -104,7 +105,73 @@ HDrawable PipeLine::GetDrawable(HMesh mesh, Entity e)
 	const BackendAPI& api = Engine::GetAPI();
 	HDrawable hDrawable = api.CreateDrawable(PipelineHandle, mesh, (void*)e);
 	api.RegisterPerInstanceUniformSetter(hDrawable, &PerInstanceUniformSetter);
+	api.RegisterPerDrawUniformSetter(hDrawable, &PerDrawUnifomSetter);
 	return hDrawable;
+}
+
+PipeLine* PipeLine::TryGetPipeline(const char* name)
+{
+	std::pair<const char*, PipeLine*> pair;
+	pair.first = name;
+	pair.second = nullptr;
+	auto fn = [](PipeLine* p, void* pUser) -> bool
+	{
+		std::pair<const char*, PipeLine*>* pair = (std::pair<const char*, PipeLine*>*)pUser;
+		if (strcmp(pair->first, p->GetName()) == 0)
+		{
+			pair->second = p;
+			return true;
+		}
+		return false; 
+	};
+	IteratePipelines(fn, &pair);
+	return pair.second;
+}
+
+PipeLine* PipeLine::TryGetPipeline(HPipeline h)
+{
+	std::pair<HPipeline, PipeLine*> pair;
+	pair.first = h;
+	pair.second = nullptr;
+	auto fn = [](PipeLine* p, void* pUser) -> bool
+	{
+		std::pair<HPipeline, PipeLine*>* pair = (std::pair<HPipeline, PipeLine*>*)pUser;
+		if (pair->first == p->GetH())
+		{
+			pair->second = p;
+			return true;
+		}
+		return false;
+	};
+	IteratePipelines(fn, &pair);
+	return pair.second;
+}
+
+void PipeLine::IteratePipelines(bool(*callBack)(PipeLine* pn, void* pUser), void* pUser)
+{
+	Autolist<PipeLine>* head = Autolist<PipeLine>::GetHead();
+	while (head = head->GetNext())
+	{
+		PipeLine* p = (PipeLine*)head;
+		if (callBack(p, pUser))
+		{
+			break;
+		}
+	}
+}
+
+int PipeLine::NumPipelines()
+{
+	int num;
+	auto fn = [](PipeLine* p, void* pUser) -> bool
+	{
+		int* pNum = (int*)pUser;
+		int& r = *pNum;
+		r++;
+		return false;
+	};
+	IteratePipelines(fn, &num);
+	return num;
 }
 
 void PipeLine::PerDrawUnifomSetter(HPipeline pipeline, void* pUserData, int pipelineStage)
@@ -116,6 +183,6 @@ void PipeLine::PerDrawUnifomSetter(HPipeline pipeline, void* pUserData, int pipe
 void PipeLine::PerInstanceUniformSetter(HDrawable drawable, HPipeline pipeline, int pipelineStage, void* pDrawableUserData, void* pPipelineUserData)
 {
 	PipeLine* p = (PipeLine*)pPipelineUserData;
-	Entity e = (Entity)pDrawableUserData;
+	Entity e = (Entity)(size_t)pDrawableUserData;
 	p->PerInstanceUniform(pipelineStage, drawable, e);
 }

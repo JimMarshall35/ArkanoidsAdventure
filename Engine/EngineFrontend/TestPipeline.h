@@ -7,7 +7,6 @@
 
 struct TestPipelineMaterial
 {
-	glm::mat4 m;
 	float ambientStrength;
 	float speculatStrength;
 	float diffuseStrength;
