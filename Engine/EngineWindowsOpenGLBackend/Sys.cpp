@@ -75,6 +75,7 @@ namespace Sys
 
 	void RegisterWindowResizeHandler(BackendWindowResizeFn fn)
 	{
+		ResizeHandler = fn;
 	}
 
 	int GetW()

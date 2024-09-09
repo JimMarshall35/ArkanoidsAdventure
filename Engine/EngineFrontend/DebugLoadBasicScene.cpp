@@ -131,7 +131,7 @@ void BasicScn::Load(Scn::Scene& scn)
     Engine::GetWindowWidthAndHeight(w, h);
     float aspect = (float)w / (float)h;
     cam.aspect = aspect;
-    cam.fovY = 90.0f;//glm::pi<float>() * 0.25f;
+    cam.fovY = glm::pi<float>() * 0.5f;
 
     cam.zNear = 0.1f;
     cam.zFar = 5000.0f;

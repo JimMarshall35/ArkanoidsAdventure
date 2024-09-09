@@ -14,8 +14,8 @@ static void EditorControls(Scn::Scene& s, double deltaT)
 		if (In::GetBtnVal(controls.ActivateButton))
 		{
 			const glm::vec3& rot = t.getLocalRotation();
-			double dX = In::GetAxisVal(controls.YawAxis);
-			double dY = In::GetAxisVal(controls.PitchAxis);
+			double dX = In::GetAxisVal(controls.PitchAxis );
+			double dY = In::GetAxisVal(controls.YawAxis);
 			t.setLocalRotation({ rot.x + (float)dX, rot.y + (float)dY, rot.z });
 			cam.bViewMatrixDirty = true;
 		}
