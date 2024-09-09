@@ -81,7 +81,7 @@ static bool AABBOnOrForwardplane(const Plane& p, const AABB& a)
 
 bool SphereOnFrustum(const Frustum& f, const Sphere& s, const Transform& t)
 {
-	return true;
+	//return true;
 	//Get global scale thanks to our transform
 	const glm::vec3 globalScale = t.getGlobalScale();
 
