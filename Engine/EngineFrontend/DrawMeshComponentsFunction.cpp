@@ -8,6 +8,7 @@
 #include "PipelineTypes.h"
 #include "EngineDLLInterface.h"
 #include "IBackendApp.h"
+#include "FrontendError.h"
 
 static void Draw(Scn::Scene& s)
 {
@@ -26,6 +27,7 @@ static void Draw(Scn::Scene& s)
 			drawables.push_back(d);
 		}
 	});
+	//Err::LogInfo("%i drawables drawn", drawables.size());
 	if(drawables.size())
 		Engine::GetAPI().DrawDrawables(&drawables[0], drawables.size());
 }

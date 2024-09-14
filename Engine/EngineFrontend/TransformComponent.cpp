@@ -21,7 +21,7 @@ void Transform::AddChild(entt::entity parent, entt::entity child)
 	Scn::Scene& scn = Scn::GetScene();
 	Transform* childTransform = scn.entities.GetReg().try_get<Transform>(child);
 	Transform* parentTransform = scn.entities.GetReg().try_get<Transform>(parent);
-	bool bOK = false;
+	bool bOK = true;
 
 	if (!childTransform)
 	{
@@ -60,19 +60,19 @@ void Transform::AddChild(entt::entity parent, entt::entity child)
 void Transform::setLocalPosition(const glm::vec3& newPosition)
 {
 	m_pos = newPosition;
-	m_isDirty = true;
+	m_bIsDirty = true;
 }
 
 void Transform::setLocalRotation(const glm::vec3& newRotation)
 {
 	m_eulerRot = newRotation;
-	m_isDirty = true;
+	m_bIsDirty = true;
 }
 
 void Transform::setLocalScale(const glm::vec3& newScale)
 {
 	m_scale = newScale;
-	m_isDirty = true;
+	m_bIsDirty = true;
 }
 
 const glm::vec3& Transform::getLocalPosition() const
@@ -100,13 +100,13 @@ void Transform::computeModelMatrix()
 		EAssert(Scn::IsSceneLoaded());
 		Scn::Scene& scn = Scn::GetScene();
 		Transform* parentTransform = scn.entities.GetReg().try_get<Transform>(m_hParent);
-		if (parentTransform->m_isDirty)
+		if (parentTransform->m_bIsDirty)
 		{
 			parentTransform->computeModelMatrix();
 		}
 		m_modelMatrix = parentTransform->m_modelMatrix * m_modelMatrix;
 	}
-	m_isDirty = false;
+	m_bIsDirty = false;
 }
 
 glm::vec3 Transform::getUp() const
@@ -141,7 +141,15 @@ void Transform::Rotate(float x, float y, float z)
 		fmod(m_eulerRot.y + y,360.0),
 		fmod(m_eulerRot.z + z,360.0)
 	};
-	m_isDirty = true;
+	m_bIsDirty = true;
+}
+
+void Transform::Translate(float x, float y, float z)
+{
+	m_pos.x += x;
+	m_pos.y += y;
+	m_pos.z += z;
+	m_bIsDirty = true;
 }
 
 glm::vec3 Transform::getGlobalScale() const
@@ -151,7 +159,7 @@ glm::vec3 Transform::getGlobalScale() const
 
 bool Transform::isDirty() const
 {
-	return m_isDirty;
+	return m_bIsDirty;
 }
 static void MetaReg(Comp::ComponentMeta* m)
 {
@@ -190,7 +198,7 @@ void Transform::SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, Entit
 				*ar << t->m_modelMatrix;
 			ar->PopObj();
 			ar->PushObj("IsDirty");
-				*ar << t->m_isDirty;
+				*ar << t->m_bIsDirty;
 			ar->PopObj();
 			ar->PushObj("Parent");
 				*ar << t->m_hParent;
@@ -232,7 +240,7 @@ void Transform::SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, Entit
 					*ar >> t->m_modelMatrix;
 				ar->PopObj();
 				ar->PushObj("IsDirty");
-					*ar >> t->m_isDirty;
+					*ar >> t->m_bIsDirty;
 				ar->PopObj();
 				ar->PushObj("Parent");
 					*ar >> t->m_hParent;

@@ -20,7 +20,7 @@ protected:
 	glm::mat4 m_modelMatrix = glm::mat4(1.0f);
 
 	//Dirty flag
-	bool m_isDirty = true;
+	bool m_bIsDirty = true;
 
 	entt::entity m_hParent = entt::null;
 	EVec<entt::entity> m_children;
@@ -45,6 +45,8 @@ public:
 	glm::vec3 getForward() const;
 	glm::vec3 getGlobalScale() const;
 	void Rotate(float x, float y, float z);
+	void Translate(float x, float y, float z);
+
 	bool isDirty() const;
 	static void SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, EntityReg& reg);
 };

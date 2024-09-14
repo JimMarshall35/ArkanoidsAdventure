@@ -9,7 +9,11 @@
 
 namespace In
 {
-
+	enum class CursorMode
+	{
+		Disabled,
+		Normal
+	};
 
 	typedef Handle_t HLogicalAxis;
 	typedef Handle_t HLogicalBtn;

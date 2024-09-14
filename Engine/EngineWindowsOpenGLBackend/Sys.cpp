@@ -62,11 +62,6 @@ namespace Sys
 	bool ShouldGameContinue() { return !glfwWindowShouldClose(gWindow); }
 	void Cleanup() {}
 	double GetTime() { return glfwGetTime() * 1000.0; }
-	void PollInput(BackendInputState& s)
-	{
-		glfwPollEvents();
-		BAInput::PollInput(s);
-	}
 
 	void SwapBuffers()
 	{

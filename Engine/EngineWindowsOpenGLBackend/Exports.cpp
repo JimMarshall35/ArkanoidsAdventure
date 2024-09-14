@@ -5,6 +5,7 @@
 #include "OGLRenderer.h"
 #include "Error.h"
 #include "Sys.h"
+#include "Input.h"
 
 extern "C"
 {
@@ -16,7 +17,10 @@ extern "C"
 			&Sys::ShouldGameContinue,
 			&Sys::Cleanup,
 			&Sys::GetTime,
-			&Sys::PollInput,
+			&BAInput::PollInput,
+			&BAInput::GetInputCodeForAscii,
+			&BAInput::GetInputCodeForMouseBtn,
+			&BAInput::SetCursorMode,
 			&Sys::RegisterWindowResizeHandler,
 			&Log::RegisterErrorHandler,
 			&OGL::UploadPipeline,

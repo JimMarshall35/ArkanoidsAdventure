@@ -15,8 +15,8 @@ typedef double f64;
 
 enum class Directions {
 	NONE = 0,
-	UP = 1,
-	DOWN = 2,
+	FORWARD = 1,
+	BACKWARD = 2,
 	LEFT = 4,
 	RIGHT = 8,
 

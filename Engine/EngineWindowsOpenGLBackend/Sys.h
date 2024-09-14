@@ -11,7 +11,6 @@ namespace Sys
 	bool ShouldGameContinue();
 	void Cleanup();
 	double GetTime();
-	void PollInput(BackendInputState& s);
 	void SwapBuffers();
 	void RegisterWindowResizeHandler(BackendWindowResizeFn fn);
 

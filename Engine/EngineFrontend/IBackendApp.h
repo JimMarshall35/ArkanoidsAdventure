@@ -74,6 +74,11 @@ typedef void                                   (*DestroyTextureFn)              
 typedef void*                                  (*GetDrawableUserDataFn)               (HDrawable drawable);
 typedef void*                                  (*GetPipelineUserDataFn)               (HDrawable drawable);
 
+typedef int                                    (*GetCodeForAsciiCharFn)               (char);               // get the platform specific code for the keyboard key of an ascii char
+typedef int                                    (*GetCodeForMouseBtnFn)                (MouseButtons);        // get platform specific code for mouse btn
+
+typedef void                                   (*SetCursorMode)                       (In::CursorMode);
+
 struct BackendAPI 
 {
 	// window, input, ect
@@ -83,6 +88,10 @@ struct BackendAPI
 	VoidFn Cleanup = nullptr;
 	GetTimeFn GetTime = nullptr;
 	PollInputFn PollInput = nullptr;
+	GetCodeForAsciiCharFn GetInputCodeForAscii = nullptr;
+	GetCodeForMouseBtnFn GetInputCodeForMouseBtn = nullptr;
+	SetCursorMode SetCursorMode = nullptr;
+
 	RegisterWindowResizeHandlerFn RegisterResize = nullptr;
 
 	// error handling
@@ -123,4 +132,6 @@ struct BackendAPI
 
 	GetDrawableUserDataFn GetDrawableUserData = nullptr;
 	GetPipelineUserDataFn GetPipelineUserData = nullptr;
+
+
 };

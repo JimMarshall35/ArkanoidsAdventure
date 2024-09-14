@@ -12,6 +12,8 @@
 #include "EditorCamControlsComponent.h"
 #include "DrawMeshComponentsFunction.h"
 #include "TransformMatrixCompute.h"
+#include "EngineDLLInterface.h"
+#include "IBackendApp.h"
 
 const char* LoadFileIntoBuffer(const char* path, long& outBufferSize)
 {
@@ -50,6 +52,8 @@ const char* LoadFileIntoBuffer(const char* path, long& outBufferSize)
 
 void BasicScn::Load(Scn::Scene& scn)
 {
+    const BackendAPI& api = Engine::GetAPI();
+
     // Textures
     scn.textureReg.Clear();
     int width, height, nrChannels;
@@ -139,9 +143,24 @@ void BasicScn::Load(Scn::Scene& scn)
 
     // camera controls
     EditorCamControlsComponent& controls = reg.emplace<EditorCamControlsComponent>(camEnt);
-    In::LogicalButton camActivateBtn;
-    camActivateBtn.name = "camActivate";
-    controls.ActivateButton = In::RegisterLogicalButton(camActivateBtn);
+
+#define BTN(bname, handleStoreLocation)\
+In::LogicalButton bname; bname.name = #bname;\
+handleStoreLocation = In::RegisterLogicalButton(bname);\
+In::EnableDisableBtn(handleStoreLocation, true);
+
+    memset((void*)&controls.MovementButtons[0], 0, sizeof(controls.MovementButtons));
+    BTN(editorcamActivateBtn, controls.ActivateButton);
+    BTN(editorCamForwardBtn, controls.MovementButtons[(u32)Directions::FORWARD]);
+    BTN(editorCamBackwardBtn, controls.MovementButtons[(u32)Directions::BACKWARD]);
+    BTN(editorCamLeftBtn, controls.MovementButtons[(u32)Directions::LEFT]);
+    BTN(editorCamRightBtn, controls.MovementButtons[(u32)Directions::RIGHT]);
+    BTN(editorCamUpBtn, controls.MovementButtons[(u32)Directions::UP]);
+    BTN(editorCamDownBtn, controls.MovementButtons[(u32)Directions::DOWN]);
+    BTN(editorCamMoveSpeedUpBtn, controls.MoveSpeedUpBtn);
+    BTN(editorCamMoveSpeedDownBtn, controls.MoveSpeedDownBtn);
+
+#undef BTN
 
     In::LogicalAxis editorCamX;
     editorCamX.type = In::LogicalAxisType::Delta;
@@ -150,18 +169,27 @@ void BasicScn::Load(Scn::Scene& scn)
     In::LogicalAxis editorCamY;
     editorCamX.type = In::LogicalAxisType::Delta;
     editorCamX.name = "EditorCamY";
+
     
+
     controls.YawAxis = In::RegisterLogicalAxis(editorCamX);
     controls.PitchAxis = In::RegisterLogicalAxis(editorCamY);
 
-    In::MapLogicalAxisToMouseX(controls.YawAxis, In::LogicalAxisType::Delta);
-    In::MapLogicalAxisToMouseY(controls.PitchAxis, In::LogicalAxisType::Delta);
-    In::MapLogicalButtonToMouseKey(controls.ActivateButton, 0); // left mouse TODO: make frontend enum
-
-    In::EnableDisableBtn(controls.ActivateButton, true);
-
     In::EnableDisableAxis(controls.PitchAxis, true);
     In::EnableDisableAxis(controls.YawAxis, true);
+
+    In::MapLogicalAxisToMouseX(controls.YawAxis, In::LogicalAxisType::Delta);
+    In::MapLogicalAxisToMouseY(controls.PitchAxis, In::LogicalAxisType::Delta);
+    In::MapLogicalButtonToMouseKey(controls.ActivateButton, api.GetInputCodeForMouseBtn(MouseButtons::LEFT));
+    In::MapLogicalButtonToMouseKey(controls.MoveSpeedUpBtn, api.GetInputCodeForMouseBtn(MouseButtons::MB_4));
+    In::MapLogicalButtonToMouseKey(controls.MoveSpeedDownBtn, api.GetInputCodeForMouseBtn(MouseButtons::MB_5));
+
+    In::MapLogicalButtonToKeyboardKey(controls.MovementButtons[(u32)Directions::FORWARD], api.GetInputCodeForAscii('w'));
+    In::MapLogicalButtonToKeyboardKey(controls.MovementButtons[(u32)Directions::BACKWARD], api.GetInputCodeForAscii('s'));
+    In::MapLogicalButtonToKeyboardKey(controls.MovementButtons[(u32)Directions::LEFT], api.GetInputCodeForAscii('a'));
+    In::MapLogicalButtonToKeyboardKey(controls.MovementButtons[(u32)Directions::RIGHT], api.GetInputCodeForAscii('d'));
+    In::MapLogicalButtonToKeyboardKey(controls.MovementButtons[(u32)Directions::UP], api.GetInputCodeForAscii('e'));
+    In::MapLogicalButtonToKeyboardKey(controls.MovementButtons[(u32)Directions::DOWN], api.GetInputCodeForAscii('q'));
 
     In::InputSet editorInputSet = In::GetCurrentInputSet();
 

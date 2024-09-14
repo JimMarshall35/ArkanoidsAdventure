@@ -25,12 +25,45 @@ void Err::ReportError(const FrontendLog& err)
     printf("%s\n", err.Msg.c_str());
 }
 
+namespace Err
+{
+    static void VReportError(va_list args, FrontendErrorSeverity es, const char* fmt)
+    {
+        char buf[MAX_LOG_LENGTH];
+        vsprintf_s(buf, fmt, args);
+        ReportError({ buf, es });
+    }
+}
+
+
 void Err::ReportError(FrontendErrorSeverity es, const char* fmt, ...)
 {
     va_list args;
     va_start(args, fmt);
-    char buf[MAX_LOG_LENGTH];
-    vsprintf_s(buf, fmt, args);
-    ReportError({ buf, es });
+    VReportError(args, es, fmt);
+    va_end(args);
+}
+
+void Err::LogInfo(const char* fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    VReportError(args, FrontendErrorSeverity::Info, fmt);
+    va_end(args);
+}
+
+void Err::LogWarning(const char* fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    VReportError(args, FrontendErrorSeverity::Warning, fmt);
+    va_end(args);
+}
+
+void Err::LogError(const char* fmt, ...)
+{
+    va_list args;
+    va_start(args, fmt);
+    VReportError(args, FrontendErrorSeverity::Error, fmt);
     va_end(args);
 }
