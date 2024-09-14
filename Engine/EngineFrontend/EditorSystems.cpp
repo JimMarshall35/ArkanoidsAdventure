@@ -5,6 +5,7 @@
 #include "CameraComponent.h"
 #include "InputFrontend.h"
 
+#define SENSITIVITY 0.4f
 static void EditorControls(Scn::Scene& s, double deltaT)
 {
 	EntityReg& r = s.entities.GetReg();
@@ -16,7 +17,7 @@ static void EditorControls(Scn::Scene& s, double deltaT)
 			const glm::vec3& rot = t.getLocalRotation();
 			double dX = In::GetAxisVal(controls.PitchAxis );
 			double dY = In::GetAxisVal(controls.YawAxis);
-			t.setLocalRotation({ rot.x + (float)dX, rot.y + (float)dY, rot.z });
+			t.Rotate((float)dX * SENSITIVITY, (float)dY * SENSITIVITY, 0);
 			cam.bViewMatrixDirty = true;
 		}
 	});

@@ -1,6 +1,7 @@
 #pragma once
 #include "TransformComponent.h"
 #include "IArchive.h"
+#include <cmath>
 
 glm::mat4 Transform::getLocalModelMatrix()
 {
@@ -131,6 +132,16 @@ glm::vec3 Transform::getForward() const
 const glm::mat4& Transform::getModelMatrix() const
 {
 	return m_modelMatrix;
+}
+
+void Transform::Rotate(float x, float y, float z)
+{
+	m_eulerRot = {
+		fmod(m_eulerRot.x + x,360.0),
+		fmod(m_eulerRot.y + y,360.0),
+		fmod(m_eulerRot.z + z,360.0)
+	};
+	m_isDirty = true;
 }
 
 glm::vec3 Transform::getGlobalScale() const

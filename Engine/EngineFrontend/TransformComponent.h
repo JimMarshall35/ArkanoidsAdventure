@@ -44,6 +44,7 @@ public:
 	glm::vec3 getBackward() const;
 	glm::vec3 getForward() const;
 	glm::vec3 getGlobalScale() const;
+	void Rotate(float x, float y, float z);
 	bool isDirty() const;
 	static void SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, EntityReg& reg);
 };

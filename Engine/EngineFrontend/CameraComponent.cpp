@@ -9,7 +9,7 @@ glm::mat4x4 CameraComponent::GetView(const Transform& t)
 {
 	if (bViewMatrixDirty)
 	{
-		viewMatrix = glm::lookAt(t.getGlobalPosition(), t.getGlobalPosition() + glm::normalize(t.getForward()), glm::normalize(worldUp));
+		viewMatrix = glm::inverse(t.getModelMatrix());//glm::lookAt(t.getGlobalPosition(), t.getGlobalPosition() + glm::normalize(t.getForward()), glm::normalize(worldUp));
 		bViewMatrixDirty = false;
 	}
 	return viewMatrix;
