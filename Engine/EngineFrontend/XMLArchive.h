@@ -52,6 +52,7 @@ public:
 	virtual bool PushObj(const char* name) override;
 	virtual void PopObj() override;
 	virtual void Store() override;
+	EString AsString();
 	virtual int CountChildren() override;
 	virtual void PushChild(int c) override;
 

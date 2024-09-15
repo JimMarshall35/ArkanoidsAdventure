@@ -198,6 +198,9 @@
     <ClInclude Include="TransformMatrixCompute.h">
       <Filter>Header Files\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="EditorServer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IBackendApp.cpp">
@@ -289,6 +292,9 @@
     </ClCompile>
     <ClCompile Include="TransformMatrixCompute.cpp">
       <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorServer.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

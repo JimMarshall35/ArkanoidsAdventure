@@ -28,12 +28,13 @@ void EntityRegWrapper::Serialize(IArchive& archive)
 		for (Entity e : v)
 		{
 			archive.PushObj("Entity");
-			Autolist<Comp::ComponentMeta>* pMeta = Autolist<Comp::ComponentMeta>::GetHead();
-			while (pMeta = pMeta->GetNext())
-			{
-				Comp::ComponentMeta* meta = (Comp::ComponentMeta*)pMeta;
-				meta->Serialize(&archive, e, m_Reg);
-			}
+				archive << (u32)e;
+				Autolist<Comp::ComponentMeta>* pMeta = Autolist<Comp::ComponentMeta>::GetHead();
+				while (pMeta = pMeta->GetNext())
+				{
+					Comp::ComponentMeta* meta = (Comp::ComponentMeta*)pMeta;
+					meta->Serialize(&archive, e, m_Reg);
+				}
 			archive.PopObj();
 		}
 		archive.PopObj();

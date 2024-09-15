@@ -2,6 +2,7 @@
 #include "ComponentReg.h"
 #include "FrontendError.h"
 #include <stdio.h>
+#include <sstream>
 
 XMLArchive::XMLArchive(const char* path, bool bStoring)
     :m_bStoring(bStoring), m_strPath(path)
@@ -442,6 +443,13 @@ void XMLArchive::PopObj()
 void XMLArchive::Store()
 {
     m_Doc.save_file(m_strPath.c_str());
+}
+
+EString XMLArchive::AsString()
+{
+    std::ostringstream ss;
+    m_Doc.save(ss);
+    return ss.str();
 }
 
 pugi::xml_node XMLArchive::TopNode() const

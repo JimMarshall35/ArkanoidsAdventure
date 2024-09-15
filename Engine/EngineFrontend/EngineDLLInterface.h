@@ -8,6 +8,7 @@ struct EngineInitArgs
 	EString CommandLineArgs;
 	EWString BackEndRendererDLLPath;
 	EString InitialScenePath = "";
+	bool bUseEditorServer = true;
 };
 
 namespace  Engine

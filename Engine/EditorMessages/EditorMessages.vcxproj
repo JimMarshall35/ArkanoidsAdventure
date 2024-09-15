@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -21,33 +21,33 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{b58f1818-2fbb-4a18-bf69-6048d06d5897}</ProjectGuid>
-    <RootNamespace>Project1</RootNamespace>
+    <ProjectGuid>{d0302860-df0b-4f4e-9317-902d4789c860}</ProjectGuid>
+    <RootNamespace>EditorMessages</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>EngineFrontend</ProjectName>
+    <ProjectName>EditorCommon</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -79,24 +79,23 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)glm;$(SolutionDir)entt-3.13.2\src;&amp;(SolutionDir)pugixml-1.14;$(SolutionDir)EditorMessages;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)glm;$(SolutionDir)entt-3.13.2\src;&amp;(SolutionDir)pugixml-1.14;$(SolutionDir)EditorMessages;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)$(Platform)\$(Configuration)\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;EDITORMESSAGES_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -105,28 +104,33 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;EDITORMESSAGES_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);ENGINEFRONTEND_EXPORTS;ENGINEFRONTEND_EXPORTS;CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;EDITORMESSAGES_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>EditorCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EnableUAC>false</EnableUAC>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -135,101 +139,40 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);ENGINEFRONTEND_EXPORTS;ENGINEFRONTEND_EXPORTS;CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;EDITORMESSAGES_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>EditorCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <EnableUAC>false</EnableUAC>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AABB.h" />
-    <ClInclude Include="Autolist.h" />
-    <ClInclude Include="CameraComponent.h" />
-    <ClInclude Include="ComponentReg.h" />
-    <ClInclude Include="DebugLoadBasicScene.h" />
-    <ClInclude Include="DrawMeshComponentsFunction.h" />
-    <ClInclude Include="EditorCamControlsComponent.h" />
-    <ClInclude Include="EditorServer.h" />
-    <ClInclude Include="EditorSystems.h" />
-    <ClInclude Include="EntityRegWrapper.h" />
-    <ClInclude Include="FrontendError.h" />
-    <ClInclude Include="IArchive.h" />
-    <ClInclude Include="InputFrontend.h" />
-    <ClInclude Include="Lighting.h" />
-    <ClInclude Include="MeshReg.h" />
-    <ClInclude Include="PointLightComponent.h" />
-    <ClInclude Include="pugiconfig.hpp" />
-    <ClInclude Include="pugixml.hpp" />
-    <ClInclude Include="Sphere.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="EngineDLLInterface.h" />
-    <ClInclude Include="EngineLib.h" />
-    <ClInclude Include="ExportMacro.h" />
-    <ClInclude Include="Frustum.h" />
-    <ClInclude Include="MeshComponent.h" />
-    <ClInclude Include="ObjectPool.h" />
-    <ClInclude Include="OBJ\ObjFile.h" />
-    <ClInclude Include="Pipeline.h" />
-    <ClInclude Include="IBackendApp.h" />
-    <ClInclude Include="PipelineMeshData.h" />
-    <ClInclude Include="PipelineTypes.h" />
-    <ClInclude Include="Plane.h" />
-    <ClInclude Include="Scene.h" />
-    <ClInclude Include="stb_image.h" />
-    <ClInclude Include="SystemsReg.h" />
-    <ClInclude Include="TestPipeline.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="TextureReg.h" />
-    <ClInclude Include="TransformComponent.h" />
-    <ClInclude Include="TransformMatrixCompute.h" />
-    <ClInclude Include="XMLArchive.h" />
+    <ClInclude Include="CommonEditorServerDefines.h" />
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="GetSceneXMLMessage.h" />
+    <ClInclude Include="EditorServerMsg.h" />
+    <ClInclude Include="MessageTypes.h" />
+    <ClInclude Include="NewEntityMessage.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="ThreadSafeQueue.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="CameraComponent.cpp" />
-    <ClCompile Include="ComponentReg.cpp" />
-    <ClCompile Include="DebugLoadBasicScene.cpp" />
-    <ClCompile Include="DrawMeshComponentsFunction.cpp" />
-    <ClCompile Include="EditorServer.cpp" />
-    <ClCompile Include="EditorSystems.cpp" />
-    <ClCompile Include="EngineDLLInterface.cpp" />
-    <ClCompile Include="EntityRegWrapper.cpp" />
-    <ClCompile Include="FrontendError.cpp" />
-    <ClCompile Include="Frustum.cpp" />
-    <ClCompile Include="IBackendApp.cpp" />
-    <ClCompile Include="InputFrontend.cpp" />
-    <ClCompile Include="Lighting.cpp" />
-    <ClCompile Include="MeshReg.cpp" />
-    <ClCompile Include="PointLightComponent.cpp" />
-    <ClCompile Include="MeshComponent.cpp" />
-    <ClCompile Include="OBJ\ObjFile.cpp" />
-    <ClCompile Include="Pipeline.cpp" />
-    <ClCompile Include="PipelineMeshData.cpp" />
-    <ClCompile Include="PipelineTypes.cpp" />
-    <ClCompile Include="pugixml.cpp" />
-    <ClCompile Include="Scene.cpp" />
-    <ClCompile Include="Sphere.cpp" />
-    <ClCompile Include="SystemsReg.cpp" />
-    <ClCompile Include="TestPipeline.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="TextureReg.cpp" />
-    <ClCompile Include="TransformComponent.cpp" />
-    <ClCompile Include="TransformMatrixCompute.cpp" />
-    <ClCompile Include="XMLArchive.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\EditorMessages\EditorMessages.vcxproj">
-      <Project>{d0302860-df0b-4f4e-9317-902d4789c860}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\WindowsVulkanBackend\ConsoleApplication1.vcxproj">
-      <Project>{01311ac2-8ce3-446a-9b01-f42e2230b4b5}</Project>
-    </ProjectReference>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="EditorServerMsg.cpp" />
+    <ClCompile Include="NewEntityMessage.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
