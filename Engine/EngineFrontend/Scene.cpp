@@ -46,10 +46,11 @@ namespace Scn
 		s.meshReg.ReloadMeshes(oldToNewMeshMap);
 		s.entities.PostSerializeFix(pipelineHandleToMap, oldToNewTextureMap, oldToNewMeshMap);
 		Autolist<Comp::ComponentMeta>* pMeta = Autolist<Comp::ComponentMeta>::GetHead();
-		while (pMeta = pMeta->GetNext())
+		while (pMeta)
 		{
 			Comp::ComponentMeta* meta = (Comp::ComponentMeta*)pMeta;
 			meta->RegisterListeners(s.entities.GetReg());
+			pMeta = pMeta->GetNext();
 		}
 
 		gbSceneLoaded = true;

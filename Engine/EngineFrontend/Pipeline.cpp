@@ -150,13 +150,14 @@ PipeLine* PipeLine::TryGetPipeline(HPipeline h)
 void PipeLine::IteratePipelines(bool(*callBack)(PipeLine* pn, void* pUser), void* pUser)
 {
 	Autolist<PipeLine>* head = Autolist<PipeLine>::GetHead();
-	while (head = head->GetNext())
+	while (head)
 	{
 		PipeLine* p = (PipeLine*)head;
 		if (callBack(p, pUser))
 		{
 			break;
 		}
+		head = head->GetNext();
 	}
 }
 

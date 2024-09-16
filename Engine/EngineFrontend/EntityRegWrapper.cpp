@@ -30,10 +30,11 @@ void EntityRegWrapper::Serialize(IArchive& archive)
 			archive.PushObj("Entity");
 				archive << (u32)e;
 				Autolist<Comp::ComponentMeta>* pMeta = Autolist<Comp::ComponentMeta>::GetHead();
-				while (pMeta = pMeta->GetNext())
+				while (pMeta)
 				{
 					Comp::ComponentMeta* meta = (Comp::ComponentMeta*)pMeta;
 					meta->Serialize(&archive, e, m_Reg);
+					pMeta = pMeta->GetNext();
 				}
 			archive.PopObj();
 		}
@@ -54,10 +55,11 @@ void EntityRegWrapper::Serialize(IArchive& archive)
 				archive.PushChild(i);
 				Entity e = m_Reg.create();
 				Autolist<Comp::ComponentMeta>* pMeta = Autolist<Comp::ComponentMeta>::GetHead();
-				while (pMeta = pMeta->GetNext())
+				while (pMeta)
 				{
 					Comp::ComponentMeta* meta = (Comp::ComponentMeta*)pMeta;
 					meta->Serialize(&archive, e, m_Reg);
+					pMeta = pMeta->GetNext();
 				}
 				archive.PopObj();
 			}

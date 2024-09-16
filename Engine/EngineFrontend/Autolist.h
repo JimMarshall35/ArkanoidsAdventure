@@ -8,16 +8,15 @@ public:
 	{
 		if (bAddToList)
 		{
-			if (Head.Next)
+			if (Head)
 			{
-				Head.Next->Prev = this;
-				Next = Head.Next;
-				Head.Next = this;
+				Next = Head;
+				Head->Prev = this;
+				Head = this;
 			}
 			else
 			{
-				Head.Next = this;
-				Prev = Head.Next;
+				Head = this;
 			}
 			ListLength++;
 			bInList = true;
@@ -36,22 +35,27 @@ public:
 			{
 				Next->Prev = Prev;
 			}
+			if (Head == this)
+			{
+				Head = Next;
+			}
 			ListLength--;
 		}
 	}
-	static Autolist* GetHead() { return &Head; }
-	Autolist* GetPrev() { return Prev; }
+	static Autolist* GetHead() { return Head; }
+	static size_t GetCount() { return ListLength; }
+ 	Autolist* GetPrev() { return Prev; }
 	Autolist* GetNext() { return Next; }
 private:
 	bool bInList = false;
 	Autolist* Prev = nullptr;
 	Autolist* Next = nullptr;
-	static Autolist<T> Head;
+	static Autolist<T>* Head;
 	static size_t ListLength;
 };
 
 template<typename T>
-Autolist<T> Autolist<T>::Head;
+Autolist<T>* Autolist<T>::Head = nullptr;
 
 template<typename T>
 size_t Autolist<T>::ListLength = 0;

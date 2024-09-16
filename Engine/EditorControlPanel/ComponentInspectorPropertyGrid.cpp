@@ -165,7 +165,7 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 		case ArchiveType::I64:
 			if (xml_attribute attr = n.attribute("i64Val"))
 			{
-				COleVariant v = std::stoll(attr.value());
+				COleVariant v = std::stol(attr.value());
 				CMFCPropertyGridProperty* pAttrProp = new CMFCPropertyGridProperty(L"i64", v);
 				pProp->AddSubItem(pAttrProp);
 			}
@@ -173,7 +173,7 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 		case ArchiveType::U64:
 			if (xml_attribute attr = n.attribute("u64Val"))
 			{
-				COleVariant v = std::stoull(attr.value());
+				COleVariant v = std::stol(attr.value());
 				CMFCPropertyGridProperty* pAttrProp = new CMFCPropertyGridProperty(L"u64", v);
 				pProp->AddSubItem(pAttrProp);
 			}

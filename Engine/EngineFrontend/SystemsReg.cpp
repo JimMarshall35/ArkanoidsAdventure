@@ -157,13 +157,14 @@ UpdateSystem::UpdateSystem(UpdateSystemFn fn, UpdateFunctionGroup group, const c
 UpdateSystem* UpdateSystem::GetByName(const char* name)
 {
 	Autolist<UpdateSystem>* head = Autolist<UpdateSystem>::GetHead();
-	while (head = head->GetNext())
+	while (head)
 	{
 		UpdateSystem* p = (UpdateSystem*)head;
 		if (strcmp(p->GetName(), name) == 0)
 		{
 			return p;
 		}
+		head = head->GetNext();
 	}
 	return nullptr;
 }
@@ -177,13 +178,14 @@ DrawSystem::DrawSystem(DrawSystemFn fn, DrawFunctionGroup group, const char* nam
 DrawSystem* DrawSystem::GetByName(const char* name)
 {
 	Autolist<DrawSystem>* head = Autolist<DrawSystem>::GetHead();
-	while (head = head->GetNext())
+	while (head)
 	{
 		DrawSystem* p = (DrawSystem*)head;
 		if (strcmp(p->GetName(), name) == 0)
 		{
 			return p;
 		}
+		head = head->GetNext();
 	}
 	return nullptr;
 }
