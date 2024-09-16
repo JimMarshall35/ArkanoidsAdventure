@@ -191,6 +191,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ComponentInspectorPropertyGrid.h" />
     <ClInclude Include="EditorClient.h" />
     <ClInclude Include="EditorControlPanel.h" />
     <ClInclude Include="EditorControlPanelDlg.h" />
@@ -199,9 +200,11 @@
     <ClInclude Include="pugiconfig.hpp" />
     <ClInclude Include="pugixml.hpp" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="StringHelpers.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ComponentInspectorPropertyGrid.cpp" />
     <ClCompile Include="EditorClient.cpp" />
     <ClCompile Include="EditorControlPanel.cpp" />
     <ClCompile Include="EditorControlPanelDlg.cpp" />
@@ -212,6 +215,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="pugixml.cpp" />
+    <ClCompile Include="StringHelpers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="EditorControlPanel.rc" />

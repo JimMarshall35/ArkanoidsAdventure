@@ -8,12 +8,15 @@
 #include "EditorControlPanelDlg.h"
 #include "afxdialogex.h"
 #include "EditorClient.h"
+#include "StringHelpers.h"
 #include "EditorServerMsg.h"
 #include "resource.h"
 #include <variant>
 #include <codecvt>
 #include <locale> 
-
+#include <array>
+#include <algorithm>
+#include <functional>
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -64,19 +67,27 @@ CEditorControlPanelDlg::CEditorControlPanelDlg(CWnd* pParent /*=nullptr*/)
 
 void CEditorControlPanelDlg::DoDataExchange(CDataExchange* pDX)
 {
-	DDX_Control(pDX, IDC_ENTITIES_TREE, m_ctrEntityTree);
-	DDX_Control(pDX, IDC_COMPONENT_INSPECTOR_PROPERTY_GRID, m_ctrComponentInspector);
+	DDX_Control(pDX, IDC_ENTITIES_TREE, m_ctlEntityTree);
+	DDX_Control(pDX, IDC_COMPONENT_INSPECTOR_PROPERTY_GRID, m_ctlComponentInspector);
+	DDX_Control(pDX, IDC_SELECTED_COMPONENT_TITLE, m_ctlSelectedComponentTitle);
 	CDialogEx::DoDataExchange(pDX);
 }
 
 void CEditorControlPanelDlg::OnSelChangedTreeCtrl(NMHDR* pNMHDR, LRESULT* pResult)
 {
+	using namespace pugi;
+	static_assert(sizeof(xml_node) == sizeof(DWORD_PTR));
 	NM_TREEVIEW* pNMTreeView = (NM_TREEVIEW*)pNMHDR;
 	TVITEMW item = pNMTreeView->itemNew;
+	xml_node propertyNode;
+	memcpy(&propertyNode, &item.lParam, sizeof(DWORD_PTR));
 	
-
-
-
+	if (HTREEITEM parent = m_ctlEntityTree.GetNextItem(item.hItem, TVGN_PARENT))
+	{
+		uint32_t entity = m_ctlEntityTree.GetItemData(parent);
+		m_ctlComponentInspector.OnNewComponentSelected(entity, propertyNode);
+		SetSelectedComponentText(propertyNode, entity);
+	}
 }
 
 
@@ -96,7 +107,7 @@ void CEditorControlPanelDlg::HandleMsgRecieved(const EditorServer::Msg& msg)
 		{
 			const EditorServer::GetSceneXmlMsg_Response& resp = std::get<EditorServer::GetSceneXmlMsg_Response>(msg.Data);
 			m_Doc.load_buffer(resp.xml.c_str(), resp.xml.length());
-			m_ctrEntityTree.OnNewSceneRecived(m_Doc);
+			m_ctlEntityTree.OnNewSceneRecived(m_Doc);
 			break;
 		}
 	case EditorServer::MsgType::NewEntity_Response:
@@ -104,6 +115,14 @@ void CEditorControlPanelDlg::HandleMsgRecieved(const EditorServer::Msg& msg)
 	default:
 		break;
 	}
+}
+
+void CEditorControlPanelDlg::SetSelectedComponentText(pugi::xml_node propertyNode, uint32_t entity)
+{
+	std::wstring ws = s2ws(propertyNode.name());
+	CString text;
+	text.Format(_T("%s - Entity %i"), ws.c_str(), entity);
+	m_ctlSelectedComponentTitle.SetWindowText(text);
 }
 
 void CEditorControlPanelDlg::OnTimer(UINT_PTR nIDEvent)
@@ -228,48 +247,6 @@ HCURSOR CEditorControlPanelDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-std::wstring s2ws(const char* str)
-{
-	size_t len = strlen(str);
-	int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)len, NULL, 0);
-	std::wstring wstrTo(size_needed, 0);
-	MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)len, &wstrTo[0], size_needed);
-	return wstrTo;
-}
-void CEntityTreeCtrl::OnNewSceneRecived(const pugi::xml_document& xmlScene)
-{
-	using namespace pugi;
-	static_assert(sizeof(xml_node) == sizeof(DWORD_PTR));
 
-	VERIFY(DeleteAllItems());
-	if (xml_node node = xmlScene.child("Scene"))
-	{
-		if (xml_node ents = node.child("Entities"))
-		{
-			for (xml_node ent : ents)
-			{
-				ASSERT(strcmp(ent.name(), "Entity") == 0);
-				if (xml_attribute a = ent.attribute("u32Val"))
-				{
-					std::uint32_t id = atoi(a.value());
-					CString st;
-					st.Format(_T("Entity (ID: %i)"), id);
-					HTREEITEM hEntity = InsertItem(st);
-					SetItemData(hEntity, (DWORD_PTR)id);
-					for (xml_node prop : ent)
-					{
-						std::wstring ws = s2ws(prop.name());
-						HTREEITEM hProp = InsertItem(ws.c_str(), hEntity);
-						
-					}
-				}
-				
-			}
-		}
-		// error here
-	}
-	else
-	{
-		// error here
-	}
-}
+
+

@@ -316,9 +316,9 @@ void XMLArchive::operator>>(glm::ivec2& v)
     EAssert(!m_bStoring);
     pugi::xml_node n = TopNode();
     pugi::xml_attribute a;
-    a = n.attribute("x");
+    a = n.attribute("ix");
     v.x = a.as_int();
-    a = n.attribute("y");
+    a = n.attribute("iy");
     v.y = a.as_int();
 }
 
@@ -327,9 +327,9 @@ void XMLArchive::operator<<(const glm::ivec2& v)
     EAssert(m_bStoring);
     pugi::xml_node n = TopNode();
     pugi::xml_attribute a;
-    a = n.append_attribute("x");
+    a = n.append_attribute("ix");
     a.set_value(v.x);
-    a = n.append_attribute("y");
+    a = n.append_attribute("iy");
     a.set_value(v.y);
 
 }
@@ -338,11 +338,11 @@ void XMLArchive::operator>>(glm::ivec3& v)
     EAssert(!m_bStoring);
     pugi::xml_node n = TopNode();
     pugi::xml_attribute a;
-    a = n.attribute("x");
+    a = n.attribute("ix");
     v.x = a.as_int(); 
-    a = n.attribute("y");
+    a = n.attribute("iy");
     v.y = a.as_int();
-    a = n.attribute("z");
+    a = n.attribute("iz");
     v.z = a.as_int();
 }
 
@@ -351,11 +351,11 @@ void XMLArchive::operator<<(const glm::ivec3& v)
     EAssert(m_bStoring);
     pugi::xml_node n = TopNode();
     pugi::xml_attribute a;
-    a = n.append_attribute("x");
+    a = n.append_attribute("ix");
     a.set_value(v.x);
-    a = n.append_attribute("y");
+    a = n.append_attribute("iy");
     a.set_value(v.y);
-    a = n.append_attribute("z");
+    a = n.append_attribute("iz");
     a.set_value(v.z);
 }
 

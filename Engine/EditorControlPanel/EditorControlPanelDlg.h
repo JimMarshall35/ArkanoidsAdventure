@@ -3,24 +3,13 @@
 //
 
 #pragma once
-#include <string>
-#include "pugixml.hpp"
+#include "ComponentInspectorPropertyGrid.h"
 
 namespace EditorServer
 {
 	struct Msg;
 }
 
-class CComponentInspectorPropertyGrid : public CMFCPropertyGridCtrl
-{
-
-};
-
-class CEntityTreeCtrl : public CTreeCtrl
-{
-public:
-	void OnNewSceneRecived(const pugi::xml_document& xmlScene);
-};
 
 // CEditorControlPanelDlg dialog
 class CEditorControlPanelDlg : public CDialogEx
@@ -34,7 +23,7 @@ public:
 	enum { IDD = IDD_EDITORCONTROLPANEL_DIALOG };
 #endif
 
-	protected:
+protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 	afx_msg void OnSelChangedTreeCtrl(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
@@ -45,8 +34,9 @@ protected:
 	HICON m_hIcon;
 	UINT_PTR m_RecieveQueueTimer = 0;
 	pugi::xml_document m_Doc;
-	CEntityTreeCtrl m_ctrEntityTree;
-	CComponentInspectorPropertyGrid m_ctrComponentInspector;
+	CEntityTreeCtrl m_ctlEntityTree;
+	CComponentInspectorPropertyGrid m_ctlComponentInspector;
+	CStatic m_ctlSelectedComponentTitle;
 
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
@@ -55,5 +45,6 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	afx_msg void Test();
 	void HandleMsgRecieved(const EditorServer::Msg& msg);
+	void SetSelectedComponentText(pugi::xml_node propertyNode, uint32_t entity);
 	DECLARE_MESSAGE_MAP()
 };
