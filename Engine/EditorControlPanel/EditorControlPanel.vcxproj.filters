@@ -48,6 +48,9 @@
     <ClInclude Include="StringHelpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EntityTreeCtrl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EditorControlPanel.cpp">
@@ -69,6 +72,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="StringHelpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityTreeCtrl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -195,6 +195,7 @@
     <ClInclude Include="EditorClient.h" />
     <ClInclude Include="EditorControlPanel.h" />
     <ClInclude Include="EditorControlPanelDlg.h" />
+    <ClInclude Include="EntityTreeCtrl.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="pugiconfig.hpp" />
@@ -208,6 +209,7 @@
     <ClCompile Include="EditorClient.cpp" />
     <ClCompile Include="EditorControlPanel.cpp" />
     <ClCompile Include="EditorControlPanelDlg.cpp" />
+    <ClCompile Include="EntityTreeCtrl.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

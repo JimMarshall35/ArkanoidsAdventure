@@ -4,6 +4,7 @@
 
 #pragma once
 #include "ComponentInspectorPropertyGrid.h"
+#include "EntityTreeCtrl.h"
 
 namespace EditorServer
 {
