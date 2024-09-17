@@ -8,6 +8,8 @@ class ENGINE_FRONTEND_API XMLArchive : public IArchive
 {
 public:
 	XMLArchive(const char* path, bool bStoring);
+	XMLArchive(const char* xml);
+	pugi::xml_node GetRoot() { return m_Doc.root(); }
 	~XMLArchive();
 public:
 	// Inherited via IArchive
@@ -29,7 +31,9 @@ public:
 	virtual void operator<<(const glm::vec4& v) override;
 	virtual void operator<<(const glm::ivec2& v) override;
 	virtual void operator<<(const glm::ivec3& v) override;
-	virtual void operator<<(const glm::mat4x4& v) override;
+	virtual void operator<<(const glm::mat4x4& v) override;/*
+	virtual void operator<<(In::HLogicalAxis axis) override;
+	virtual void operator<<(In::HLogicalBtn axis) override;*/
 
 	virtual void operator>>(float& f) override;
 	virtual void operator>>(double& d) override;
@@ -48,7 +52,18 @@ public:
 	virtual void operator>>(glm::vec4& v) override;
 	virtual void operator>>(glm::ivec2& v) override;
 	virtual void operator>>(glm::ivec3& v) override;
-	virtual void operator>>(glm::mat4x4& v) override;
+	virtual void operator>>(glm::mat4x4& v) override;/*
+	virtual void operator>>(In::HLogicalAxis& axis) override;
+	virtual void operator>>(In::HLogicalBtn& axis) override;*/
+
+	/*template <typename T, size_t size>
+	void operator<<(std::array<T, size>& arr)
+	{
+		for (const T& : arr)
+		{
+
+		}
+	}*/
 	virtual bool PushObj(const char* name) override;
 	virtual void PopObj() override;
 	virtual void Store() override;

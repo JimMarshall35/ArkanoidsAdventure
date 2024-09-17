@@ -39,6 +39,9 @@
     <ClInclude Include="CommonEditorServerDefines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EditComponentMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

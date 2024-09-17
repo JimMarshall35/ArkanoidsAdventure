@@ -2,6 +2,7 @@
 #include "MessageTypes.h"
 #include "NewEntityMessage.h"
 #include "GetSceneXMLMessage.h"
+#include "EditComponentMessage.h"
 #include <variant>
 
 namespace EditorServer
@@ -11,7 +12,8 @@ namespace EditorServer
 		MsgType Type;
 		std::variant<
 			NewEntityMessage, NewEntityMessage_Response,
-			GetSceneXmlMsg, GetSceneXmlMsg_Response
+			GetSceneXmlMsg, GetSceneXmlMsg_Response,
+			EditComponentMsg, EditComponentMsg_Response
 		> Data;
 	};
 

@@ -70,8 +70,12 @@ void MeshComponent::SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, E
 		{
 			int fileVersion = 0;
 			if (!ar->PushObj("MeshComponent")) return;
-				reg.emplace<MeshComponent>(e);
 				MeshComponent* mc = reg.try_get<MeshComponent>(e);
+				if (!mc)
+				{
+					reg.emplace<MeshComponent>(e);
+					mc = reg.try_get<MeshComponent>(e);
+				}
 				*ar >> fileVersion;
 				switch (fileVersion)
 				{

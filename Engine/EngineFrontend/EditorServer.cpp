@@ -14,12 +14,14 @@
 #include "MessageTypes.h"
 #include "Scene.h"
 #include "XMLArchive.h"
+#include "ComponentReg.h"
+#include <variant>
 
 #ifdef _WIN32
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#endif
 #pragma comment(lib, "Ws2_32.lib")
+#endif
 
 namespace Editor {
 #ifdef _WIN32
@@ -75,9 +77,9 @@ namespace Editor {
 		return 0;
 	}
 
-	void HandleRecievedEditorMsg(const EditorServer::Msg& msg)
+	void HandleRecievedEditorMsg(const EditorServer::Msg& msgIn)
 	{
-		switch (msg.Type)
+		switch (msgIn.Type)
 		{
 		case EditorServer::MsgType::GetSceneXML:
 			{
@@ -97,6 +99,23 @@ namespace Editor {
 				msg.Type = EditorServer::MsgType::NewEntity_Response;
 				msg.Data = EditorServer::NewEntityMessage_Response{true};
 				gSendQueue.Push(msg);
+				break;
+			}
+		case EditorServer::MsgType::EditComponent:
+			{
+				XMLArchive ar(std::get<EditorServer::EditComponentMsg>(msgIn.Data).newComponentXml.c_str());
+				Entity e = (Entity)std::get<EditorServer::EditComponentMsg>(msgIn.Data).entity;
+				pugi::xml_node n = ar.GetRoot();
+				const char* nodeName = n.name();
+				if (Comp::ComponentMeta* pMeta = Comp::ComponentMeta::FindByName(nodeName))
+				{
+					pMeta->Serialize(&ar, e, Scn::GetScene().entities.GetReg());
+				}
+				else
+				{
+					Err::LogError("[HandleRecievedEditorMsg] EditComponent message: unknown component type: %s", nodeName);
+				}
+				
 				break;
 			}
 		}
@@ -162,17 +181,17 @@ namespace Editor {
 				iResult = recv(gClientSocket, recvbuf, recvbuflen, 0);
 				if (iResult > 0)
 				{
-					printf("Bytes received: %d\n", iResult);
+					Err::LogInfo("Bytes received: %d\n", iResult);
 					EditorServer::Msg msg = EditorServer::DeserializeMsg((unsigned char*)recvbuf, iResult);
 					gRecieveQueue.Push(msg);
 				}
 				else if (iResult == 0)
 				{
-					printf("Connection closing...\n");
+					Err::LogInfo("Connection closing...\n");
 				}
 				else
 				{
-					printf("recv failed: %d\n", WSAGetLastError());
+					Err::LogError("recv failed: %d\n", WSAGetLastError());
 					closesocket(gClientSocket);
 					WSACleanup();
 					break;
@@ -231,6 +250,10 @@ namespace Editor {
 	}
 	void DeInit()
 	{
+	}
+	void PollEditorMessageQueue()
+	{
+
 	}
 #endif
 

@@ -2,6 +2,7 @@
 #include "EditorServerMsg.h"
 #include "MessageTypes.h"
 #include <cassert>
+
 namespace EditorServer
 {
 
@@ -29,6 +30,20 @@ namespace EditorServer
 			msg.Data = NewEntityMessage_Response();
 			std::get<NewEntityMessage_Response>(msg.Data).bOK = *msgData;
 			break;
+		case MsgType::EditComponent:
+		{
+			size_t entity = *((size_t*)msgData);
+			msgData += sizeof(size_t);
+			msg.Data = EditComponentMsg(entity, (const char*)msgData);
+			break;
+		}
+		case MsgType::EditComponent_Response:
+		{
+			bool bVal = *((bool*)msgData);
+			msgData += sizeof(bool);
+			msg.Data = EditComponentMsg_Response{ bVal };
+			break;
+		}
 		}
 		return msg;
 	}
@@ -48,6 +63,13 @@ namespace EditorServer
 			break;
 		case MsgType::NewEntity_Response:
 			outSize += 1;
+			break;
+		case MsgType::EditComponent:
+			outSize += (sizeof(size_t) + std::get<EditComponentMsg>(msg.Data).newComponentXml.length() + 1);
+			break;
+		case MsgType::EditComponent_Response:
+			outSize += sizeof(bool);
+			break;
 		default:
 			break;
 		}
@@ -75,6 +97,20 @@ namespace EditorServer
 		case MsgType::NewEntity_Response:
 			*pWriteData = (unsigned char)std::get< NewEntityMessage_Response>(msg.Data).bOK;
 			break;
+		case MsgType::EditComponent:
+		{
+			size_t* c = (size_t*)pWriteData;
+			*c = std::get<EditComponentMsg>(msg.Data).entity;
+			pWriteData += sizeof(size_t);
+			strcpy((char*)pWriteData, std::get<EditComponentMsg>(msg.Data).newComponentXml.c_str());
+			break;
+		}
+		case MsgType::EditComponent_Response:
+		{
+			bool* b = (bool*)pWriteData;
+			*b = std::get<EditComponentMsg_Response>(msg.Data).bSucceeded;
+			break;
+		}
 		default:
 			break;
 		}

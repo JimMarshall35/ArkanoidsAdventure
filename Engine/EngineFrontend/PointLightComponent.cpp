@@ -22,8 +22,12 @@ static void SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, EntityReg
 	{
 		int fileVersion = 0;
 			if (!ar->PushObj("PointLightComponent")) return;
-				reg.emplace<PointLightComponent>(e);
 				PointLightComponent* mc = reg.try_get<PointLightComponent>(e);
+				if (!mc)
+				{
+					reg.emplace<PointLightComponent>(e);
+					mc = reg.try_get<PointLightComponent>(e);
+				}
 				*ar >> fileVersion;
 				switch (fileVersion)
 				{

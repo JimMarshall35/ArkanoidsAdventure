@@ -18,6 +18,11 @@ XMLArchive::XMLArchive(const char* path, bool bStoring)
     }
 }
 
+XMLArchive::XMLArchive(const char* xml)
+{
+    m_Doc.load_string(xml);
+}
+
 XMLArchive::~XMLArchive()
 {
 }
@@ -387,6 +392,24 @@ void XMLArchive::operator<<(const glm::mat4x4& v)
     attr = node.append_attribute("v3v3");attr.set_value(v[3][3]);
 }
 
+//void XMLArchive::operator<<(In::HLogicalAxis axis)
+//{
+//    EAssert(m_bStoring);
+//    pugi::xml_node n = TopNode();
+//    pugi::xml_attribute a;
+//    a = n.append_attribute("hLogicalAxis");
+//    a.set_value(axis);
+//}
+//
+//void XMLArchive::operator<<(In::HLogicalBtn axis)
+//{
+//    EAssert(m_bStoring);
+//    pugi::xml_node n = TopNode();
+//    pugi::xml_attribute a;
+//    a = n.append_attribute("hLogicalBtn");
+//    a.set_value(axis);
+//}
+
 void XMLArchive::operator>>(glm::mat4x4& v)
 {
     EAssert(!m_bStoring);
@@ -411,6 +434,20 @@ void XMLArchive::operator>>(glm::mat4x4& v)
     v[3][2] = node.attribute("v3v2").as_float();
     v[3][3] = node.attribute("v3v3").as_float();
 }
+
+//void XMLArchive::operator>>(In::HLogicalAxis& axis)
+//{
+//    EAssert(!m_bStoring);
+//    pugi::xml_node node = TopNode();
+//    axis = node.attribute("hLogicalAxis").as_ullong();
+//}
+//
+//void XMLArchive::operator>>(In::HLogicalBtn& axis)
+//{
+//    EAssert(!m_bStoring);
+//    pugi::xml_node node = TopNode();
+//    axis = node.attribute("hLogicalBtn").as_ullong();
+//}
 
 bool XMLArchive::PushObj(const char* name)
 {

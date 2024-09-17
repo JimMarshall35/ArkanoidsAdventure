@@ -1,6 +1,17 @@
 #pragma once
 #include <glm/glm.hpp>
 #include "EngineLib.h"
+#include "InputFrontend.h"
+#define AR_STORE(ComponentPtr, Property)\
+				ar->PushObj(#Property);\
+					*ar << ComponentPtr##->##Property;\
+				ar->PopObj();
+
+#define AR_LOAD(ComponentPtr, Property)\
+	ar->PushObj(#Property);\
+		*ar >> ComponentPtr##->##Property;\
+	ar->PopObj();
+
 
 class IArchive
 {
@@ -25,7 +36,6 @@ public:
 	virtual void operator<<(const glm::ivec3& v) = 0;
 	virtual void operator<<(const glm::mat4x4& v) = 0;
 	virtual void operator<<(Entity e) = 0;
-
 
 	virtual void operator>>(float& f) = 0;
 	virtual void operator>>(double& d) = 0;
@@ -54,3 +64,4 @@ public:
 	virtual int CountChildren() = 0;
 	virtual void PushChild(int c) = 0;
 };
+

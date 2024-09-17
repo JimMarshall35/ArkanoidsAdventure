@@ -5,6 +5,7 @@ namespace EditorServer
 	enum class MsgType : uint8_t
 	{
 		NewEntity, NewEntity_Response,
-		GetSceneXML, GetSceneXML_Response
+		GetSceneXML, GetSceneXML_Response,
+		EditComponent, EditComponent_Response
 	};
 }

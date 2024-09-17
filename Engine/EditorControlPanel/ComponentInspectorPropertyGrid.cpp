@@ -279,7 +279,7 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 				{
 					if (xml_attribute z = n.attribute("z"))
 					{
-
+						static_assert(sizeof(xml_attribute) == sizeof(DWORD_PTR));
 						COleVariant vX = std::stof(x.value());
 						COleVariant vY = std::stof(y.value());
 						COleVariant vZ = std::stof(z.value());

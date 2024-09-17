@@ -140,6 +140,7 @@ void BasicScn::Load(Scn::Scene& scn)
     cam.zNear = 0.1f;
     cam.zFar = 5000.0f;
     cam.bIsMain = true;
+    cam.Name = "EditorCam";
 
     // camera controls
     EditorCamControlsComponent& controls = reg.emplace<EditorCamControlsComponent>(camEnt);

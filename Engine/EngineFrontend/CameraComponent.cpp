@@ -100,8 +100,12 @@ static void SerializeCs(Comp::ComponentMeta* m, IArchive* ar, Entity e, EntityRe
 	else
 	{
 		if (!ar->PushObj("CameraComponent")) return;
-			reg.emplace<CameraComponent>(e);
 			CameraComponent* cam = reg.try_get<CameraComponent>(e);
+			if (!cam)
+			{
+				reg.emplace<CameraComponent>(e);
+				cam = reg.try_get<CameraComponent>(e);
+			}
 			i32 fileVersion;
 			*ar >> fileVersion;
 			switch (fileVersion)

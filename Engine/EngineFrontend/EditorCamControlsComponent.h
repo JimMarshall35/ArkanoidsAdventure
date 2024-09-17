@@ -1,6 +1,7 @@
 #pragma once
 #include "InputFrontend.h"
 #include <array>
+#include "ComponentReg.h"
 
 struct EditorCamControlsComponent
 {
@@ -12,3 +13,5 @@ struct EditorCamControlsComponent
 	std::array<In::HLogicalBtn, (u32)Directions::NUMDIRECTIONS> MovementButtons;
 	float MovementSpeed = 20.0f;
 };
+
+META_DECL(EditorCamControlsComponent)

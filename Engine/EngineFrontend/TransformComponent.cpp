@@ -217,8 +217,12 @@ void Transform::SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, Entit
 	else
 	{
 		if (!ar->PushObj("Transform")) return;
-			reg.emplace<Transform>(e);
 			Transform* t = reg.try_get<Transform>(e);
+			if (!t)
+			{
+				reg.emplace<Transform>(e);
+				t = reg.try_get<Transform>(e);
+			}
 			ar->PushObj("Version");
 				int version = 1;
 				*ar >> version;

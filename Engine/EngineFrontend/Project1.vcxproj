@@ -184,6 +184,7 @@
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="SystemsReg.h" />
     <ClInclude Include="TestPipeline.h" />
+    <ClInclude Include="TestPipelineMaterialComponent.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureReg.h" />
     <ClInclude Include="TransformComponent.h" />
@@ -196,6 +197,7 @@
     <ClCompile Include="ComponentReg.cpp" />
     <ClCompile Include="DebugLoadBasicScene.cpp" />
     <ClCompile Include="DrawMeshComponentsFunction.cpp" />
+    <ClCompile Include="EditorCamControlsComponent.cpp" />
     <ClCompile Include="EditorServer.cpp" />
     <ClCompile Include="EditorSystems.cpp" />
     <ClCompile Include="EngineDLLInterface.cpp" />
@@ -217,6 +219,7 @@
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="SystemsReg.cpp" />
     <ClCompile Include="TestPipeline.cpp" />
+    <ClCompile Include="TestPipelineMaterialComponent.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureReg.cpp" />
     <ClCompile Include="TransformComponent.cpp" />

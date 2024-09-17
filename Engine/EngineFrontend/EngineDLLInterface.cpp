@@ -15,6 +15,7 @@
 #include "DebugLoadBasicScene.h"
 #include "XMLArchive.h"
 #include "EditorServer.h"
+#include "ComponentReg.h"
 
 #define MS_PER_UPDATE 20.0f
 #define S_PER_UPDATE (MS_PER_UPDATE / 1000.0f)
@@ -101,6 +102,8 @@ namespace Engine
         {
             Editor::Init({});
         }
+        
+        Comp::Init();
 
         double previous = gBackendAPI.GetTime();
         double lag = 0.0;
