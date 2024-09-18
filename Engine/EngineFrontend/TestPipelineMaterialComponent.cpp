@@ -12,22 +12,12 @@ static void SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, EntityReg
 		if (TestPipelineMaterial* mc = reg.try_get<TestPipelineMaterial>(e))
 		{
 			ar->PushObj("TestPipelineMaterial");
-			*ar << version;
-			ar->PushObj("ambientStrength");
-			*ar << mc->ambientStrength;
-			ar->PopObj();
-			ar->PushObj("diffuseStrength");
-			*ar << mc->diffuseStrength;
-			ar->PopObj();
-			ar->PushObj("speculatStrength");
-			*ar << mc->speculatStrength;
-			ar->PopObj();
-			ar->PushObj("shininess");
-			*ar << mc->shininess;
-			ar->PopObj();
-			ar->PushObj("hTexture");
-			*ar << mc->hTexture;
-			ar->PopObj();
+				*ar << version;
+				AR_STORE(mc, ambientStrength)
+				AR_STORE(mc, diffuseStrength)
+				AR_STORE(mc, specularStrength)
+				AR_STORE(mc, shininess)
+				AR_STORE(mc, hTexture)
 			ar->PopObj();
 		}
 	}
@@ -46,21 +36,11 @@ static void SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, EntityReg
 		{
 		case 1:
 		{
-			ar->PushObj("ambientStrength");
-			*ar << mc->ambientStrength;
-			ar->PopObj();
-			ar->PushObj("diffuseStrength");
-			*ar << mc->diffuseStrength;
-			ar->PopObj();
-			ar->PushObj("speculatStrength");
-			*ar << mc->speculatStrength;
-			ar->PopObj();
-			ar->PushObj("shininess");
-			*ar << mc->shininess;
-			ar->PopObj();
-			ar->PushObj("hTexture");
-			*ar << mc->hTexture;
-			ar->PopObj();
+			AR_LOAD(mc, ambientStrength)
+			AR_LOAD(mc, diffuseStrength)
+			AR_LOAD(mc, specularStrength)
+			AR_LOAD(mc, shininess)
+			AR_LOAD(mc, hTexture)
 			break;
 		}
 		default:

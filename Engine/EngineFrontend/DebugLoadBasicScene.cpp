@@ -110,7 +110,7 @@ void BasicScn::Load(Scn::Scene& scn)
     mat.hTexture = scn.textureReg.GetTexture("Shuriken");
     mat.ambientStrength = 0.4f;
     mat.diffuseStrength = 0.5f;
-    mat.speculatStrength = 0.2f;
+    mat.specularStrength = 0.2f;
     mat.shininess = 8.0f;
 
     Entity lightEnt = reg.create();

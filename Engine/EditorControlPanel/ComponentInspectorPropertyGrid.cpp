@@ -1,7 +1,27 @@
 #include "pch.h"
+#include <sstream>
 #include "ComponentInspectorPropertyGrid.h"
 #include "CommonEditorServerDefines.h"
 #include "StringHelpers.h"
+#include "EditorServerMsg.h"
+#include "EditorClient.h"
+ 
+
+static DWORD_PTR StoreXmlAttributeHandleInDwordPtr(pugi::xml_attribute attr)
+{
+	using namespace pugi;
+	static_assert(sizeof(xml_attribute) == sizeof(DWORD_PTR));
+	DWORD_PTR pDWord = 0;
+	memcpy(&pDWord, &attr, sizeof(DWORD_PTR));
+	return pDWord;
+}
+
+static pugi::xml_attribute GetXmlAttributeHandleFromDWordPtr(DWORD_PTR pDWord)
+{
+	pugi::xml_attribute attr;
+	memcpy(&attr, &pDWord, sizeof(DWORD_PTR));
+	return attr;
+}
 
 bool TryGetXMLNodeArchiveType(ArchiveType& outType, pugi::xml_node node)
 {
@@ -151,6 +171,7 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 				CMFCPropertyGridProperty* pAttrProp = new CMFCPropertyGridProperty(L"float", v);
 				pAttrProp->SetValue(v);
 				pProp->AddSubItem(pAttrProp);
+				pAttrProp->SetData(StoreXmlAttributeHandleInDwordPtr(attr));
 			}
 			break;
 		case ArchiveType::Double:
@@ -160,6 +181,7 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 				CMFCPropertyGridProperty* pAttrProp = new CMFCPropertyGridProperty(L"double", v);
 				pAttrProp->SetValue(v);
 				pProp->AddSubItem(pAttrProp);
+				pAttrProp->SetData(StoreXmlAttributeHandleInDwordPtr(attr));
 			}
 			break;
 		case ArchiveType::I64:
@@ -168,6 +190,7 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 				COleVariant v = std::stol(attr.value());
 				CMFCPropertyGridProperty* pAttrProp = new CMFCPropertyGridProperty(L"i64", v);
 				pProp->AddSubItem(pAttrProp);
+				pAttrProp->SetData(StoreXmlAttributeHandleInDwordPtr(attr));
 			}
 			break;
 		case ArchiveType::U64:
@@ -176,6 +199,7 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 				COleVariant v = std::stol(attr.value());
 				CMFCPropertyGridProperty* pAttrProp = new CMFCPropertyGridProperty(L"u64", v);
 				pProp->AddSubItem(pAttrProp);
+				pAttrProp->SetData(StoreXmlAttributeHandleInDwordPtr(attr));
 			}
 			break;
 		case ArchiveType::I32:
@@ -184,6 +208,7 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 				COleVariant v = std::stol(attr.value());
 				CMFCPropertyGridProperty* pAttrProp = new CMFCPropertyGridProperty(L"i32", v);
 				pProp->AddSubItem(pAttrProp);
+				pAttrProp->SetData(StoreXmlAttributeHandleInDwordPtr(attr));
 			}
 			break;
 		case ArchiveType::U32:
@@ -192,6 +217,7 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 				COleVariant v = std::stol(attr.value());
 				CMFCPropertyGridProperty* pAttrProp = new CMFCPropertyGridProperty(L"i32", v);
 				pProp->AddSubItem(pAttrProp);
+				pAttrProp->SetData(StoreXmlAttributeHandleInDwordPtr(attr));
 			}
 			break;
 		case ArchiveType::I16:
@@ -200,6 +226,7 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 				COleVariant v = std::stol(attr.value());
 				CMFCPropertyGridProperty* pAttrProp = new CMFCPropertyGridProperty(L"i16", v);
 				pProp->AddSubItem(pAttrProp);
+				pAttrProp->SetData(StoreXmlAttributeHandleInDwordPtr(attr));
 			}
 			break;
 		case ArchiveType::U16:
@@ -208,6 +235,7 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 				COleVariant v = std::stol(attr.value());
 				CMFCPropertyGridProperty* pAttrProp = new CMFCPropertyGridProperty(L"u16", v);
 				pProp->AddSubItem(pAttrProp);
+				pAttrProp->SetData(StoreXmlAttributeHandleInDwordPtr(attr));
 			}
 			break;
 		case ArchiveType::I8:
@@ -216,6 +244,7 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 				COleVariant v = std::stol(attr.value());
 				CMFCPropertyGridProperty* pAttrProp = new CMFCPropertyGridProperty(L"i8", v);
 				pProp->AddSubItem(pAttrProp);
+				pAttrProp->SetData(StoreXmlAttributeHandleInDwordPtr(attr));
 			}
 			break;
 		case ArchiveType::U8:
@@ -224,6 +253,7 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 				COleVariant v = std::stol(attr.value());
 				CMFCPropertyGridProperty* pAttrProp = new CMFCPropertyGridProperty(L"u8", v);
 				pProp->AddSubItem(pAttrProp);
+				pAttrProp->SetData(StoreXmlAttributeHandleInDwordPtr(attr));
 			}
 			break;
 		case ArchiveType::Bool:
@@ -234,6 +264,8 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 				v.vt = VT_BOOL;
 				CMFCPropertyGridProperty* pAttrProp = new CMFCPropertyGridProperty(L"bool", v);
 				pProp->AddSubItem(pAttrProp);
+				pAttrProp->SetData(StoreXmlAttributeHandleInDwordPtr(attr));
+
 			}
 			break;
 		case ArchiveType::String:
@@ -243,6 +275,7 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 				COleVariant v = ws.c_str();
 				CMFCPropertyGridProperty* pAttrProp = new CMFCPropertyGridProperty(L"string", v);
 				pProp->AddSubItem(pAttrProp);
+				pAttrProp->SetData(StoreXmlAttributeHandleInDwordPtr(attr));
 			}
 			break;
 		case ArchiveType::Entity:
@@ -253,6 +286,7 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 				v.vt = VT_UINT;
 				CMFCPropertyGridProperty* pAttrProp = new CMFCPropertyGridProperty(L"Entity", v);
 				pProp->AddSubItem(pAttrProp);
+				pAttrProp->SetData(StoreXmlAttributeHandleInDwordPtr(attr));
 			}
 			break;
 		case ArchiveType::Vec2:
@@ -267,6 +301,8 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 					CMFCPropertyGridProperty* pY = new CMFCPropertyGridProperty(L"y", vY);
 					pProp->AddSubItem(pX);
 					pProp->AddSubItem(pY);
+					pX->SetData(StoreXmlAttributeHandleInDwordPtr(x));
+					pY->SetData(StoreXmlAttributeHandleInDwordPtr(y));
 				}
 			}
 			break;
@@ -279,7 +315,6 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 				{
 					if (xml_attribute z = n.attribute("z"))
 					{
-						static_assert(sizeof(xml_attribute) == sizeof(DWORD_PTR));
 						COleVariant vX = std::stof(x.value());
 						COleVariant vY = std::stof(y.value());
 						COleVariant vZ = std::stof(z.value());
@@ -289,6 +324,9 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 						pProp->AddSubItem(pX);
 						pProp->AddSubItem(pY);
 						pProp->AddSubItem(pZ);
+						pX->SetData(StoreXmlAttributeHandleInDwordPtr(x));
+						pY->SetData(StoreXmlAttributeHandleInDwordPtr(y));
+						pZ->SetData(StoreXmlAttributeHandleInDwordPtr(z));
 					}
 				}
 			}
@@ -306,6 +344,8 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 					CMFCPropertyGridProperty* pY = new CMFCPropertyGridProperty(L"iy", vY);
 					pProp->AddSubItem(pX);
 					pProp->AddSubItem(pY);
+					pX->SetData(StoreXmlAttributeHandleInDwordPtr(x));
+					pY->SetData(StoreXmlAttributeHandleInDwordPtr(y));
 				}
 			}
 			break;
@@ -327,6 +367,9 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 						pProp->AddSubItem(pX);
 						pProp->AddSubItem(pY);
 						pProp->AddSubItem(pZ);
+						pX->SetData(StoreXmlAttributeHandleInDwordPtr(x));
+						pY->SetData(StoreXmlAttributeHandleInDwordPtr(y));
+						pZ->SetData(StoreXmlAttributeHandleInDwordPtr(z));
 					}
 				}
 			}
@@ -354,6 +397,11 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 							pProp->AddSubItem(pY);
 							pProp->AddSubItem(pZ);
 							pProp->AddSubItem(pW);
+							pX->SetData(StoreXmlAttributeHandleInDwordPtr(x));
+							pY->SetData(StoreXmlAttributeHandleInDwordPtr(y));
+							pZ->SetData(StoreXmlAttributeHandleInDwordPtr(z));
+							pW->SetData(StoreXmlAttributeHandleInDwordPtr(w));
+
 						}
 					}
 				}
@@ -367,4 +415,74 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 		}
 
 	}
+}
+
+static void SetXMLAttribValue(pugi::xml_attribute attr, const COleVariant& val)
+{
+	switch (val.vt)
+	{
+	case VT_BSTR:
+		{
+			size_t len = wcslen(val.bstrVal);
+			char* utf8 = new char[len + 1];
+			wcstombs(utf8, val.bstrVal, len);
+			utf8[len] = '\0';
+			attr.set_value(utf8);
+			delete[] utf8;
+			break;
+		}
+	case VT_R4:
+		{
+			attr.set_value(val.fltVal);
+			break;
+		}
+	case VT_R8:
+		{
+			attr.set_value(val.dblVal);
+			break;
+		}
+	case VT_I1:
+		{
+			attr.set_value(val.bVal);
+			break;
+		}
+	case VT_I2:
+		{
+			attr.set_value(val.iVal);
+			break;
+		}
+	case VT_I4:
+		{
+			attr.set_value(val.lVal);
+			break;
+		}
+	case VT_BOOL:
+		{
+			attr.set_value((bool)val.boolVal);
+			break;
+		}
+	default:
+		ASSERT(false);
+	}
+}
+
+EditorServer::Msg MakeEditComponentMsg(pugi::xml_node node, uint32_t entity)
+{
+	std::ostringstream ss;
+	node.print(ss);
+	EditorServer::Msg msg;
+	msg.Data = EditorServer::EditComponentMsg(entity, ss.str().c_str());
+	msg.Type = EditorServer::MsgType::EditComponent;
+	return msg;
+}
+
+void CComponentInspectorPropertyGrid::OnPropertyChanged(CMFCPropertyGridProperty* pProp) const
+{
+	CMFCPropertyGridCtrl::OnPropertyChanged(pProp);
+	DWORD_PTR d = pProp->GetData();
+	pugi::xml_attribute attr = GetXmlAttributeHandleFromDWordPtr(d);
+	COleVariant val = pProp->GetValue();
+	SetXMLAttribValue(attr, val);
+	EditorServer::Msg msg = MakeEditComponentMsg(m_Node, m_hEntity);
+	EditorClient::EnqueueToSend(msg);
 }

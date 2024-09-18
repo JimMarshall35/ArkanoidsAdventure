@@ -217,7 +217,7 @@ void TestPipeline::PerInstanceUniform(int pipelineStage, HDrawable drawable, Ent
 	TestPipelineMaterial& m = reg.get<TestPipelineMaterial>(e);
 	api.SetPipelineUniform_Mat4(PipelineHandle, hModel, pipelineStage, t.getModelMatrix()); 	
 	api.SetPipelineUniform_Float(PipelineHandle, hAmbientStrength, 0, m.ambientStrength);
-	api.SetPipelineUniform_Float(PipelineHandle, hSpecularStrength, 0, m.speculatStrength);
+	api.SetPipelineUniform_Float(PipelineHandle, hSpecularStrength, 0, m.specularStrength);
 	api.SetPipelineUniform_Float(PipelineHandle, hDiffuseStrength, 0, m.diffuseStrength);
 	api.SetPipelineUniform_Float(PipelineHandle, hShininess, 0, m.shininess);
 	api.SetPipelineUniform_Texture(PipelineHandle, hDiffuseAtlas, 0, m.hTexture);

@@ -21,6 +21,7 @@ XMLArchive::XMLArchive(const char* path, bool bStoring)
 XMLArchive::XMLArchive(const char* xml)
 {
     m_Doc.load_string(xml);
+    m_Root = m_Doc;
 }
 
 XMLArchive::~XMLArchive()

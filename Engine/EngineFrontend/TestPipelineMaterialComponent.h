@@ -5,7 +5,7 @@
 struct TestPipelineMaterial
 {
 	float ambientStrength;
-	float speculatStrength;
+	float specularStrength;
 	float diffuseStrength;
 	float shininess;
 	HTexture hTexture;

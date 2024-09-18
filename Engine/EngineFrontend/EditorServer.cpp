@@ -105,7 +105,7 @@ namespace Editor {
 			{
 				XMLArchive ar(std::get<EditorServer::EditComponentMsg>(msgIn.Data).newComponentXml.c_str());
 				Entity e = (Entity)std::get<EditorServer::EditComponentMsg>(msgIn.Data).entity;
-				pugi::xml_node n = ar.GetRoot();
+				pugi::xml_node n = ar.GetRoot().first_child();
 				const char* nodeName = n.name();
 				if (Comp::ComponentMeta* pMeta = Comp::ComponentMeta::FindByName(nodeName))
 				{

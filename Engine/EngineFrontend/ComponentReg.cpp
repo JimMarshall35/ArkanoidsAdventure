@@ -2,16 +2,13 @@
 #include <unordered_map>
 #include "FrontendError.h"
 static EMap<EString, Comp::ComponentMeta*> gNameMap;
-
 Comp::ComponentMeta::ComponentMeta()
 	: Autolist<ComponentMeta>(true)
 {
 }
-
 Comp::ComponentMeta::~ComponentMeta()
 {
 }
-
 Comp::ComponentMeta* Comp::ComponentMeta::FindByName(const char* name)
 {
 	EString s(name);
@@ -25,7 +22,6 @@ Comp::ComponentMeta* Comp::ComponentMeta::FindByName(const char* name)
 		return nullptr;
 	}
 }
-
 void Comp::Init()
 {
 	Autolist<ComponentMeta>* head = Autolist<ComponentMeta>::GetHead();
