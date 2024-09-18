@@ -260,7 +260,7 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 			if (xml_attribute attr = n.attribute("boolVal"))
 			{
 				COleVariant v;
-				v.boolVal = (strcmp(attr.value(), "true") == 0 ? TRUE : FALSE);
+				v.boolVal = (strcmp(attr.value(), "true") == 0 ? -1 : 0);
 				v.vt = VT_BOOL;
 				CMFCPropertyGridProperty* pAttrProp = new CMFCPropertyGridProperty(L"bool", v);
 				pProp->AddSubItem(pAttrProp);
