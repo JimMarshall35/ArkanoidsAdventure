@@ -5,7 +5,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "EditorControlPanel.h"
-#include "EditorControlPanelDlg.h"
+#include "EntitiesPropertyPage.h"
 #include "afxdialogex.h"
 #include "EditorClient.h"
 #include "StringHelpers.h"
@@ -21,59 +21,27 @@
 #define new DEBUG_NEW
 #endif
 
-#define POLL_RECIEVE_QUEUE_TIMER_EVENT_ID 420
-// CAboutDlg dialog used for App About
-
-class CAboutDlg : public CDialogEx
-{
-public:
-	CAboutDlg();
-
-// Dialog Data
-#ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_ABOUTBOX };
-#endif
-
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-
-// Implementation
-protected:
-	DECLARE_MESSAGE_MAP()
-};
-
-CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX)
-{
-}
-
-void CAboutDlg::DoDataExchange(CDataExchange* pDX)
-{
-	CDialogEx::DoDataExchange(pDX);
-}
-
-BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
-END_MESSAGE_MAP()
-
-
 // CEditorControlPanelDlg dialog
 
 
 
-CEditorControlPanelDlg::CEditorControlPanelDlg(CWnd* pParent /*=nullptr*/)
-	: CDialogEx(IDD_EDITORCONTROLPANEL_DIALOG, pParent)
+CEntitiesPropertyPage::CEntitiesPropertyPage(GetXMLSceneFn getScn)
+	: CPropertyPage(IDD_ENTITIES_PROPERTY_SHEET_PAGE, IDS_ENTITIESTAB),
+	m_fpGetScn(getScn)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	m_psp.dwFlags &= ~PSP_HASHELP;
 }
 
-void CEditorControlPanelDlg::DoDataExchange(CDataExchange* pDX)
+void CEntitiesPropertyPage::DoDataExchange(CDataExchange* pDX)
 {
 	DDX_Control(pDX, IDC_ENTITIES_TREE, m_ctlEntityTree);
 	DDX_Control(pDX, IDC_COMPONENT_INSPECTOR_PROPERTY_GRID, m_ctlComponentInspector);
 	DDX_Control(pDX, IDC_SELECTED_COMPONENT_TITLE, m_ctlSelectedComponentTitle);
-	CDialogEx::DoDataExchange(pDX);
+	CPropertyPage::DoDataExchange(pDX);
 }
 
-void CEditorControlPanelDlg::OnSelChangedTreeCtrl(NMHDR* pNMHDR, LRESULT* pResult)
+void CEntitiesPropertyPage::OnSelChangedTreeCtrl(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	using namespace pugi;
 	static_assert(sizeof(xml_node) == sizeof(DWORD_PTR));
@@ -91,7 +59,7 @@ void CEditorControlPanelDlg::OnSelChangedTreeCtrl(NMHDR* pNMHDR, LRESULT* pResul
 }
 
 
-void CEditorControlPanelDlg::Test()
+void CEntitiesPropertyPage::Test()
 {
 	EditorServer::Msg msg;
 	msg.Type = EditorServer::MsgType::GetSceneXML;
@@ -99,15 +67,13 @@ void CEditorControlPanelDlg::Test()
 	EditorClient::EnqueueToSend(msg);
 }
 
-void CEditorControlPanelDlg::HandleMsgRecieved(const EditorServer::Msg& msg)
+void CEntitiesPropertyPage::HandleMsgRecieved(const EditorServer::Msg& msg)
 {
 	switch (msg.Type)
 	{
 	case EditorServer::MsgType::GetSceneXML_Response:
 		{
-			const EditorServer::GetSceneXmlMsg_Response& resp = std::get<EditorServer::GetSceneXmlMsg_Response>(msg.Data);
-			m_Doc.load_buffer(resp.xml.c_str(), resp.xml.length());
-			m_ctlEntityTree.OnNewSceneRecived(m_Doc);
+			m_ctlEntityTree.OnNewSceneRecived(m_fpGetScn());
 			break;
 		}
 	case EditorServer::MsgType::NewEntity_Response:
@@ -117,7 +83,7 @@ void CEditorControlPanelDlg::HandleMsgRecieved(const EditorServer::Msg& msg)
 	}
 }
 
-void CEditorControlPanelDlg::SetSelectedComponentText(pugi::xml_node propertyNode, uint32_t entity)
+void CEntitiesPropertyPage::SetSelectedComponentText(pugi::xml_node propertyNode, uint32_t entity)
 {
 	std::wstring ws = s2ws(propertyNode.name());
 	CString text;
@@ -125,32 +91,17 @@ void CEditorControlPanelDlg::SetSelectedComponentText(pugi::xml_node propertyNod
 	m_ctlSelectedComponentTitle.SetWindowText(text);
 }
 
-void CEditorControlPanelDlg::OnTimer(UINT_PTR nIDEvent)
-{
-	if (nIDEvent == POLL_RECIEVE_QUEUE_TIMER_EVENT_ID)
-	{
-		while (!EditorClient::RecieveQueueEmpty())
-		{
-			EditorServer::Msg msg;
-			VERIFY(!EditorClient::PopRecieveQueue(msg));
-			HandleMsgRecieved(msg);
-		}
-	}
-	CDialogEx::OnTimer(nIDEvent);
-}
-
-void CEditorControlPanelDlg::OnDestroy()
+void CEntitiesPropertyPage::OnDestroy()
 {
 	EditorClient::DeInitClient();
-	CDialogEx::OnDestroy();
+	CPropertyPage::OnDestroy();
 }
 
-BEGIN_MESSAGE_MAP(CEditorControlPanelDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CEntitiesPropertyPage, CPropertyPage)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_TESTBTN, &Test)
-	ON_WM_TIMER()
 	ON_WM_DESTROY()
 	ON_NOTIFY(TVN_SELCHANGED, IDC_ENTITIES_TREE, &OnSelChangedTreeCtrl)
 
@@ -159,9 +110,9 @@ END_MESSAGE_MAP()
 
 // CEditorControlPanelDlg message handlers
 
-BOOL CEditorControlPanelDlg::OnInitDialog()
+BOOL CEntitiesPropertyPage::OnInitDialog()
 {
-	CDialogEx::OnInitDialog();
+	CPropertyPage::OnInitDialog();
 
 	// Add "About..." menu item to system menu.
 
@@ -189,33 +140,22 @@ BOOL CEditorControlPanelDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
 	// TODO: Add extra initialization here
-	EditorClient::InitClient();
-	m_RecieveQueueTimer = SetTimer(POLL_RECIEVE_QUEUE_TIMER_EVENT_ID, 20, NULL);
+	
 
-	CMenu menu;
-	menu.LoadMenu(IDR_MAIN_DIALOG_MENU);
-	SetMenu(&menu);
+	
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }
 
-void CEditorControlPanelDlg::OnSysCommand(UINT nID, LPARAM lParam)
+void CEntitiesPropertyPage::OnSysCommand(UINT nID, LPARAM lParam)
 {
-	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
-	{
-		CAboutDlg dlgAbout;
-		dlgAbout.DoModal();
-	}
-	else
-	{
-		CDialogEx::OnSysCommand(nID, lParam);
-	}
+	CPropertyPage::OnSysCommand(nID, lParam);
 }
 
 // If you add a minimize button to your dialog, you will need the code below
 //  to draw the icon.  For MFC applications using the document/view model,
 //  this is automatically done for you by the framework.
 
-void CEditorControlPanelDlg::OnPaint()
+void CEntitiesPropertyPage::OnPaint()
 {
 	if (IsIconic())
 	{
@@ -236,13 +176,13 @@ void CEditorControlPanelDlg::OnPaint()
 	}
 	else
 	{
-		CDialogEx::OnPaint();
+		CPropertyPage::OnPaint();
 	}
 }
 
 // The system calls this function to obtain the cursor to display while the user drags
 //  the minimized window.
-HCURSOR CEditorControlPanelDlg::OnQueryDragIcon()
+HCURSOR CEntitiesPropertyPage::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
 }

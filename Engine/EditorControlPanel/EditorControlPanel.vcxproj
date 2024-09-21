@@ -191,12 +191,17 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Console.h" />
+    <ClInclude Include="TexturePropertyPage.h" />
+    <ClInclude Include="CommonPropertyPageDefines.h" />
     <ClInclude Include="ComponentInspectorPropertyGrid.h" />
     <ClInclude Include="EditorClient.h" />
     <ClInclude Include="EditorControlPanel.h" />
-    <ClInclude Include="EditorControlPanelDlg.h" />
+    <ClInclude Include="EntitiesPropertyPage.h" />
     <ClInclude Include="EntityTreeCtrl.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="MainDialog.h" />
+    <ClInclude Include="MainPropertySheet.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="pugiconfig.hpp" />
     <ClInclude Include="pugixml.hpp" />
@@ -205,11 +210,15 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Console.cpp" />
+    <ClCompile Include="TexturePropertyPage.cpp" />
     <ClCompile Include="ComponentInspectorPropertyGrid.cpp" />
     <ClCompile Include="EditorClient.cpp" />
     <ClCompile Include="EditorControlPanel.cpp" />
-    <ClCompile Include="EditorControlPanelDlg.cpp" />
+    <ClCompile Include="EntitiesPropertyPage.cpp" />
     <ClCompile Include="EntityTreeCtrl.cpp" />
+    <ClCompile Include="MainDialog.cpp" />
+    <ClCompile Include="MainPropertySheet.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

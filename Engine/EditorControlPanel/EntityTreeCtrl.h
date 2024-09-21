@@ -5,5 +5,5 @@
 class CEntityTreeCtrl : public CTreeCtrl
 {
 public:
-	void OnNewSceneRecived(const pugi::xml_document& xmlScene);
+	void OnNewSceneRecived(const pugi::xml_node& xmlScene);
 };

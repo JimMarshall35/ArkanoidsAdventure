@@ -5,7 +5,7 @@
 #include "pch.h"
 #include "framework.h"
 #include "EditorControlPanel.h"
-#include "EditorControlPanelDlg.h"
+#include "MainDialog.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -77,7 +77,9 @@ BOOL CEditorControlPanelApp::InitInstance()
 	// such as the name of your company or organization
 	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
 
-	CEditorControlPanelDlg dlg;
+	//CEditorControlPanelDlg dlg;
+	MainDialog dlg;
+	
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == IDOK)
