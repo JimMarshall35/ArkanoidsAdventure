@@ -204,6 +204,9 @@
     <ClInclude Include="TestPipelineMaterialComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
+    <ClInclude Include="ConsoleCmdInterpreter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IBackendApp.cpp">
@@ -304,6 +307,9 @@
     </ClCompile>
     <ClCompile Include="TestPipelineMaterialComponent.cpp">
       <Filter>Source Files\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleCmdInterpreter.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

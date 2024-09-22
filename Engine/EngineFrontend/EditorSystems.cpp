@@ -5,6 +5,7 @@
 #include "CameraComponent.h"
 #include "InputFrontend.h"
 #include "IBackendApp.h"
+#include "FrontendError.h"
 
 
 #define SENSITIVITY 0.4f
@@ -27,11 +28,13 @@ static void EditorControls(Scn::Scene& s, double deltaT)
 			if (In::GetPressOccured(controls.ActivateButton))
 			{
 				Engine::GetAPI().SetCursorMode(In::CursorMode::Disabled);
+				Err::LogInfo("cursor disabled");
 			}
 		}
 		else if (In::GetReleaseOccured(controls.ActivateButton))
 		{
 			Engine::GetAPI().SetCursorMode(In::CursorMode::Normal);
+			Err::LogInfo("cursor enabled");
 		}
 
 		glm::vec3 velocity = { 0.0f, 0.0f, 0.0f };

@@ -7,10 +7,8 @@
 #include "EntitiesPropertyPage.h"
 #include "CommonPropertyPageDefines.h"
 
-#define POLL_RECIEVE_QUEUE_TIMER_EVENT_ID 420
 
 BEGIN_MESSAGE_MAP(MainPropertySheet, CPropertySheet)
-	ON_WM_TIMER()
 END_MESSAGE_MAP()
 
 MainPropertySheet::MainPropertySheet()
@@ -44,7 +42,6 @@ BOOL MainPropertySheet::OnInitDialog()
 	GetDlgItem(IDCANCEL)->ShowWindow(SW_HIDE);
 
 	EditorClient::InitClient();
-	m_RecieveQueueTimer = SetTimer(POLL_RECIEVE_QUEUE_TIMER_EVENT_ID, 20, NULL);
 
 	return res;
 }
@@ -73,17 +70,4 @@ void MainPropertySheet::HandleMessageRecieved(const EditorServer::Msg& msg)
 		break;
 	}
 	m_pEntitiesPropertyPage->HandleMsgRecieved(msg);
-}
-void MainPropertySheet::OnTimer(UINT_PTR nIDEvent)
-{
-	if (nIDEvent == POLL_RECIEVE_QUEUE_TIMER_EVENT_ID)
-	{
-		while (!EditorClient::RecieveQueueEmpty())
-		{
-			EditorServer::Msg msg;
-			VERIFY(!EditorClient::PopRecieveQueue(msg));
-			HandleMessageRecieved(msg);
-		}
-	}
-	CPropertySheet::OnTimer(nIDEvent);
 }

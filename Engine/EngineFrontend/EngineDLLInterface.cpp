@@ -16,7 +16,8 @@
 #include "XMLArchive.h"
 #include "EditorServer.h"
 #include "ComponentReg.h"
-
+#include "EditorServer.h"
+#include "EditorServerMsg.h"
 #define MS_PER_UPDATE 20.0f
 #define S_PER_UPDATE (MS_PER_UPDATE / 1000.0f)
 
@@ -47,6 +48,32 @@ namespace Engine
             assert(false);
         }
         printf("%s\n", error.Msg.c_str());
+
+        if (Editor::IsEditorConnected()) // TODO: unify with frontend logging
+        {
+            EditorServer::Msg msg;
+            msg.Data = EditorServer::EngineLogMsg();
+            msg.Type = EditorServer::MsgType::EngineLog;
+            std::get<EditorServer::EngineLogMsg>(msg.Data).src = EditorServer::LogSource::Backend;
+            std::get<EditorServer::EngineLogMsg>(msg.Data).msg = error.Msg;
+
+            switch (error.Severity)
+            {
+            case BackendErrorSeverity::Error:
+                std::get<EditorServer::EngineLogMsg>(msg.Data).severity = EditorServer::LogSeverity::Error;
+                break;
+            case BackendErrorSeverity::Info:
+                std::get<EditorServer::EngineLogMsg>(msg.Data).severity = EditorServer::LogSeverity::Info;
+                break;
+            case BackendErrorSeverity::Warning:
+                std::get<EditorServer::EngineLogMsg>(msg.Data).severity = EditorServer::LogSeverity::Warning;
+                break;
+            case BackendErrorSeverity::Unknown:
+                std::get<EditorServer::EngineLogMsg>(msg.Data).severity = EditorServer::LogSeverity::Unknown;
+                break;
+            }
+            EVerify(!Editor::EnqueueMsg(msg));
+        }
     }
 
     static void ResizeHandler(int newW, int newH)

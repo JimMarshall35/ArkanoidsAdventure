@@ -405,7 +405,7 @@ void PipelineMeshData::TryAddBuffer(const PipelineMeshBuffer& buffer)
 	{
 		if (buffer.GetType() != PipelinePropertyType::Vec3)
 		{
-			Err::ReportError(Err::FrontendErrorSeverity::Error, "invalid semantics: psPeVertexPos should be vec3");
+			Err::LogError("invalid semantics: psPeVertexPos should be vec3");
 			return;
 		}
 		EAssert(!m_bBoundingSphereSet);

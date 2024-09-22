@@ -15,6 +15,8 @@
 #include "Scene.h"
 #include "XMLArchive.h"
 #include "ComponentReg.h"
+#include "ConsoleCmdInterpreter.h"
+
 #include <variant>
 
 #ifdef _WIN32
@@ -38,6 +40,8 @@ namespace Editor {
 
 	static std::atomic<bool> bServerThreadContinue = true;
 
+	static std::atomic<bool> bEditorConnected = false;
+
 	int InitSocket()
 	{
 		struct addrinfo* result = NULL, * ptr = NULL, hints;
@@ -52,14 +56,14 @@ namespace Editor {
 		int iResult = getaddrinfo(NULL, DEFAULT_PORT, &hints, &result);
 		if (iResult != 0)
 		{
-			Err::LogError("getaddrinfo failed: %d\n", iResult);
+			Err::LogErrorLocal("getaddrinfo failed: %d\n", iResult);
 			WSACleanup();
 			return 1;
 		}
 		gListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
 		if (gListenSocket == INVALID_SOCKET)
 		{
-			Err::LogError("Error at socket(): %ld\n", WSAGetLastError());
+			Err::LogErrorLocal("Error at socket(): %ld\n", WSAGetLastError());
 			freeaddrinfo(result);
 			WSACleanup();
 			return 1;
@@ -68,7 +72,7 @@ namespace Editor {
 		iResult = bind(gListenSocket, result->ai_addr, (int)result->ai_addrlen);
 		if (iResult == SOCKET_ERROR)
 		{
-			printf("bind failed with error: %d\n", WSAGetLastError());
+			Err::LogErrorLocal("bind failed with error: %d\n", WSAGetLastError());
 			freeaddrinfo(result);
 			closesocket(gListenSocket);
 			WSACleanup();
@@ -113,9 +117,14 @@ namespace Editor {
 				}
 				else
 				{
-					Err::LogError("[HandleRecievedEditorMsg] EditComponent message: unknown component type: %s", nodeName);
+					Err::LogErrorLocal("[HandleRecievedEditorMsg] EditComponent message: unknown component type: %s", nodeName);
 				}
 				
+				break;
+			}
+		case EditorServer::MsgType::EngineCmd:
+			{
+				CCmd::DoCmd(std::get<EditorServer::EngineCmdMsg>(msgIn.Data).cmd.c_str());
 				break;
 			}
 		}
@@ -131,6 +140,16 @@ namespace Editor {
 		}
 	}
 
+	bool IsEditorConnected()
+	{
+		return bEditorConnected;
+	}
+
+	bool EnqueueMsg(const EditorServer::Msg& msg)
+	{
+		return gSendQueue.Push(msg);
+	}
+
 	void ServerSendThread()
 	{
 		while (bServerThreadContinue)
@@ -144,12 +163,12 @@ namespace Editor {
 				int iSendResult = send(gClientSocket, (const char*)serialized, serializedSize, 0);
 				if (iSendResult == SOCKET_ERROR)
 				{
-					Err::LogError("[ServerSendThread] send failed: %d\n", WSAGetLastError());
+					Err::LogErrorLocal("[ServerSendThread] send failed: %d\n", WSAGetLastError());
 					closesocket(gClientSocket);
 					WSACleanup();
 					break;
 				}
-				Err::LogInfo("Bytes sent: %d\n", iSendResult);
+				Err::LogInfoLocal("Bytes sent: %d\n", iSendResult);
 			}
 			std::this_thread::sleep_for(std::chrono::milliseconds(20));
 		}
@@ -165,12 +184,13 @@ namespace Editor {
 			gClientSocket = accept(gListenSocket, NULL, NULL);
 			if (gClientSocket == INVALID_SOCKET)
 			{
-				Err::LogError("accept failed: %d\n", WSAGetLastError());
+				Err::LogErrorLocal("accept failed: %d\n", WSAGetLastError());
 				closesocket(gListenSocket);
 				WSACleanup();
 				return;
 			}
-			Err::LogInfo("Editor Connected");
+			Err::LogInfoLocal("Editor Connected");
+			bEditorConnected = true;
 			std::thread sendThread(&ServerSendThread);
 			int iResult, iSendResult;
 			int recvbuflen = ENGINE_RECIEVE_MSG_BUFFER_SIZE;
@@ -181,23 +201,24 @@ namespace Editor {
 				iResult = recv(gClientSocket, recvbuf, recvbuflen, 0);
 				if (iResult > 0)
 				{
-					Err::LogInfo("Bytes received: %d\n", iResult);
+					Err::LogInfoLocal("Bytes received: %d\n", iResult);
 					EditorServer::Msg msg = EditorServer::DeserializeMsg((unsigned char*)recvbuf, iResult);
 					gRecieveQueue.Push(msg);
 				}
 				else if (iResult == 0)
 				{
-					Err::LogInfo("Connection closing...\n");
+					Err::LogInfoLocal("Connection closing...\n");
 				}
 				else
 				{
-					Err::LogError("recv failed: %d\n", WSAGetLastError());
+					Err::LogErrorLocal("recv failed: %d\n", WSAGetLastError());
 					closesocket(gClientSocket);
 					WSACleanup();
 					break;
 				}
 			} while (bServerThreadContinue && iResult > 0);
-			
+			bEditorConnected = false;
+
 			bServerThreadContinue = false;// set this to false to kill the send thread
 			sendThread.join();
 			bServerThreadContinue = true; // ...but set it back to true again
@@ -214,7 +235,7 @@ namespace Editor {
 		iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 		if (iResult != 0)
 		{
-			Err::LogError("WSAStartup failed: %d\n", iResult);
+			Err::LogErrorLocal("WSAStartup failed: %d\n", iResult);
 			return 1;
 		}
 		if (int i = InitSocket())
@@ -223,7 +244,7 @@ namespace Editor {
 		}
 		if (listen(gListenSocket, SOMAXCONN) == SOCKET_ERROR)
 		{
-			Err::LogError("Listen failed with error: %ld\n", WSAGetLastError());
+			Err::LogErrorLocal("Listen failed with error: %ld\n", WSAGetLastError());
 			closesocket(gListenSocket);
 			WSACleanup();
 			return 1;
@@ -254,6 +275,14 @@ namespace Editor {
 	void PollEditorMessageQueue()
 	{
 
+	}
+	bool IsEditorConnected()
+	{
+		return false;
+	}
+	bool EnqueueMsg(const EditorServer::Msg& msg)
+	{
+		return false;
 	}
 #endif
 

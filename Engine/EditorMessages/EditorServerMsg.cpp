@@ -44,6 +44,23 @@ namespace EditorServer
 			msg.Data = EditComponentMsg_Response{ bVal };
 			break;
 		}
+		case MsgType::EngineCmd:
+		{
+			msg.Data = EngineCmdMsg();
+			assert(data[dataLen - 1] == '\0');
+			std::get<EngineCmdMsg>(msg.Data).cmd = (const char*)msgData;
+			break;
+		}
+		case MsgType::EngineLog:
+		{
+			msg.Data = EngineLogMsg();
+			std::get<EngineLogMsg>(msg.Data).src = *((LogSource*)msgData);
+			msgData += sizeof(LogSource);
+			std::get<EngineLogMsg>(msg.Data).severity = *((LogSeverity*)msgData);
+			msgData += sizeof(LogSeverity);
+			std::get<EngineLogMsg>(msg.Data).msg = (const char*)msgData;
+			break;
+		}
 		}
 		return msg;
 	}
@@ -69,6 +86,12 @@ namespace EditorServer
 			break;
 		case MsgType::EditComponent_Response:
 			outSize += sizeof(bool);
+			break;
+		case MsgType::EngineCmd:
+			outSize += std::get<EngineCmdMsg>(msg.Data).cmd.length() + 1;
+			break;
+		case MsgType::EngineLog:
+			outSize += std::get<EngineLogMsg>(msg.Data).msg.length() + 1 + sizeof(LogSeverity) + sizeof(LogSource);
 			break;
 		default:
 			break;
@@ -109,6 +132,20 @@ namespace EditorServer
 		{
 			bool* b = (bool*)pWriteData;
 			*b = std::get<EditComponentMsg_Response>(msg.Data).bSucceeded;
+			break;
+		}
+		case MsgType::EngineCmd:
+		{
+			strcpy((char*)pWriteData, std::get<EngineCmdMsg>(msg.Data).cmd.c_str());
+			break;
+		}
+		case MsgType::EngineLog:
+		{
+			*((LogSource*)pWriteData) = std::get<EngineLogMsg>(msg.Data).src;
+			pWriteData += sizeof(LogSource);
+			*((LogSeverity*)pWriteData) = std::get<EngineLogMsg>(msg.Data).severity;
+			pWriteData += sizeof(LogSeverity);
+			strcpy((char*)pWriteData, std::get<EngineLogMsg>(msg.Data).msg.c_str());
 			break;
 		}
 		default:

@@ -10,13 +10,13 @@ bool TextureReg::RegisterTexture(const TextureData& data, TextureDataFreeFn free
 {
 	if (m_NameMap.find(data.Name) != m_NameMap.end())
 	{
-		Err::ReportError(Err::FrontendErrorSeverity::Warning, "Texture name '%s' taken", data.Name);
+		Err::LogError("Texture name '%s' taken", data.Name);
 		return false;
 	}
 	HTexture t = Engine::GetAPI().UploadTexture(data);
 	if (t == ENGINE_NULL_HANDLE)
 	{
-		Err::ReportError(Err::FrontendErrorSeverity::Warning, "Texture name '%s' upload failed", data.Name);
+		Err::LogError( "Texture name '%s' upload failed", data.Name);
 		return false;
 	}
 	m_Textures.push_back({ data, t });

@@ -26,19 +26,19 @@ void Transform::AddChild(entt::entity parent, entt::entity child)
 	if (!childTransform)
 	{
 		bOK = false;
-		Err::ReportError({ "Transform::AddChild: entity you're trying to add as a child transform to doesn't have transform component", Err::FrontendErrorSeverity::Warning });
+		Err::LogWarning("Transform::AddChild: entity you're trying to add as a child transform to doesn't have transform component");
 	}
 
 	if (!parentTransform)
 	{
 		bOK = false;
-		Err::ReportError({ "Transform::AddChild: entity you're trying to add as a parent transform to doesn't have transform component", Err::FrontendErrorSeverity::Warning });
+		Err::LogWarning("Transform::AddChild: entity you're trying to add as a parent transform to doesn't have transform component");
 	}
 
 	if (std::find(parentTransform->m_children.begin(), parentTransform->m_children.end(), child) != parentTransform->m_children.end())
 	{
 		bOK = false;
-		Err::ReportError({ "Transform::AddChild already added as child", Err::FrontendErrorSeverity::Warning });
+		Err::LogError("Transform::AddChild already added as child");
 	}
 
 	if (!bOK)

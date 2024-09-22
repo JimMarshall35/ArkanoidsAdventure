@@ -53,7 +53,7 @@ void SystemsReg::UnRegisterDrawSystem(HDrawSystem fn, DrawFunctionGroup g)
 	}
 	else
 	{
-		Err::ReportError(Err::FrontendErrorSeverity::Error, "can't unregister draw system '%i', handle not valid", (u32)fn);
+		Err::LogError("can't unregister draw system '%i', handle not valid", (u32)fn);
 	}
 }
 
@@ -69,7 +69,7 @@ void SystemsReg::UnRegisterUpdateSystem(HUpdateSystem fn, UpdateFunctionGroup g)
 	}
 	else
 	{
-		Err::ReportError(Err::FrontendErrorSeverity::Error, "can't unregister update system '%i', handle not valid", (u32)fn);
+		Err::LogError("can't unregister update system '%i', handle not valid", (u32)fn);
 	}
 }
 

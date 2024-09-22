@@ -152,6 +152,7 @@
     <ClInclude Include="Autolist.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="ComponentReg.h" />
+    <ClInclude Include="ConsoleCmdInterpreter.h" />
     <ClInclude Include="DebugLoadBasicScene.h" />
     <ClInclude Include="DrawMeshComponentsFunction.h" />
     <ClInclude Include="EditorCamControlsComponent.h" />
@@ -195,6 +196,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="ComponentReg.cpp" />
+    <ClCompile Include="ConsoleCmdInterpreter.cpp" />
     <ClCompile Include="DebugLoadBasicScene.cpp" />
     <ClCompile Include="DrawMeshComponentsFunction.cpp" />
     <ClCompile Include="EditorCamControlsComponent.cpp" />

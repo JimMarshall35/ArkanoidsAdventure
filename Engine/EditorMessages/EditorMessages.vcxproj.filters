@@ -42,6 +42,12 @@
     <ClInclude Include="EditComponentMessage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="EngineCommandMsg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EngineLogMsg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

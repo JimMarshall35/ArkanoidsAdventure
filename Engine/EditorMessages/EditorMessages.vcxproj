@@ -156,6 +156,8 @@
   <ItemGroup>
     <ClInclude Include="CommonEditorServerDefines.h" />
     <ClInclude Include="EditComponentMessage.h" />
+    <ClInclude Include="EngineCommandMsg.h" />
+    <ClInclude Include="EngineLogMsg.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GetSceneXMLMessage.h" />
     <ClInclude Include="EditorServerMsg.h" />

@@ -11,19 +11,19 @@ bool MeshReg::UploadMeshData(PipelineMeshData& data)
 	auto itr = m_NameToHandle.find(data.GetName());
 	if (itr != m_NameToHandle.end())
 	{
-		Err::ReportError(Err::FrontendErrorSeverity::Warning, "Mesh named '%s' already taken", data.GetName().c_str());
+		Err::LogWarning("Mesh named '%s' already taken", data.GetName().c_str());
 		return false;
 	}
 	HMesh hmesh = api.UploadMesh(data);
 	if (hmesh == ENGINE_NULL_HANDLE)
 	{
-		Err::ReportError(Err::FrontendErrorSeverity::Error, "Mesh named '%s' failed to load", data.GetName().c_str());
+		Err::LogError("Mesh named '%s' failed to load", data.GetName().c_str());
 		return false;
 	}
 	m_Meshes.push_back(EPair<PipelineMeshData, HMesh>(data, hmesh));
 	m_NameToHandle[data.GetName()] = hmesh;
 	m_HandleToData[hmesh] = &(m_Meshes.back().first);
-	Err::ReportError(Err::FrontendErrorSeverity::Info, "Mesh named '%s' successfully uploaded. Handle: %i", data.GetName().c_str(), hmesh);
+	Err::LogInfo("Mesh named '%s' successfully uploaded. Handle: %i", data.GetName().c_str(), hmesh);
 	return true;
 }
 

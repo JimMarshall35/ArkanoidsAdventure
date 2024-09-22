@@ -99,17 +99,17 @@ void EntityRegWrapper::PostSerializeFix(const EMap<HPipeline, EString>& pipeline
 				}
 				else
 				{
-					Err::ReportError(Err::FrontendErrorSeverity::Error, "Can't get pipeline '%s'", (u32) entity, pipelineHandleToMap.at(m.m_hPipeline).c_str());
+					Err::LogError("Can't get pipeline '%s'", (u32) entity, pipelineHandleToMap.at(m.m_hPipeline).c_str());
 				}
 			}
 			else
 			{
-				Err::ReportError(Err::FrontendErrorSeverity::Error, "Entity: '%i' using unknwon mesh: '%i'", (u32) entity, (u32)m.GetMesh());
+				Err::LogError("Entity: '%i' using unknwon mesh: '%i'", (u32) entity, (u32)m.GetMesh());
 			}
 		}
 		else
 		{
-			Err::ReportError(Err::FrontendErrorSeverity::Error, "Entity: '%i' using unknwon pipeline: '%i'", (u32) entity, (u32)m.GetPipeline());
+			Err::LogError("Entity: '%i' using unknwon pipeline: '%i'", (u32) entity, (u32)m.GetPipeline());
 		}
 	});
 }

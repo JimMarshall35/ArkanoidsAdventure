@@ -3,6 +3,8 @@
 #include "NewEntityMessage.h"
 #include "GetSceneXMLMessage.h"
 #include "EditComponentMessage.h"
+#include "EngineLogMsg.h"
+#include "EngineCommandMsg.h"
 #include <variant>
 
 namespace EditorServer
@@ -13,7 +15,8 @@ namespace EditorServer
 		std::variant<
 			NewEntityMessage, NewEntityMessage_Response,
 			GetSceneXmlMsg, GetSceneXmlMsg_Response,
-			EditComponentMsg, EditComponentMsg_Response
+			EditComponentMsg, EditComponentMsg_Response,
+			EngineCmdMsg, EngineLogMsg
 		> Data;
 	};
 

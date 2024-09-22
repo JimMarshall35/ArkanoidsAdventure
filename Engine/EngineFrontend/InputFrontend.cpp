@@ -22,13 +22,13 @@ namespace In
 			LogicalButton& bn = gBackendInputState.btns[i];
 			if (bn.name == btn.name)
 			{
-				Err::ReportError(Err::FrontendErrorSeverity::Warning, "Logical Button Name '%s' already taken - cannot register", btn.name.c_str());
+				Err::LogWarning("Logical Button Name '%s' already taken - cannot register", btn.name.c_str());
 				return ENGINE_NULL_HANDLE;
 			}
 		}
 		if (gBackendInputState.numBtns + 1 == MAX_LOGICAL_BUTNS)
 		{
-			Err::ReportError(Err::FrontendErrorSeverity::Warning, "RegisterLogicalButton, MAX_LOGICAL_BUTNS exceeded");
+			Err::LogWarning("RegisterLogicalButton, MAX_LOGICAL_BUTNS exceeded");
 			return ENGINE_NULL_HANDLE;
 		}
 		gBackendInputState.btns[gBackendInputState.numBtns++];
@@ -45,14 +45,14 @@ namespace In
 			{
 				if (bn.type == la.type)
 				{
-					Err::ReportError(Err::FrontendErrorSeverity::Warning, "Logical Axis Name '%s' and type '%i' already taken - cannot register", la.name.c_str(), (int)la.type);
+					Err::LogWarning("Logical Axis Name '%s' and type '%i' already taken - cannot register", la.name.c_str(), (int)la.type);
 					return ENGINE_NULL_HANDLE;
 				}
 			}
 		}
 		if (gBackendInputState.numAxes + 1 == MAX_LOGICAL_AXES)
 		{
-			Err::ReportError(Err::FrontendErrorSeverity::Warning, "RegisterLogicalButton, MAX_LOGICAL_AXES exceeded");
+			Err::LogWarning("RegisterLogicalButton, MAX_LOGICAL_AXES exceeded");
 			return ENGINE_NULL_HANDLE;
 		}
 		gBackendInputState.axis[gBackendInputState.numAxes++];
@@ -107,7 +107,7 @@ namespace In
 	{
 		if (CheckBtnHandle(bn))
 		{
-			Err::ReportError(Err::FrontendErrorSeverity::Error, "TryGetBtn, Logical btn handle '%i' out of range", (int)bn);
+			Err::LogError("TryGetBtn, Logical btn handle '%i' out of range", (int)bn);
 			return nullptr;
 		}
 		return GetBtn(bn);
@@ -117,7 +117,7 @@ namespace In
 	{
 		if (CheckAxisHandle(h))
 		{
-			Err::ReportError(Err::FrontendErrorSeverity::Error, "TryGetBtn, Logical btn handle '%i' out of range", (int)h);
+			Err::LogError("TryGetBtn, Logical btn handle '%i' out of range", (int)h);
 			return nullptr;
 		}
 		return GetAxis(h);
@@ -129,7 +129,7 @@ namespace In
 			[name](const LogicalButton& lb) -> bool { return 0 == strcmp(lb.name.c_str(), name); });
 		if (itr == gBackendInputState.btns.end())
 		{
-			Err::ReportError(Err::FrontendErrorSeverity::Error, "FindLogicalBtnHandle, Can't find logical btn '%s'", name);
+			Err::LogError("FindLogicalBtnHandle, Can't find logical btn '%s'", name);
 			return ENGINE_NULL_HANDLE;
 		}
 		return (itr - gBackendInputState.btns.begin()) + 1;
@@ -142,7 +142,7 @@ namespace In
 		});
 		if (itr == gBackendInputState.axis.end())
 		{
-			Err::ReportError(Err::FrontendErrorSeverity::Error, "FindLogicalAxisHandle, Can't find logical axis '%s'", name);
+			Err::LogError("FindLogicalAxisHandle, Can't find logical axis '%s'", name);
 			return ENGINE_NULL_HANDLE;
 		}
 		return (itr - gBackendInputState.axis.begin()) + 1;
@@ -154,7 +154,7 @@ namespace In
 		ep.type = BindingType::Btn;
 		if (CheckBtnHandle(h))
 		{
-			Err::ReportError(Err::FrontendErrorSeverity::Error, "MapLogicalButtonToKeyboardKey, Logical btn handle '%i' out of range", (int)h);
+			Err::LogError("MapLogicalButtonToKeyboardKey, Logical btn handle '%i' out of range", (int)h);
 		}
 		ep.data.btn.btn = h;
 		ep.data.btn.code = key;
@@ -168,7 +168,7 @@ namespace In
 		ep.type = BindingType::Btn;
 		if (CheckBtnHandle(h))
 		{
-			Err::ReportError(Err::FrontendErrorSeverity::Error, "MapLogicalButtonToMouseKey, Logical btn handle '%i' out of range", (int)h);
+			Err::LogError("MapLogicalButtonToMouseKey, Logical btn handle '%i' out of range", (int)h);
 		}
 		ep.data.btn.btn = h;
 		ep.data.btn.code = key;
@@ -182,7 +182,7 @@ namespace In
 		ep.type = BindingType::Axis;
 		if (CheckAxisHandle(h))
 		{
-			Err::ReportError(Err::FrontendErrorSeverity::Error, "MapLogicalAxisToMouseX, Logical Axis handle '%i' out of range", (int)h);
+			Err::LogError("MapLogicalAxisToMouseX, Logical Axis handle '%i' out of range", (int)h);
 			return;
 		}
 
@@ -199,7 +199,7 @@ namespace In
 		ep.type = BindingType::Axis;
 		if (CheckAxisHandle(h))
 		{
-			Err::ReportError(Err::FrontendErrorSeverity::Error, "MapLogicalAxisToMouseY, Logical Axis handle '%i' out of range", (int)h);
+			Err::LogError("MapLogicalAxisToMouseY, Logical Axis handle '%i' out of range", (int)h);
 			return;
 		}
 
@@ -214,7 +214,7 @@ namespace In
 	{
 		if (CheckAxisHandle(h))
 		{
-			Err::ReportError(Err::FrontendErrorSeverity::Error, "EnableDisableAxis, Logical Axis handle '%i' out of range", (int)h);
+			Err::LogError("EnableDisableAxis, Logical Axis handle '%i' out of range", (int)h);
 			return;
 		}
 		gBackendInputState.enabledAxes[h - 1] = enabled;
@@ -224,7 +224,7 @@ namespace In
 	{
 		if (CheckBtnHandle(h))
 		{
-			Err::ReportError(Err::FrontendErrorSeverity::Error, "EnableDisableBtn, Logical Btn handle '%i' out of range", (int)h);
+			Err::LogError("EnableDisableBtn, Logical Btn handle '%i' out of range", (int)h);
 			return;
 		}
 		gBackendInputState.enabledBtns[h - 1] = enabled;
@@ -260,7 +260,7 @@ namespace In
 	{
 		if (CheckBtnHandle(btn))
 		{
-			Err::ReportError(Err::FrontendErrorSeverity::Error, "IsBtnEnabled, Logical Btn handle '%i' out of range", (int)btn);
+			Err::LogError("IsBtnEnabled, Logical Btn handle '%i' out of range", (int)btn);
 			EAssert(false);
 			return false;
 		}
@@ -271,7 +271,7 @@ namespace In
 	{
 		if (CheckAxisHandle(btn))
 		{
-			Err::ReportError(Err::FrontendErrorSeverity::Error, "IsBtnEnabled, Logical Btn handle '%i' out of range", (int)btn);
+			Err::LogError("IsBtnEnabled, Logical Btn handle '%i' out of range", (int)btn);
 			EAssert(false);
 			return false;
 		}

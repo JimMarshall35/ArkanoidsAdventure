@@ -87,7 +87,7 @@ void PipeLine::Create()
 		{
 			if (UniformPropertyHandlesByName.find(p.Name) != UniformPropertyHandlesByName.end())
 			{
-				Err::ReportError(Err::FrontendErrorSeverity::Error, "already got a property handle for property '%s'. Did you call PipeLine::Create twice?");
+				Err::LogError("already got a property handle for property '%s'. Did you call PipeLine::Create twice?");
 			}
 			UniformPropertyHandlesByName[p.Name] = api.GetPipelineUniformPropertyH(PipelineHandle, p.Name, nStage);
 		}
