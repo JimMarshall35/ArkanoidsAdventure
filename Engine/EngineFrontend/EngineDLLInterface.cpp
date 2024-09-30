@@ -165,10 +165,10 @@ namespace Engine
                 //Transform& et = r.get<Transform>(hMeshEnt);
                 //Transform& camT = r.get<Transform>(sn.activeCameraAntity);
                 //CameraComponent& cam = r.get<CameraComponent>(sn.activeCameraAntity);
-                //glm::mat4 view = cam.GetView(camT);//glm::lookAt(transCam.getGlobalPosition(), transCam.getForward(), transCam.getUp());
+                //glm::mat4 view = cam.GetView(camT);
                 //glm::mat4 proj = cam.GetProj();
                 //gBackendAPI.SetGizmo(&et.getModelMatrixMut(), &view, &proj);
-                //gBackendAPI.SetGizmoOperation(GizmoOperation::Rotate);
+                //gBackendAPI.SetGizmoOperation(GizmoOperation::Scale);
                 // gizmo test end
             }
             gBackendAPI.PreRender();

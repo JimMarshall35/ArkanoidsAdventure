@@ -6,12 +6,12 @@
 #include "Sys.h"
 #include "TransformComponent.h"
 
-glm::mat4* pGizmoModelMatrix = nullptr;
-glm::mat4* pGizmoViewMatrix = nullptr;
-glm::mat4* pGizmoProjMatrix = nullptr;
+static glm::mat4* pGizmoModelMatrix = nullptr;
+static glm::mat4* pGizmoViewMatrix = nullptr;
+static glm::mat4* pGizmoProjMatrix = nullptr;
 
-ImGuizmo::MODE gGizmoMode = ImGuizmo::WORLD;
-ImGuizmo::OPERATION gGizmoOperation = ImGuizmo::TRANSLATE;
+static ImGuizmo::MODE gGizmoMode = ImGuizmo::WORLD;
+static ImGuizmo::OPERATION gGizmoOperation = ImGuizmo::TRANSLATE;
 
 void ImGuiWrapper::Init()
 {
