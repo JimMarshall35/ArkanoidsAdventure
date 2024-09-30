@@ -10,6 +10,8 @@
 #include "Texture.h"
 #include <GLFW/glfw3.h>
 
+#include "ImguiWrapper.h"
+
 namespace OGL
 {
 	//////////////////////////////////////////////////////////////////////// Defines
@@ -689,16 +691,19 @@ namespace OGL
 		glEnable(GL_DEBUG_OUTPUT);
 		glDebugMessageCallback(MessageCallback, 0);
 
+		ImGuiWrapper::Init();
 	}
 
 	void PreRender()
 	{
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		ImGuiWrapper::Update();
 	}
 
 	void PostRender()
 	{
+		ImGuiWrapper::Draw();
 		Sys::SwapBuffers();
 	}
 

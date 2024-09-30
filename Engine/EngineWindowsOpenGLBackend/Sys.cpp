@@ -5,6 +5,10 @@
 #include "OGLRenderer.h"
 #include "Input.h"
 
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
+
 namespace Sys
 {
 	static uint32_t WIDTH = 800;
@@ -56,11 +60,19 @@ namespace Sys
 			throw("unable to context to OpenGL");
 
 		glfwSetFramebufferSizeCallback(gWindow, &OnResize);
+
+		
 		//SetWindowSize(gWindow, WIDTH, HEIGHT);
 	}
 
 	bool ShouldGameContinue() { return !glfwWindowShouldClose(gWindow); }
-	void Cleanup() {}
+	void Cleanup() 
+	{
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext();
+
+	}
 	double GetTime() { return glfwGetTime() * 1000.0; }
 
 	void SwapBuffers()

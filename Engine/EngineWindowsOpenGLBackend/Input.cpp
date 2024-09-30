@@ -3,6 +3,7 @@
 #include "InputFrontend.h"
 #include "Error.h"
 #include "Sys.h"
+#include "ImguiWrapper.h"
 #include <bitset>
 
 static double gCursorX[2];
@@ -83,25 +84,31 @@ void BAInput::PollInput(BackendInputState& s)
 				case In::AxisBindingEndpointType::RAnalogDelta:
 					break;
 				case In::AxisBindingEndpointType::MouseDelta:
-					switch (ep.data.axis.axis)
+					if (!ImGuiWrapper::WantsMouseInput())
 					{
-					case In::Axis2D::X:
-						In::SetVal(h, gCursorDeltaX);
-						break;
-					case In::Axis2D::Y:
-						In::SetVal(h, gCursorDeltaY);
-						break;
+						switch (ep.data.axis.axis)
+						{
+						case In::Axis2D::X:
+							In::SetVal(h, gCursorDeltaX);
+							break;
+						case In::Axis2D::Y:
+							In::SetVal(h, gCursorDeltaY);
+							break;
+						}
 					}
 					break;
 				case In::AxisBindingEndpointType::MouseAbsolute:
-					switch (ep.data.axis.axis)
+					if (!ImGuiWrapper::WantsMouseInput())               // we might not want this behavior for absolute mouse - will see
 					{
-					case In::Axis2D::X:
-						In::SetVal(h, gCursorX[0]);
-						break;
-					case In::Axis2D::Y:
-						In::SetVal(h, gCursorY[0]);
-						break;
+						switch (ep.data.axis.axis)
+						{
+						case In::Axis2D::X:
+							In::SetVal(h, gCursorX[0]);
+							break;
+						case In::Axis2D::Y:
+							In::SetVal(h, gCursorY[0]);
+							break;
+						}
 					}
 					break;
 				default:
@@ -116,12 +123,18 @@ void BAInput::PollInput(BackendInputState& s)
 				switch (ep.data.btn.type)
 				{
 				case In::BtnBindingEndpointType::MouseBtn:
-					In::SetVal(b, gMouseButtonStates[ep.data.btn.code]);
+					if (!ImGuiWrapper::WantsMouseInput())
+					{
+						In::SetVal(b, gMouseButtonStates[ep.data.btn.code]);
+					}
 					break;
 				case In::BtnBindingEndpointType::ControllerBtn:
 					break;
 				case In::BtnBindingEndpointType::Keyboard:
-					In::SetVal(b, gKeyBoardStates[ep.data.btn.code]);
+					if (!ImGuiWrapper::WantsKeyboardInput())
+					{
+						In::SetVal(b, gKeyBoardStates[ep.data.btn.code]);
+					}
 					break;
 				default:
 					break;
