@@ -207,6 +207,9 @@
     <ClInclude Include="ConsoleCmdInterpreter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GizmoOperation.h">
+      <Filter>Header Files\Library</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IBackendApp.cpp">

@@ -6,6 +6,7 @@
 #include "Error.h"
 #include "Sys.h"
 #include "Input.h"
+#include "ImguiWrapper.h"
 
 extern "C"
 {
@@ -49,7 +50,10 @@ extern "C"
 			&OGL::UploadTexture,
 			&OGL::DestroyTexture,
 			&OGL::GetDrawableUserData,
-			&OGL::GetPipelineUserData
+			&OGL::GetPipelineUserData,
+			&ImGuiWrapper::SetGizmo,
+			&ImGuiWrapper::ClearGizmo,
+			&ImGuiWrapper::SetGizmoOperation
 		};
 	}
 }

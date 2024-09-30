@@ -50,7 +50,7 @@ const char* LoadFileIntoBuffer(const char* path, long& outBufferSize)
 
 
 
-void BasicScn::Load(Scn::Scene& scn)
+Entity BasicScn::Load(Scn::Scene& scn)
 {
     const BackendAPI& api = Engine::GetAPI();
 
@@ -203,4 +203,5 @@ In::EnableDisableBtn(handleStoreLocation, true);
     UpdateSystem* up2 = UpdateSystem::GetByName(TRANSFORM_MATRIX_UPDATE_SYSTEM_NAME);
     HUpdateSystem hUS2 = scn.sysReg.RegisterUpdateSystem(up2);
 
+    return meshEntity;
 }

@@ -1,4 +1,5 @@
 #pragma once
+#include "EngineLib.h"
 
 namespace Scn
 {
@@ -7,5 +8,5 @@ namespace Scn
 
 namespace BasicScn
 {
-	void Load(Scn::Scene& scn);
+	Entity Load(Scn::Scene& scn); // return value for expediency to test - returns the entity with the mesh
 };

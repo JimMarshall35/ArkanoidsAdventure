@@ -200,7 +200,7 @@ void TestPipeline::PerDrawUniform(int pipelineStage)
 	EntityReg& eReg = scn.entities.GetReg();
 	CameraComponent& cam = eReg.get<CameraComponent>(scn.activeCameraAntity);
 	Transform& transCam = eReg.get<Transform>(scn.activeCameraAntity);
-	glm::mat4x4 view = cam.GetView(transCam);//glm::lookAt(transCam.getGlobalPosition(), transCam.getForward(), transCam.getUp());
+	glm::mat4 view = cam.GetView(transCam);//glm::lookAt(transCam.getGlobalPosition(), transCam.getForward(), transCam.getUp());
 	api.SetPipelineUniform_Vec3(PipelineHandle, hLightPos, 0, pos);
 	api.SetPipelineUniform_Vec3(PipelineHandle, hLightColour, 0, plc.colour);
 	api.SetPipelineUniform_Mat4(PipelineHandle, hView, 0, view);

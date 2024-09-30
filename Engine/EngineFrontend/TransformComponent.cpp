@@ -134,6 +134,11 @@ const glm::mat4& Transform::getModelMatrix() const
 	return m_modelMatrix;
 }
 
+glm::mat4& Transform::getModelMatrixMut()
+{
+	return m_modelMatrix;
+}
+
 void Transform::Rotate(float x, float y, float z)
 {
 	m_eulerRot = {

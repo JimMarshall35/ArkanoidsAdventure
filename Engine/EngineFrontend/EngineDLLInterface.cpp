@@ -18,6 +18,7 @@
 #include "ComponentReg.h"
 #include "EditorServer.h"
 #include "EditorServerMsg.h"
+#include "TransformComponent.h"
 #define MS_PER_UPDATE 20.0f
 #define S_PER_UPDATE (MS_PER_UPDATE / 1000.0f)
 
@@ -114,10 +115,14 @@ namespace Engine
 
         gBackendAPI.InitRenderer();
         
+        // gizmo test begin
+        Entity hMeshEnt = entt::null;
+        // gizmo test end
+
         if (args.InitialScenePath == "")
         {
             Scn::Scene& s = Scn::GetScene();
-            BasicScn::Load(s);
+            hMeshEnt = BasicScn::Load(s);
         }
         else
         {
@@ -134,6 +139,8 @@ namespace Engine
 
         double previous = gBackendAPI.GetTime();
         double lag = 0.0;
+
+        
 
         while (gBackendAPI.ShouldGameContinue())
         {
@@ -152,6 +159,17 @@ namespace Engine
             {
                 lag -= MS_PER_UPDATE;
                 Update(MS_PER_UPDATE);
+                // gizmo test begin
+                //Scn::Scene& sn = Scn::GetScene();
+                //EntityReg& r = sn.entities.GetReg();
+                //Transform& et = r.get<Transform>(hMeshEnt);
+                //Transform& camT = r.get<Transform>(sn.activeCameraAntity);
+                //CameraComponent& cam = r.get<CameraComponent>(sn.activeCameraAntity);
+                //glm::mat4 view = cam.GetView(camT);//glm::lookAt(transCam.getGlobalPosition(), transCam.getForward(), transCam.getUp());
+                //glm::mat4 proj = cam.GetProj();
+                //gBackendAPI.SetGizmo(&et.getModelMatrixMut(), &view, &proj);
+                //gBackendAPI.SetGizmoOperation(GizmoOperation::Rotate);
+                // gizmo test end
             }
             gBackendAPI.PreRender();
             Render();

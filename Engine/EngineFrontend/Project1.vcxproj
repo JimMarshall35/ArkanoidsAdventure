@@ -160,6 +160,7 @@
     <ClInclude Include="EditorSystems.h" />
     <ClInclude Include="EntityRegWrapper.h" />
     <ClInclude Include="FrontendError.h" />
+    <ClInclude Include="GizmoOperation.h" />
     <ClInclude Include="IArchive.h" />
     <ClInclude Include="InputFrontend.h" />
     <ClInclude Include="Lighting.h" />

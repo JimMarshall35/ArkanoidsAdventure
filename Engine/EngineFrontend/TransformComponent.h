@@ -39,6 +39,7 @@ public:
 	const glm::vec3& getLocalRotation() const;
 	const glm::vec3& getLocalScale() const;
 	const glm::mat4& getModelMatrix() const;
+	glm::mat4& getModelMatrixMut();
 	glm::vec3 getRight() const;
 	glm::vec3 getUp() const;
 	glm::vec3 getBackward() const;

@@ -1,11 +1,12 @@
 #pragma once
+#include <array>
 #include <bitset>
 #include <glm/glm.hpp>
 #include <stdint.h>
 #include "EngineLib.h"
 #include "PipelineTypes.h"
 #include "InputFrontend.h"
-#include <array>
+#include "GizmoOperation.h"
 
 class BackendAPI;
 class PipeLine;
@@ -77,7 +78,11 @@ typedef void*                                  (*GetPipelineUserDataFn)         
 typedef int                                    (*GetCodeForAsciiCharFn)               (char);               // get the platform specific code for the keyboard key of an ascii char
 typedef int                                    (*GetCodeForMouseBtnFn)                (MouseButtons);        // get platform specific code for mouse btn
 
-typedef void                                   (*SetCursorMode)                       (In::CursorMode);
+typedef void                                   (*SetCursorModeFn)                     (In::CursorMode);
+
+typedef void                                   (*SetGizmoFn)                          (glm::mat4* pM, glm::mat4* pV, glm::mat4* pP);
+typedef void                                   (*ClearGizmoFn)                        (void);
+typedef void                                   (*SetGizmoOperationFn)                 (GizmoOperation op);
 
 struct BackendAPI 
 {
@@ -90,7 +95,7 @@ struct BackendAPI
 	PollInputFn PollInput = nullptr;
 	GetCodeForAsciiCharFn GetInputCodeForAscii = nullptr;
 	GetCodeForMouseBtnFn GetInputCodeForMouseBtn = nullptr;
-	SetCursorMode SetCursorMode = nullptr;
+	SetCursorModeFn SetCursorMode = nullptr;
 
 	RegisterWindowResizeHandlerFn RegisterResize = nullptr;
 
@@ -133,5 +138,7 @@ struct BackendAPI
 	GetDrawableUserDataFn GetDrawableUserData = nullptr;
 	GetPipelineUserDataFn GetPipelineUserData = nullptr;
 
-
+	SetGizmoFn SetGizmo = nullptr;
+	ClearGizmoFn ClearGizmo = nullptr;
+	SetGizmoOperationFn SetGizmoOperation = nullptr;
 };
