@@ -11,7 +11,7 @@ enum class HandleType
 	Texture,
 	LogicalAxis,
 	LogicalBtn
-}
+};
 
 #define AR_STORE(ComponentPtr, Property)\
 				ar->PushObj(#Property);\
