@@ -538,3 +538,9 @@ void XMLArchive::PushChild(int c)
         }
     }
 }
+
+void XMLArchive::HintHandleUsage(HandleType type)
+{
+    pugi::xml_attribute a = TopNode().append_attribute("Hint");
+    a.set_value((int)type);
+}
