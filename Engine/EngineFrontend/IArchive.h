@@ -2,6 +2,17 @@
 #include <glm/glm.hpp>
 #include "EngineLib.h"
 #include "InputFrontend.h"
+
+enum class HandleType
+{
+	Entity,
+	Mesh,
+	Drawable,
+	Texture,
+	LogicalAxis,
+	LogicalBtn
+}
+
 #define AR_STORE(ComponentPtr, Property)\
 				ar->PushObj(#Property);\
 					*ar << ComponentPtr##->##Property;\
@@ -12,7 +23,41 @@
 		*ar >> ComponentPtr##->##Property;\
 	ar->PopObj();
 
+#define AR_STORE_ENT(ComponentPtr, Property)\
+				ar->PushObj(#Property);\
+					*ar << ComponentPtr##->##Property;\
+					ar->HintHandleUsage(HandleType::Entity);\
+				ar->PopObj();
 
+#define AR_STORE_MESH(ComponentPtr, Property)\
+				ar->PushObj(#Property);\
+					*ar << ComponentPtr##->##Property;\
+					ar->HintHandleUsage(HandleType::Mesh);\
+				ar->PopObj();
+
+#define AR_STORE_DRAWABLE(ComponentPtr, Property)\
+				ar->PushObj(#Property);\
+					*ar << ComponentPtr##->##Property;\
+					ar->HintHandleUsage(HandleType::Drawable);\
+				ar->PopObj();
+
+#define AR_STORE_TEXTURE(ComponentPtr, Property)\
+				ar->PushObj(#Property);\
+					*ar << ComponentPtr##->##Property;\
+					ar->HintHandleUsage(HandleType::Texture);\
+				ar->PopObj();
+
+#define AR_STORE_AXIS(ComponentPtr, Property)\
+				ar->PushObj(#Property);\
+					*ar << ComponentPtr##->##Property;\
+					ar->HintHandleUsage(HandleType::LogicalAxis);\
+				ar->PopObj();
+
+#define AR_STORE_BTN(ComponentPtr, Property)\
+				ar->PushObj(#Property);\
+					*ar << ComponentPtr##->##Property;\
+					ar->HintHandleUsage(HandleType::LogicalBtn);\
+				ar->PopObj();
 class IArchive
 {
 public:
@@ -63,5 +108,7 @@ public:
 
 	virtual int CountChildren() = 0;
 	virtual void PushChild(int c) = 0;
+
+	virtual void HintHandleUsage(HandleType type) = 0;
 };
 
