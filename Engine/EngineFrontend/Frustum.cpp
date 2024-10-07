@@ -86,21 +86,21 @@ bool SphereOnFrustum(const Frustum& f, const Sphere& s, const Transform& t)
 	const glm::vec3 globalScale = t.getGlobalScale();
 
 	//Get our global center with process it with the global model matrix of our transform
-	const glm::vec3 globalCenter{ t.getModelMatrix() * glm::vec4(s.center, 1.f) };
+	const glm::vec4 globalCenter{ t.getModelMatrix() * glm::vec4(s.center, 1.f) };
 
 	//To wrap correctly our shape, we need the maximum scale scalar.
 	const float maxScale = std::max(std::max(globalScale.x, globalScale.y), globalScale.z);
 
 	//Max scale is assuming for the diameter. So, we need the half to apply it to our radius
-	Sphere globalSphere{ globalCenter, s.radius * (maxScale * 0.5f) };
+	Sphere globalSphere{ glm::vec3(globalCenter), s.radius * (maxScale) }; //* 0.5f) };
 
 	//Check Firstly the result that have the most chance to failure to avoid to call all functions.
-	return (SphereOnOrForwardplane(f.leftFace, s) &&
-		SphereOnOrForwardplane(f.rightFace, s) &&
-		SphereOnOrForwardplane(f.farFace, s) &&
-		SphereOnOrForwardplane(f.nearFace, s) &&
-		SphereOnOrForwardplane(f.topFace, s) &&
-		SphereOnOrForwardplane(f.bottomFace, s));
+	return (SphereOnOrForwardplane(f.leftFace, globalSphere) &&
+		SphereOnOrForwardplane(f.rightFace, globalSphere) &&
+		SphereOnOrForwardplane(f.farFace, globalSphere) &&
+		SphereOnOrForwardplane(f.nearFace, globalSphere) &&
+		SphereOnOrForwardplane(f.topFace, globalSphere) &&
+		SphereOnOrForwardplane(f.bottomFace, globalSphere));
 }
 
 bool AABBOnFrustum(const Frustum& f, const AABB& a, const Transform& t)

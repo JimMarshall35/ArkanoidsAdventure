@@ -28,8 +28,10 @@ static void Draw(Scn::Scene& s)
 		}
 	});
 	//Err::LogInfo("%i drawables drawn", drawables.size());
-	if(drawables.size())
+	if (drawables.size())
+	{
 		Engine::GetAPI().DrawDrawables(&drawables[0], drawables.size());
+	}
 }
 
 static DrawSystem gDrawMeshComponentSystem(&Draw, DrawFunctionGroup::Draw1, DRAW_MESH_COMPONENT_SYSTEM_NAME);

@@ -160,15 +160,15 @@ namespace Engine
                 lag -= MS_PER_UPDATE;
                 Update(MS_PER_UPDATE);
                 // gizmo test begin
-                //Scn::Scene& sn = Scn::GetScene();
-                //EntityReg& r = sn.entities.GetReg();
-                //Transform& et = r.get<Transform>(hMeshEnt);
-                //Transform& camT = r.get<Transform>(sn.activeCameraAntity);
-                //CameraComponent& cam = r.get<CameraComponent>(sn.activeCameraAntity);
-                //glm::mat4 view = cam.GetView(camT);
-                //glm::mat4 proj = cam.GetProj();
-                //gBackendAPI.SetGizmo(&et.getModelMatrixMut(), &view, &proj);
-                //gBackendAPI.SetGizmoOperation(GizmoOperation::Scale);
+                Scn::Scene& sn = Scn::GetScene();
+                EntityReg& r = sn.entities.GetReg();
+                Transform& et = r.get<Transform>(hMeshEnt);
+                Transform& camT = r.get<Transform>(sn.activeCameraAntity);
+                CameraComponent& cam = r.get<CameraComponent>(sn.activeCameraAntity);
+                glm::mat4 view = cam.GetView(camT);
+                glm::mat4 proj = cam.GetProj();
+                gBackendAPI.SetGizmo(&et.getModelMatrixMut(), &view, &proj);
+                gBackendAPI.SetGizmoOperation(GizmoOperation::Translate);
                 // gizmo test end
             }
             gBackendAPI.PreRender();
