@@ -5,7 +5,7 @@
 #include "IArchive.h"
 #include "TransformComponent.h"
 
-glm::mat4x4 CameraComponent::GetView(const Transform& t)
+glm::mat4x4 CameraComponent::GetView(Transform& t)
 {
 	if (bViewMatrixDirty)
 	{
@@ -19,26 +19,8 @@ glm::mat4x4 CameraComponent::GetProj()
 {
 	return glm::perspective(fovY, aspect, zNear, zFar);
 }
-void CameraComponent::GetMeshEntitiesInFrustum(EVec<Entity>& outEntities, const Transform& thisTransfom)
-{
-	outEntities.clear();
-	
-	const EntityReg& r = Scn::GetScene().entities.GetReg();
-	
-	auto v = r.view<Transform, MeshComponent>();
-	
-	Frustum f = CreateFrustumFromCamera(thisTransfom, *this, aspect, fovY, zNear, zFar);
 
-	v.each([&](const Entity entity, const Transform& t, const MeshComponent& m) {
-		Sphere bs = m.GetMeshBoundingSphere();
-		if (SphereOnFrustum(f, bs, t))
-		{
-			outEntities.push_back(entity);
-		}
-	});
-}
-
-Frustum CameraComponent::GetFrustum(const Transform& thisTransfom)
+Frustum CameraComponent::GetFrustum(Transform& thisTransfom)
 {
 	return CreateFrustumFromCamera(thisTransfom, *this, aspect, fovY, zNear, zFar);
 }

@@ -7,6 +7,7 @@
 #include "PipelineTypes.h"
 #include "InputFrontend.h"
 #include "GizmoOperation.h"
+#include "TransformComponent.h"
 
 class BackendAPI;
 class PipeLine;
@@ -80,7 +81,7 @@ typedef int                                    (*GetCodeForMouseBtnFn)          
 
 typedef void                                   (*SetCursorModeFn)                     (In::CursorMode);
 
-typedef void                                   (*SetGizmoFn)                          (glm::mat4* pM, glm::mat4* pV, glm::mat4* pP);
+typedef void                                   (*SetGizmoFn)                          (Transform* pTrans, glm::mat4* pV, glm::mat4* pP);
 typedef void                                   (*ClearGizmoFn)                        (void);
 typedef void                                   (*SetGizmoOperationFn)                 (GizmoOperation op);
 
@@ -138,6 +139,7 @@ struct BackendAPI
 	GetDrawableUserDataFn GetDrawableUserData = nullptr;
 	GetPipelineUserDataFn GetPipelineUserData = nullptr;
 
+	// TODO NEXT: move these out of the backend. Have backend just call Imgui backend functions, add dependency on imgui and imguizmo to frontend
 	SetGizmoFn SetGizmo = nullptr;
 	ClearGizmoFn ClearGizmo = nullptr;
 	SetGizmoOperationFn SetGizmoOperation = nullptr;

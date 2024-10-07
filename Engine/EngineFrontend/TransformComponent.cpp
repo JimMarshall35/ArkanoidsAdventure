@@ -80,16 +80,24 @@ const glm::vec3& Transform::getLocalPosition() const
 	return m_pos;
 }
 
-const glm::vec3& Transform::getGlobalPosition() const
+const glm::vec3& Transform::getGlobalPosition()
 {
+	if (m_bIsDirty)
+	{
+		computeModelMatrix();
+	}
 	return m_modelMatrix[3];
 }
 const glm::vec3& Transform::getLocalRotation() const
 {
 	return m_eulerRot;
 }
-glm::vec3 Transform::getRight() const
+glm::vec3 Transform::getRight()
 {
+	if (m_bIsDirty)
+	{
+		computeModelMatrix();
+	}
 	return m_modelMatrix[0];
 }
 void Transform::computeModelMatrix()
@@ -109,13 +117,21 @@ void Transform::computeModelMatrix()
 	m_bIsDirty = false;
 }
 
-glm::vec3 Transform::getUp() const
+glm::vec3 Transform::getUp() 
 {
+	if (m_bIsDirty)
+	{
+		computeModelMatrix();
+	}
 	return m_modelMatrix[1];
 }
 
-glm::vec3 Transform::getBackward() const
+glm::vec3 Transform::getBackward()
 {
+	if (m_bIsDirty)
+	{
+		computeModelMatrix();
+	}
 	return m_modelMatrix[2];
 }
 
@@ -124,19 +140,44 @@ const glm::vec3& Transform::getLocalScale() const
 	return m_scale;
 }
 
-glm::vec3 Transform::getForward() const
+glm::vec3 Transform::getForward()
 {
+	if (m_bIsDirty)
+	{
+		computeModelMatrix();
+	}
 	return -m_modelMatrix[2];
 }
 
-const glm::mat4& Transform::getModelMatrix() const
+const glm::mat4& Transform::getModelMatrix()
 {
+	if (m_bIsDirty)
+	{
+		computeModelMatrix();
+	}
 	return m_modelMatrix;
 }
 
 glm::mat4& Transform::getModelMatrixMut()
 {
+	if (m_bIsDirty)
+	{
+		computeModelMatrix();
+	}
 	return m_modelMatrix;
+}
+
+void SetTransformDirty(Entity e)
+{
+	EntityReg& r = Scn::GetScene().entities.GetReg();
+	if (Transform* t = r.try_get<Transform>(e))
+	{
+		t->ForceSetDirty(true);
+	}
+	else
+	{
+		EAssert(false);
+	}
 }
 
 void Transform::Rotate(float x, float y, float z)
@@ -147,6 +188,10 @@ void Transform::Rotate(float x, float y, float z)
 		fmod(m_eulerRot.z + z,360.0)
 	};
 	m_bIsDirty = true;
+	for (Entity e : m_children)
+	{
+		SetTransformDirty(e);
+	}
 }
 
 void Transform::Translate(float x, float y, float z)
@@ -155,16 +200,42 @@ void Transform::Translate(float x, float y, float z)
 	m_pos.y += y;
 	m_pos.z += z;
 	m_bIsDirty = true;
+	for (Entity e : m_children)
+	{
+		SetTransformDirty(e);
+	}
 }
 
-glm::vec3 Transform::getGlobalScale() const
+glm::vec3 Transform::getGlobalScale()
 {
 	return { glm::length(getRight()), glm::length(getUp()), glm::length(getBackward()) };
+}
+
+Transform* Transform::GetParent() const
+{
+	EntityReg& r = Scn::GetScene().entities.GetReg();
+	if (m_hParent == entt::null)
+	{
+		EAssert(false);
+		return nullptr;
+	}
+	return r.try_get<Transform>(m_hParent);
 }
 
 bool Transform::isDirty() const
 {
 	return m_bIsDirty;
+}
+void Transform::ForceSetDirty(bool isDirty)
+{
+	m_bIsDirty = isDirty;
+}
+void Transform::SetChildrenDirty()
+{
+	for (Entity e : m_children)
+	{
+		SetTransformDirty(e);
+	}
 }
 static void MetaReg(Comp::ComponentMeta* m)
 {

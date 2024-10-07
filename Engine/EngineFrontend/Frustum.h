@@ -20,10 +20,10 @@ struct Frustum
     Plane nearFace;
 };
 
-Frustum CreateFrustumFromCamera(const Transform& cam, CameraComponent& comComp, float aspect, float fovY, float zNear, float zFar);
+Frustum CreateFrustumFromCamera(Transform& cam, CameraComponent& comComp, float aspect, float fovY, float zNear, float zFar);
 
 Frustum CreateFrustumFromCamera(const Camera& cam, float aspect, float fovY, float zNear, float zFar);
 
-bool SphereOnFrustum(const Frustum& f, const Sphere& s, const Transform& t);
+bool SphereOnFrustum(const Frustum& f, const Sphere& s, Transform& t);
 
-bool AABBOnFrustum(const Frustum& f, const AABB& a, const Transform& t);
+bool AABBOnFrustum(const Frustum& f, const AABB& a, Transform& t);

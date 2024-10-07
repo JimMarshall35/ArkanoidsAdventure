@@ -15,9 +15,9 @@ int Light::GetPointLights(PointLightComponent* outPLC, glm::vec3* outPositions, 
 	Scn::Scene& scn = Scn::GetScene();
 	EntityReg& reg = scn.entities.GetReg();
 	Transform& t1 = reg.get<Transform>(scn.activeCameraAntity);
-	auto v = scn.entities.GetReg().view<const PointLightComponent, const Transform>();
+	auto v = scn.entities.GetReg().view<const PointLightComponent, Transform>();
 	EVec<PL> lights;
-	v.each([&](const PointLightComponent& plc, const Transform& t) { 
+	v.each([&](const PointLightComponent& plc, Transform& t) { 
 		lights.push_back({ 
 			plc,
 			t.getGlobalPosition(),

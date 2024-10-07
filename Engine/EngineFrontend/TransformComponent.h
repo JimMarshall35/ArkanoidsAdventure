@@ -13,7 +13,7 @@ class ENGINE_FRONTEND_API Transform
 protected:
 	//Local space information
 	glm::vec3 m_pos = { 0.0f, 0.0f, 0.0f };
-	glm::vec3 m_eulerRot = { 0.0f, 0.0f, 0.0f }; //In degrees
+	glm::vec3 m_eulerRot = { 0.0f, 0.0f, 0.0f }; //In degrees TODO: change to quaternion
 	glm::vec3 m_scale = { 1.0f, 1.0f, 1.0f };
 
 	//Global space information concatenate in matrix
@@ -34,21 +34,24 @@ public:
 	void setLocalPosition(const glm::vec3& newPosition);
 	void setLocalRotation(const glm::vec3& newRotation);
 	void setLocalScale(const glm::vec3& newScale);
-	const glm::vec3& getGlobalPosition() const;
+	const glm::vec3& getGlobalPosition();
 	const glm::vec3& getLocalPosition() const;
 	const glm::vec3& getLocalRotation() const;
 	const glm::vec3& getLocalScale() const;
-	const glm::mat4& getModelMatrix() const;
+	const glm::mat4& getModelMatrix();
 	glm::mat4& getModelMatrixMut();
-	glm::vec3 getRight() const;
-	glm::vec3 getUp() const;
-	glm::vec3 getBackward() const;
-	glm::vec3 getForward() const;
-	glm::vec3 getGlobalScale() const;
+	glm::vec3 getRight();
+	glm::vec3 getUp();
+	glm::vec3 getBackward();
+	glm::vec3 getForward();
+	glm::vec3 getGlobalScale();
+	Transform* GetParent() const;
 	void Rotate(float x, float y, float z);
 	void Translate(float x, float y, float z);
 
 	bool isDirty() const;
+	void ForceSetDirty(bool isDirty);
+	void SetChildrenDirty();
 	static void SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, EntityReg& reg);
 };
 

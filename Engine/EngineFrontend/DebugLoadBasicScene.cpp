@@ -11,7 +11,6 @@
 #include "EditorSystems.h"
 #include "EditorCamControlsComponent.h"
 #include "DrawMeshComponentsFunction.h"
-#include "TransformMatrixCompute.h"
 #include "EngineDLLInterface.h"
 #include "IBackendApp.h"
 
@@ -135,7 +134,7 @@ Entity BasicScn::Load(Scn::Scene& scn)
     Engine::GetWindowWidthAndHeight(w, h);
     float aspect = (float)w / (float)h;
     cam.aspect = aspect;
-    cam.fovY = glm::pi<float>() * 0.5f;
+    cam.fovY = 1.0;//glm::pi<float>() * 0.5f;
 
     cam.zNear = 0.1f;
     cam.zFar = 5000.0f;
@@ -200,8 +199,8 @@ In::EnableDisableBtn(handleStoreLocation, true);
     UpdateSystem* up = UpdateSystem::GetByName(EDITOR_CONTROLS_SYSTEM_NAME);
     HUpdateSystem hUS = scn.sysReg.RegisterUpdateSystem(up);
 
-    UpdateSystem* up2 = UpdateSystem::GetByName(TRANSFORM_MATRIX_UPDATE_SYSTEM_NAME);
-    HUpdateSystem hUS2 = scn.sysReg.RegisterUpdateSystem(up2);
+    //UpdateSystem* up2 = UpdateSystem::GetByName(TRANSFORM_MATRIX_UPDATE_SYSTEM_NAME);
+    //HUpdateSystem hUS2 = scn.sysReg.RegisterUpdateSystem(up2);
 
     return meshEntity;
 }

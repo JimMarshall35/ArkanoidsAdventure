@@ -167,7 +167,7 @@ namespace Engine
                 CameraComponent& cam = r.get<CameraComponent>(sn.activeCameraAntity);
                 glm::mat4 view = cam.GetView(camT);
                 glm::mat4 proj = cam.GetProj();
-                gBackendAPI.SetGizmo(&et.getModelMatrixMut(), &view, &proj);
+                gBackendAPI.SetGizmo(&et, &view, &proj);
                 gBackendAPI.SetGizmoOperation(GizmoOperation::Translate);
                 // gizmo test end
             }

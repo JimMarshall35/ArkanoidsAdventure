@@ -19,10 +19,9 @@ struct CameraComponent
 	glm::mat4x4 viewMatrix;
 	bool bViewMatrixDirty = true;
 	EString Name;
-	glm::mat4x4 GetView(const Transform& t);
+	glm::mat4x4 GetView(Transform& t);
 	glm::mat4x4 GetProj();
-	void GetMeshEntitiesInFrustum(EVec<Entity>& outEntities, const Transform& thisEntity);
-	Frustum GetFrustum(const Transform& thisTransfomt);
+	Frustum GetFrustum(Transform& thisTransfomt);
 	static void OnResize(int newW, int newH);
 
 };

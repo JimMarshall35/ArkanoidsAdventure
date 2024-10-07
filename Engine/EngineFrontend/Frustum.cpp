@@ -5,7 +5,7 @@
 #include "TransformComponent.h"
 #include "CameraComponent.h"
 
-Frustum CreateFrustumFromCamera(const Transform& cam, CameraComponent& comComp, float aspect, float fovY, float zNear, float zFar)
+Frustum CreateFrustumFromCamera(Transform& cam, CameraComponent& comComp, float aspect, float fovY, float zNear, float zFar)
 {
 	Frustum     frustum;
 	const float halfVSide = zFar * tanf(fovY * .5f);
@@ -44,7 +44,7 @@ Frustum CreateFrustumFromCamera(const Camera& cam, float aspect, float fovY, flo
     return frustum;
 }
 
-Frustum CreateFrustumFromCamera(const Transform& cam, float aspect, float fovY, float zNear, float zFar)
+Frustum CreateFrustumFromCamera(Transform& cam, float aspect, float fovY, float zNear, float zFar)
 {
 	Frustum     frustum;
 	const float halfVSide = zFar * tanf(fovY * .5f);
@@ -79,7 +79,7 @@ static bool AABBOnOrForwardplane(const Plane& p, const AABB& a)
 }
 
 
-bool SphereOnFrustum(const Frustum& f, const Sphere& s, const Transform& t)
+bool SphereOnFrustum(const Frustum& f, const Sphere& s, Transform& t)
 {
 	//return true;
 	//Get global scale thanks to our transform
@@ -103,7 +103,7 @@ bool SphereOnFrustum(const Frustum& f, const Sphere& s, const Transform& t)
 		SphereOnOrForwardplane(f.bottomFace, globalSphere));
 }
 
-bool AABBOnFrustum(const Frustum& f, const AABB& a, const Transform& t)
+bool AABBOnFrustum(const Frustum& f, const AABB& a, Transform& t)
 {
 	//Get global scale thanks to our transform
 	const glm::vec3 globalCenter{ t.getModelMatrix() * glm::vec4(a.center, 1.f) };

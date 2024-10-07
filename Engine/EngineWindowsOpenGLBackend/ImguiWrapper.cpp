@@ -6,7 +6,7 @@
 #include "Sys.h"
 #include "TransformComponent.h"
 
-static glm::mat4* pGizmoModelMatrix = nullptr;
+static Transform* pGizmoTransform = nullptr;
 static glm::mat4* pGizmoViewMatrix = nullptr;
 static glm::mat4* pGizmoProjMatrix = nullptr;
 
@@ -24,6 +24,24 @@ void ImGuiWrapper::Init()
 	ImGui::GetIO().DisplaySize.y = Sys::GetH();
 }
 
+static void RecalcLocalTransform()
+{
+	//EAssert(pGizmoTransform);
+	//const glm::vec3& globalPos = pGizmoTransform->getGlobalPosition();
+	////const glm::vec3& globalRot = pGizmoTransform->getGlobalR();
+	////const glm::vec3& globalScale = pGizmoTransform->getGlobalPosition();
+	//if (Transform* pParent = pGizmoTransform->GetParent())
+	//{
+	//	const glm::vec3& parentGlobalPos = pParent->getGlobalPosition();
+	//	pGizmoTransform->setLocalPosition(globalPos - parentGlobalPos);
+	//	pGizmoTransform->ForceSetDirty(false); // just in case
+	//}
+	//else
+	//{
+	//	EAssert(false);
+	//}
+}
+
 void ImGuiWrapper::Update()
 {
 	ImGui_ImplOpenGL3_NewFrame();
@@ -33,7 +51,7 @@ void ImGuiWrapper::Update()
 
 	//
 	//ImGui::ShowDemoWindow();
-	if (pGizmoModelMatrix)
+	if (pGizmoTransform)
 	{
 #define MAT_VAL_PTR(mat) &((*mat)[0][0])  // can probably just use the ptr to the matrix and cast to float ptr but dunno so I'm doing this 
 		EAssert(pGizmoViewMatrix);
@@ -41,7 +59,11 @@ void ImGuiWrapper::Update()
 		ImGuiIO& io = ImGui::GetIO();
 		ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
 
-		ImGuizmo::Manipulate(MAT_VAL_PTR(pGizmoViewMatrix), MAT_VAL_PTR(pGizmoProjMatrix), gGizmoOperation, gGizmoMode, MAT_VAL_PTR(pGizmoModelMatrix));
+		if (ImGuizmo::Manipulate(MAT_VAL_PTR(pGizmoViewMatrix), MAT_VAL_PTR(pGizmoProjMatrix), gGizmoOperation, gGizmoMode, MAT_VAL_PTR(&pGizmoTransform->getModelMatrixMut())))
+		{
+			RecalcLocalTransform();
+			pGizmoTransform->SetChildrenDirty();
+		}
 #undef MAT_VAL_PTR
 	}
 	ImGui::Render();
@@ -62,16 +84,16 @@ bool ImGuiWrapper::WantsKeyboardInput()
 	return ImGui::GetIO().WantCaptureKeyboard;
 }
 
-void ImGuiWrapper::SetGizmo(glm::mat4* pM, glm::mat4* pV, glm::mat4* pP)
+void ImGuiWrapper::SetGizmo(Transform* pM, glm::mat4* pV, glm::mat4* pP)
 {
-	pGizmoModelMatrix = pM;
+	pGizmoTransform = pM;
 	pGizmoProjMatrix = pP;
 	pGizmoViewMatrix = pV;
 }
 
 void ImGuiWrapper::ClearGizmo()
 {
-	pGizmoModelMatrix = nullptr;
+	pGizmoTransform = nullptr;
 	pGizmoProjMatrix = nullptr;
 	pGizmoViewMatrix = nullptr;
 }

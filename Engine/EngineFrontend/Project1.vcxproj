@@ -190,7 +190,6 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureReg.h" />
     <ClInclude Include="TransformComponent.h" />
-    <ClInclude Include="TransformMatrixCompute.h" />
     <ClInclude Include="XMLArchive.h" />
   </ItemGroup>
   <ItemGroup>
@@ -226,7 +225,6 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureReg.cpp" />
     <ClCompile Include="TransformComponent.cpp" />
-    <ClCompile Include="TransformMatrixCompute.cpp" />
     <ClCompile Include="XMLArchive.cpp" />
   </ItemGroup>
   <ItemGroup>
