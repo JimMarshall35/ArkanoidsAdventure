@@ -105,7 +105,7 @@ HDrawable PipeLine::GetDrawable(HMesh mesh, Entity e)
 	const BackendAPI& api = Engine::GetAPI();
 	HDrawable hDrawable = api.CreateDrawable(PipelineHandle, mesh, (void*)e);
 	api.RegisterPerInstanceUniformSetter(hDrawable, &PerInstanceUniformSetter);
-	api.RegisterPerDrawUniformSetter(hDrawable, &PerDrawUnifomSetter);
+	api.RegisterPerDrawUniformSetter(PipelineHandle, &PerDrawUnifomSetter);
 	return hDrawable;
 }
 

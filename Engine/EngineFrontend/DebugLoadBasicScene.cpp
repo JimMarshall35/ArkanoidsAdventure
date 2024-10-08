@@ -112,6 +112,25 @@ Entity BasicScn::Load(Scn::Scene& scn)
     mat.specularStrength = 0.2f;
     mat.shininess = 8.0f;
 
+    Entity meshEntity2 = reg.create();
+
+    MeshComponent& mc2 = reg.emplace<MeshComponent>(meshEntity2);
+    mc2.Create(shurikenMesh, *pPipeline, meshEntity2);
+
+    Transform& t9 = reg.emplace<Transform>(meshEntity2);
+    Transform::AddChild(meshEntity, meshEntity2);
+    t9.setLocalPosition({ 0,10,0 });
+    t9.setLocalScale({ 1,1,1 });
+    t9.setLocalRotation({ 0,0,0 });
+
+    TestPipelineMaterial& mat2 = reg.emplace<TestPipelineMaterial>(meshEntity2);
+    mat2.hTexture = scn.textureReg.GetTexture("Shuriken");
+    mat2.ambientStrength = 0.4f;
+    mat2.diffuseStrength = 0.5f;
+    mat2.specularStrength = 0.2f;
+    mat2.shininess = 8.0f;
+
+
     Entity lightEnt = reg.create();
     PointLightComponent& plc = reg.emplace<PointLightComponent>(lightEnt);
     plc.colour = { 1, 1, 1 };

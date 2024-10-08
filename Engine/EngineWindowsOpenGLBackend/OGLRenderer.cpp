@@ -138,7 +138,7 @@ namespace OGL
 			Log::LogMsg({ "[GetDrawable] drawable handle out of range: " + std::to_string(hDrawable), BackendErrorSeverity::Error });
 			return nullptr;
 		}
-		if (!gMeshPool.IsIndexAlive(hDrawable - 1))
+		if (!gDrawablePool.IsIndexAlive(hDrawable - 1))
 		{
 			Log::LogMsg({ EString("[GetDrawable] handle ") + std::to_string(hDrawable) + EString("corresponds to dead index"), BackendErrorSeverity::Error });
 			return nullptr;
