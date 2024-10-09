@@ -164,6 +164,7 @@
     <ClInclude Include="MessageTypes.h" />
     <ClInclude Include="NewEntityMessage.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="SetGizmoEntityMessage.h" />
     <ClInclude Include="ThreadSafeQueue.h" />
   </ItemGroup>
   <ItemGroup>

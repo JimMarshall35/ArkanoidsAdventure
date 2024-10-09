@@ -61,6 +61,22 @@ namespace EditorServer
 			std::get<EngineLogMsg>(msg.Data).msg = (const char*)msgData;
 			break;
 		}
+		case MsgType::SetEntityGizmo:
+		{
+			msg.Data = SetEntityGizmoMsg{};
+			std::get<SetEntityGizmoMsg>(msg.Data).entity = *((size_t*)msgData);
+			break;
+		}
+		case MsgType::ClearGizmoEntity:
+		{
+			msg.Data = ClearEntityGizmoMsg{};
+			break;
+		}
+		case MsgType::SetGizmoOperation:
+		{
+			msg.Data = SetGizmoOperationMsg{};
+			std::get<SetGizmoOperationMsg>(msg.Data).operation = *((uint8_t*)msgData);
+		}
 		}
 		return msg;
 	}
@@ -93,6 +109,14 @@ namespace EditorServer
 		case MsgType::EngineLog:
 			outSize += std::get<EngineLogMsg>(msg.Data).msg.length() + 1 + sizeof(LogSeverity) + sizeof(LogSource);
 			break;
+		case MsgType::SetEntityGizmo:
+			outSize += sizeof(size_t);
+			break;
+		case MsgType::ClearGizmoEntity:
+			break;
+		case MsgType::SetGizmoOperation:
+			outSize++;
+			break;
 		default:
 			break;
 		}
@@ -111,11 +135,9 @@ namespace EditorServer
 			break;
 		case MsgType::GetSceneXML_Response:
 			strcpy((char*)pWriteData, std::get<GetSceneXmlMsg_Response>(msg.Data).xml.c_str());
-			//pWriteData[outSize - 1] = '\0';
 			break;
 		case MsgType::NewEntity:
 			strcpy((char*)pWriteData, std::get<NewEntityMessage>(msg.Data).xml.c_str());
-			//pWriteData[outSize - 1] = '\0';
 			break;
 		case MsgType::NewEntity_Response:
 			*pWriteData = (unsigned char)std::get< NewEntityMessage_Response>(msg.Data).bOK;
@@ -146,6 +168,21 @@ namespace EditorServer
 			*((LogSeverity*)pWriteData) = std::get<EngineLogMsg>(msg.Data).severity;
 			pWriteData += sizeof(LogSeverity);
 			strcpy((char*)pWriteData, std::get<EngineLogMsg>(msg.Data).msg.c_str());
+			break;
+		}
+		case MsgType::SetEntityGizmo:
+		{
+			*((size_t*)pWriteData) = std::get<SetEntityGizmoMsg>(msg.Data).entity;
+			break;
+		}
+		case MsgType::ClearGizmoEntity:
+		{
+			break;
+		}
+		case MsgType::SetGizmoOperation:
+		{
+			*((uint8_t*)pWriteData) = std::get<SetGizmoOperationMsg>(msg.Data).operation;
+
 			break;
 		}
 		default:

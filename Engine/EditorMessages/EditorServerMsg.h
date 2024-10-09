@@ -6,7 +6,7 @@
 #include "EngineLogMsg.h"
 #include "EngineCommandMsg.h"
 #include <variant>
-
+#include "SetGizmoEntityMessage.h"
 namespace EditorServer
 {
 	struct Msg
@@ -16,7 +16,9 @@ namespace EditorServer
 			NewEntityMessage, NewEntityMessage_Response,
 			GetSceneXmlMsg, GetSceneXmlMsg_Response,
 			EditComponentMsg, EditComponentMsg_Response,
-			EngineCmdMsg, EngineLogMsg
+			EngineCmdMsg, EngineLogMsg,
+			SetEntityGizmoMsg, ClearEntityGizmoMsg,
+			SetGizmoOperationMsg
 		> Data;
 	};
 

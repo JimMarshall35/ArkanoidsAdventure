@@ -76,6 +76,8 @@ public:
 			return false;
 		}
 		m_pFreeIndices[m_nFreeIndices++] = index;
+		return true;
+
 	}
 	
 	bool IsIndexAlive(size_t index2Test)

@@ -7,6 +7,9 @@ namespace EditorServer
 		NewEntity, NewEntity_Response,
 		GetSceneXML, GetSceneXML_Response,
 		EditComponent, EditComponent_Response,
-		EngineCmd, EngineLog
+		EngineCmd, EngineLog,
+		SetEntityGizmo,
+		ClearGizmoEntity,
+		SetGizmoOperation
 	};
 }

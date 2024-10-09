@@ -19,6 +19,7 @@
 #include "EditorServer.h"
 #include "EditorServerMsg.h"
 #include "TransformComponent.h"
+#include "Gizmo.h"
 #define MS_PER_UPDATE 20.0f
 #define S_PER_UPDATE (MS_PER_UPDATE / 1000.0f)
 
@@ -129,7 +130,7 @@ namespace Engine
             XMLArchive ar(args.InitialScenePath.c_str(), false);
             Scn::SerializeScene(ar);
         }
-
+        
         if (args.bUseEditorServer)
         {
             Editor::Init({});
@@ -141,6 +142,9 @@ namespace Engine
         double lag = 0.0;
 
         
+        // gizmo test begin
+        Gizmo::SetGizmoOperation(GizmoOperation::Translate);
+        // gizmo test end
 
         while (gBackendAPI.ShouldGameContinue())
         {
@@ -148,6 +152,7 @@ namespace Engine
             double elapsed = current - previous;
             previous = current;
             lag += elapsed;
+
 
             In::PollInput();
             if (args.bUseEditorServer)
@@ -159,20 +164,12 @@ namespace Engine
             {
                 lag -= MS_PER_UPDATE;
                 Update(MS_PER_UPDATE);
-                // gizmo test begin
-                Scn::Scene& sn = Scn::GetScene();
-                EntityReg& r = sn.entities.GetReg();
-                Transform& et = r.get<Transform>(hMeshEnt);
-                Transform& camT = r.get<Transform>(sn.activeCameraAntity);
-                CameraComponent& cam = r.get<CameraComponent>(sn.activeCameraAntity);
-                glm::mat4 view = cam.GetView(camT);
-                glm::mat4 proj = cam.GetProj();
-                gBackendAPI.SetGizmo(&et, &view, &proj);
-                gBackendAPI.SetGizmoOperation(GizmoOperation::Translate);
-                // gizmo test end
             }
             gBackendAPI.PreRender();
+            gBackendAPI.BeginImGuiFrame();
+            Gizmo::UpdateGizmo();
             Render();
+            gBackendAPI.EndImGuiFrame();
             gBackendAPI.PostRender();
         }
         gBackendAPI.Cleanup();

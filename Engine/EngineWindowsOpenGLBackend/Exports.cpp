@@ -53,7 +53,10 @@ extern "C"
 			&OGL::GetPipelineUserData,
 			&ImGuiWrapper::SetGizmo,
 			&ImGuiWrapper::ClearGizmo,
-			&ImGuiWrapper::SetGizmoOperation
+			&ImGuiWrapper::SetGizmoOperation,
+			&ImGuiWrapper::BeginFrame,
+			&ImGuiWrapper::UpdateGizmo,
+			&ImGuiWrapper::EndFrame
 		};
 	}
 }

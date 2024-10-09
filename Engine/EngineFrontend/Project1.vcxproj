@@ -160,6 +160,7 @@
     <ClInclude Include="EditorSystems.h" />
     <ClInclude Include="EntityRegWrapper.h" />
     <ClInclude Include="FrontendError.h" />
+    <ClInclude Include="Gizmo.h" />
     <ClInclude Include="GizmoOperation.h" />
     <ClInclude Include="IArchive.h" />
     <ClInclude Include="InputFrontend.h" />
@@ -206,6 +207,7 @@
     <ClCompile Include="EntityRegWrapper.cpp" />
     <ClCompile Include="FrontendError.cpp" />
     <ClCompile Include="Frustum.cpp" />
+    <ClCompile Include="Gizmo.cpp" />
     <ClCompile Include="IBackendApp.cpp" />
     <ClCompile Include="InputFrontend.cpp" />
     <ClCompile Include="Lighting.cpp" />

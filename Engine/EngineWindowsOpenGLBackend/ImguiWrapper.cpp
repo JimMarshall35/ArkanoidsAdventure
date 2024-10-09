@@ -7,8 +7,6 @@
 #include "TransformComponent.h"
 
 static Transform* pGizmoTransform = nullptr;
-static glm::mat4* pGizmoViewMatrix = nullptr;
-static glm::mat4* pGizmoProjMatrix = nullptr;
 
 static ImGuizmo::MODE gGizmoMode = ImGuizmo::WORLD;
 static ImGuizmo::OPERATION gGizmoOperation = ImGuizmo::TRANSLATE;
@@ -26,6 +24,8 @@ void ImGuiWrapper::Init()
 
 static void RecalcLocalTransform()
 {
+	// TODO NEXT: implement this correctly
+	
 	//EAssert(pGizmoTransform);
 	//const glm::vec3& globalPos = pGizmoTransform->getGlobalPosition();
 	////const glm::vec3& globalRot = pGizmoTransform->getGlobalR();
@@ -42,36 +42,38 @@ static void RecalcLocalTransform()
 	//}
 }
 
-void ImGuiWrapper::Update()
+bool ImGuiWrapper::UpdateGizmo(glm::mat4* pV, glm::mat4* pP)
+{
+	bool rVal = false;
+	if (pGizmoTransform)
+	{
+#define MAT_VAL_PTR(mat) &((*mat)[0][0])  // can probably just use the ptr to the matrix and cast to float ptr but dunno so I'm doing this 
+		ImGuiIO& io = ImGui::GetIO();
+		ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+
+		if (ImGuizmo::Manipulate(MAT_VAL_PTR(pV), MAT_VAL_PTR(pP), gGizmoOperation, gGizmoMode, MAT_VAL_PTR(&pGizmoTransform->getModelMatrixMut())))
+		{
+			RecalcLocalTransform();
+			pGizmoTransform->SetChildrenDirty();
+			rVal = true;
+		}
+#undef MAT_VAL_PTR
+	}
+	return rVal;
+}
+
+void ImGuiWrapper::EndFrame()
+{
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
+void ImGuiWrapper::BeginFrame()
 {
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
 	ImGui::NewFrame();
 	ImGuizmo::BeginFrame();
-
-	//
-	//ImGui::ShowDemoWindow();
-	if (pGizmoTransform)
-	{
-#define MAT_VAL_PTR(mat) &((*mat)[0][0])  // can probably just use the ptr to the matrix and cast to float ptr but dunno so I'm doing this 
-		EAssert(pGizmoViewMatrix);
-		EAssert(pGizmoProjMatrix);
-		ImGuiIO& io = ImGui::GetIO();
-		ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-
-		if (ImGuizmo::Manipulate(MAT_VAL_PTR(pGizmoViewMatrix), MAT_VAL_PTR(pGizmoProjMatrix), gGizmoOperation, gGizmoMode, MAT_VAL_PTR(&pGizmoTransform->getModelMatrixMut())))
-		{
-			RecalcLocalTransform();
-			pGizmoTransform->SetChildrenDirty();
-		}
-#undef MAT_VAL_PTR
-	}
-	ImGui::Render();
-}
-
-void ImGuiWrapper::Draw()
-{
-	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
 bool ImGuiWrapper::WantsMouseInput()
@@ -84,18 +86,14 @@ bool ImGuiWrapper::WantsKeyboardInput()
 	return ImGui::GetIO().WantCaptureKeyboard;
 }
 
-void ImGuiWrapper::SetGizmo(Transform* pM, glm::mat4* pV, glm::mat4* pP)
+void ImGuiWrapper::SetGizmo(Transform* pM)
 {
 	pGizmoTransform = pM;
-	pGizmoProjMatrix = pP;
-	pGizmoViewMatrix = pV;
 }
 
 void ImGuiWrapper::ClearGizmo()
 {
 	pGizmoTransform = nullptr;
-	pGizmoProjMatrix = nullptr;
-	pGizmoViewMatrix = nullptr;
 }
 
 void ImGuiWrapper::SetGizmoOperation(GizmoOperation gizmoOp)

@@ -16,6 +16,7 @@
 #include "XMLArchive.h"
 #include "ComponentReg.h"
 #include "ConsoleCmdInterpreter.h"
+#include "Gizmo.h"
 
 #include <variant>
 
@@ -125,6 +126,21 @@ namespace Editor {
 		case EditorServer::MsgType::EngineCmd:
 			{
 				CCmd::DoCmd(std::get<EditorServer::EngineCmdMsg>(msgIn.Data).cmd.c_str());
+				break;
+			}
+		case EditorServer::MsgType::SetEntityGizmo:
+			{
+				Gizmo::SetGizmo((Entity)std::get<EditorServer::SetEntityGizmoMsg>(msgIn.Data).entity);
+				break;
+			}
+		case EditorServer::MsgType::ClearGizmoEntity:
+			{
+				Gizmo::DismissGizmo();
+				break;
+			}
+		case EditorServer::MsgType::SetGizmoOperation:
+			{
+				Gizmo::SetGizmoOperation((GizmoOperation)std::get<EditorServer::SetGizmoOperationMsg>(msgIn.Data).operation);
 				break;
 			}
 		}

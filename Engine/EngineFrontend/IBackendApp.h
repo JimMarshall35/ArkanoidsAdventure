@@ -81,9 +81,10 @@ typedef int                                    (*GetCodeForMouseBtnFn)          
 
 typedef void                                   (*SetCursorModeFn)                     (In::CursorMode);
 
-typedef void                                   (*SetGizmoFn)                          (Transform* pTrans, glm::mat4* pV, glm::mat4* pP);
+typedef void                                   (*SetGizmoFn)                          (Transform* pTrans);
 typedef void                                   (*ClearGizmoFn)                        (void);
 typedef void                                   (*SetGizmoOperationFn)                 (GizmoOperation op);
+typedef bool                                   (*UpdateGizmoFn)                       (glm::mat4* pV, glm::mat4* pP);
 
 struct BackendAPI 
 {
@@ -140,7 +141,12 @@ struct BackendAPI
 	GetPipelineUserDataFn GetPipelineUserData = nullptr;
 
 	// TODO NEXT: move these out of the backend. Have backend just call Imgui backend functions, add dependency on imgui and imguizmo to frontend
+	// I tried doing this - i couldn't get it to work - I'll leave it like it is for now
 	SetGizmoFn SetGizmo = nullptr;
 	ClearGizmoFn ClearGizmo = nullptr;
 	SetGizmoOperationFn SetGizmoOperation = nullptr;
+
+	VoidFn BeginImGuiFrame = nullptr;
+	UpdateGizmoFn UpdateGizmo = nullptr;
+	VoidFn EndImGuiFrame = nullptr;
 };

@@ -7,11 +7,12 @@ class Transform;
 namespace ImGuiWrapper
 {
 	void Init();
-	void Update();
-	void Draw();
+	bool UpdateGizmo(glm::mat4* pV, glm::mat4* pP);
+	void EndFrame();
+	void BeginFrame();
 	bool WantsMouseInput();
 	bool WantsKeyboardInput();
-	void SetGizmo(Transform* pM, glm::mat4* pV, glm::mat4* pP); // library isn't const correct so we can't be - view and projections should of course be const
+	void SetGizmo(Transform* pM);
 	void ClearGizmo();
 	void SetGizmoOperation(GizmoOperation gizmoOp);
 }

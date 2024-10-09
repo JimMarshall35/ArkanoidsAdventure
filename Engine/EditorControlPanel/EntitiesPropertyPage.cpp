@@ -56,6 +56,15 @@ void CEntitiesPropertyPage::OnSelChangedTreeCtrl(NMHDR* pNMHDR, LRESULT* pResult
 		m_ctlComponentInspector.OnNewComponentSelected(entity, propertyNode);
 		SetSelectedComponentText(propertyNode, entity);
 	}
+	else
+	{
+		uint32_t entity = m_ctlEntityTree.GetItemData(item.hItem);
+		EditorServer::Msg msg = {
+			EditorServer::MsgType::SetEntityGizmo,
+			EditorServer::SetEntityGizmoMsg{entity}
+		};
+		EditorClient::EnqueueToSend(msg);
+	}
 }
 
 
