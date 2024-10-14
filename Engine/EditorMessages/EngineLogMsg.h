@@ -18,6 +18,9 @@ namespace EditorServer
 		Frontend
 	};
 
+	/*
+		Sent by game to editor when a message is logged
+	*/
 	struct EngineLogMsg
 	{
 		LogSource src;

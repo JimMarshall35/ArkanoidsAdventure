@@ -49,7 +49,6 @@ void MainDialog::ConsoleSelectionChanged(NMHDR* pNotifyStruct, LRESULT* result)
 {
     SELCHANGE*  pSelChange = (SELCHANGE*)pNotifyStruct;
     m_ctlConsole.HandleSelchangedMsg(pSelChange);  // could do this with message reflection: https://learn.microsoft.com/en-us/cpp/mfc/tn062-message-reflection-for-windows-controls?view=msvc-170
-
 }
 
 void MainDialog::OnTimer(UINT_PTR nIDEvent)
@@ -105,8 +104,21 @@ void MainDialog::HandleMessageRecieved(const EditorServer::Msg& msg)
     case EditorServer::MsgType::EngineLog:
         OutputLogMsgToConsole(std::get<EditorServer::EngineLogMsg>(msg.Data), m_ctlConsole);
         break;
+    case EditorServer::MsgType::EditComponent:
+    case EditorServer::MsgType::GetSceneXML_Response:
+    case EditorServer::MsgType::NewEntity_Response:
+        m_dlgMainPropSheet.HandleMessageRecieved(msg);
+        break;
+    default:
+    {
+        static char buf[256];
+        sprintf(buf, "un-handled message type '%i' recieved", (int)msg.Type);
+        m_ctlConsole.OutputText(buf);
+        break;
     }
-    m_dlgMainPropSheet.HandleMessageRecieved(msg);
+        
+    }
+    
 }
 
 BOOL MainDialog::PreTranslateMessage(MSG* pMsg)

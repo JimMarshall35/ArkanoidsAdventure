@@ -18,7 +18,8 @@ public:
     ~MainPropertySheet();
     virtual BOOL OnInitDialog() override;
     void HandleMessageRecieved(const EditorServer::Msg& msg);
-
+    void HandleGetSceneXmlResponseMsg(const EditorServer::Msg& msg);
+    void HandleEditComponentMsg(const EditorServer::Msg& msg);
 protected:
     CEntitiesPropertyPage* m_pEntitiesPropertyPage = nullptr;
     TexturesPropertyPage* m_pAssetsPropertyPage = nullptr;

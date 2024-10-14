@@ -24,7 +24,7 @@ protected:
 
 	entt::entity m_hParent = entt::null;
 	EVec<entt::entity> m_children;
-protected:
+public:
 	glm::mat4 getLocalModelMatrix();
 	
 public:

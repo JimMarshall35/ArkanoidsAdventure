@@ -229,6 +229,10 @@ bool Transform::isDirty() const
 void Transform::ForceSetDirty(bool isDirty)
 {
 	m_bIsDirty = isDirty;
+	if (isDirty)
+	{
+		SetChildrenDirty();
+	}
 }
 void Transform::SetChildrenDirty()
 {

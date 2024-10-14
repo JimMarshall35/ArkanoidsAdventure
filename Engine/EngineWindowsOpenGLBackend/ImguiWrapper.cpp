@@ -5,6 +5,7 @@
 #include "ImGuizmo.h"
 #include "Sys.h"
 #include "TransformComponent.h"
+#define MAT_VAL_PTR(mat) &((*mat)[0][0])  // can probably just use the ptr to the matrix and cast to float ptr but dunno so I'm doing this 
 
 static Transform* pGizmoTransform = nullptr;
 
@@ -22,24 +23,15 @@ void ImGuiWrapper::Init()
 	ImGui::GetIO().DisplaySize.y = Sys::GetH();
 }
 
-static void RecalcLocalTransform()
+static void RecalcGlobalTransform(const glm::mat4& localModel)
 {
-	// TODO NEXT: implement this correctly
-	
-	//EAssert(pGizmoTransform);
-	//const glm::vec3& globalPos = pGizmoTransform->getGlobalPosition();
-	////const glm::vec3& globalRot = pGizmoTransform->getGlobalR();
-	////const glm::vec3& globalScale = pGizmoTransform->getGlobalPosition();
-	//if (Transform* pParent = pGizmoTransform->GetParent())
-	//{
-	//	const glm::vec3& parentGlobalPos = pParent->getGlobalPosition();
-	//	pGizmoTransform->setLocalPosition(globalPos - parentGlobalPos);
-	//	pGizmoTransform->ForceSetDirty(false); // just in case
-	//}
-	//else
-	//{
-	//	EAssert(false);
-	//}
+	glm::vec3 pos, rot, scale;
+	ImGuizmo::DecomposeMatrixToComponents(MAT_VAL_PTR(&localModel), &pos[0], &rot[0], &scale[0]);
+	pGizmoTransform->setLocalPosition(pos);
+	pGizmoTransform->setLocalRotation(rot);
+	pGizmoTransform->setLocalScale(scale);
+	pGizmoTransform->ForceSetDirty(true);
+	pGizmoTransform->computeModelMatrix();
 }
 
 bool ImGuiWrapper::UpdateGizmo(glm::mat4* pV, glm::mat4* pP)
@@ -47,17 +39,15 @@ bool ImGuiWrapper::UpdateGizmo(glm::mat4* pV, glm::mat4* pP)
 	bool rVal = false;
 	if (pGizmoTransform)
 	{
-#define MAT_VAL_PTR(mat) &((*mat)[0][0])  // can probably just use the ptr to the matrix and cast to float ptr but dunno so I'm doing this 
 		ImGuiIO& io = ImGui::GetIO();
 		ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-
-		if (ImGuizmo::Manipulate(MAT_VAL_PTR(pV), MAT_VAL_PTR(pP), gGizmoOperation, gGizmoMode, MAT_VAL_PTR(&pGizmoTransform->getModelMatrixMut())))
+		glm::mat4 localModel = pGizmoTransform->getLocalModelMatrix();
+		if (ImGuizmo::Manipulate(MAT_VAL_PTR(pV), MAT_VAL_PTR(pP), gGizmoOperation, gGizmoMode, MAT_VAL_PTR(&localModel)))
 		{
-			RecalcLocalTransform();
+			RecalcGlobalTransform(localModel);
 			pGizmoTransform->SetChildrenDirty();
 			rVal = true;
 		}
-#undef MAT_VAL_PTR
 	}
 	return rVal;
 }
@@ -105,3 +95,5 @@ void ImGuiWrapper::SetGizmoOperation(GizmoOperation gizmoOp)
 	case GizmoOperation::Translate: gGizmoOperation = ImGuizmo::OPERATION::TRANSLATE; return;
 	}
 }
+
+#undef MAT_VAL_PTR

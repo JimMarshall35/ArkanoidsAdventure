@@ -25,6 +25,7 @@ public:
 	enum { IDD = IDD_ENTITIES_PROPERTY_SHEET_PAGE};
 #endif
 	void HandleMsgRecieved(const EditorServer::Msg& msg);
+	void UpdateComponent(size_t entity, pugi::xml_node newNode, const char* componentName);
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support

@@ -4,6 +4,10 @@
 #include "TransformComponent.h"
 #include "IBackendApp.h"
 #include "CameraComponent.h"
+#include "XMLArchive.h"
+#include "EditComponentMessage.h"
+#include "EditorServerMsg.h"
+#include "EditorServer.h"
 
 namespace Gizmo
 {
@@ -11,7 +15,24 @@ namespace Gizmo
 
 	void OnGizmoUpdated()
 	{
-
+		EntityReg& reg = Scn::GetScene().entities.GetReg();
+		Transform& t = reg.get<Transform>(gCurrentGizmoEntity);
+		XMLArchive ar("", true);
+		if (Comp::ComponentMeta* pMeta = Comp::ComponentMeta::FindByName("Transform"))
+		{
+			pMeta->Serialize(&ar, gCurrentGizmoEntity, reg);
+		}
+		else
+		{
+			Err::LogErrorLocal("[OnGizmoUpdated] Can't find transform meta");
+		}
+		EditorServer::Msg msg;
+		msg.Type = EditorServer::MsgType::EditComponent;
+		msg.Data = EditorServer::EditComponentMsg(
+			(size_t)gCurrentGizmoEntity,
+			ar.AsString().c_str()
+		);
+		Editor::EnqueueMsg(msg);
 	}
 	
 	void SetGizmo(Entity e)
@@ -23,6 +44,7 @@ namespace Gizmo
 		{
 			api.SetGizmo(et);
 		}
+		gCurrentGizmoEntity = e;
 	}
 
 	void DismissGizmo()

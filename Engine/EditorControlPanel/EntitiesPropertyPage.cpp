@@ -87,9 +87,18 @@ void CEntitiesPropertyPage::HandleMsgRecieved(const EditorServer::Msg& msg)
 		}
 	case EditorServer::MsgType::NewEntity_Response:
 		break;
+	case EditorServer::MsgType::EditComponent:
+		break;
 	default:
+		ASSERT(false);
 		break;
 	}
+}
+
+void CEntitiesPropertyPage::UpdateComponent(size_t entity, pugi::xml_node newNode, const char* componentName)
+{
+	m_ctlEntityTree.UpdateComponent(entity, newNode, componentName);
+	m_ctlComponentInspector.UpdateComponent(entity, newNode, componentName);
 }
 
 void CEntitiesPropertyPage::SetSelectedComponentText(pugi::xml_node propertyNode, uint32_t entity)

@@ -486,3 +486,20 @@ void CComponentInspectorPropertyGrid::OnPropertyChanged(CMFCPropertyGridProperty
 	EditorServer::Msg msg = MakeEditComponentMsg(m_Node, m_hEntity);
 	EditorClient::EnqueueToSend(msg);
 }
+
+void CComponentInspectorPropertyGrid::UpdateComponent(size_t entity, pugi::xml_node newNode, const char* componentName)
+{
+	// flickering could be avoided here with more sophisticated handling - ie don't recreate entire property grid
+	if (m_hEntity == entity)
+	{
+		// the fact we can still read the old nodes name here when its been removed from the master xml document with remove_child means this is surely leaking memory ?!
+		// or does it... 
+		const char* name = m_Node.name();
+		if (strcmp(name, componentName) == 0)
+		{
+			OnNewComponentSelected(entity, newNode);
+		}
+	}
+}
+
+
