@@ -254,6 +254,13 @@ void XMLArchive::operator>>(glm::vec2& v)
 
 void XMLArchive::operator<<(const glm::vec2& v)
 {
+    EAssert(m_bStoring);
+    pugi::xml_node n = TopNode();
+    pugi::xml_attribute a;
+    a = n.append_attribute("x");
+    a.set_value(v.x);
+    a = n.append_attribute("y");
+    a.set_value(v.y);
 }
 
 void XMLArchive::operator>>(glm::vec3& v)

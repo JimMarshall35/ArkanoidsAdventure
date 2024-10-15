@@ -74,6 +74,8 @@ public:
 	virtual void operator<<(i8 i) = 0;
 	virtual void operator<<(bool b) = 0;
 	virtual void operator<<(const EString& s) = 0;
+	//virtual void operator<<(const char* s) = 0; //Can't get this to work - i get MENTAL errors when i try to implement it
+	                                                 // some kind of corrupted vtable - pushChild actually calls operator>>(float&) ?!
 	virtual void operator<<(const glm::vec2& v) = 0;
 	virtual void operator<<(const glm::vec3& v) = 0;
 	virtual void operator<<(const glm::vec4& v) = 0;

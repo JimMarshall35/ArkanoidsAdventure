@@ -64,6 +64,7 @@ Entity BasicScn::Load(Scn::Scene& scn)
     td.pData = data;
     td.DataSize = height * width * nrChannels;
     td.Name = "Shuriken";
+    td.Path = "Shuriken.tga";
 
     scn.textureReg.RegisterTexture(td, [](void* pData) {stbi_image_free(pData); });
 

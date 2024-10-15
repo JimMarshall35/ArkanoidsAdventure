@@ -9,6 +9,7 @@
 BEGIN_MESSAGE_MAP(MainDialog, CDialog)
     ON_NOTIFY(EN_SELCHANGE, IDC_CONSOLE, &ConsoleSelectionChanged)
     ON_WM_TIMER()
+    ON_COMMAND(ID_FILE_SAVESCENEAS, &OnSaveSceneAs)
 END_MESSAGE_MAP()
 
 MainDialog::MainDialog()
@@ -146,6 +147,42 @@ void MainDialog::OnConsoleLineEntered(const char* line)
     msg.Data = EditorServer::EngineCmdMsg();
     std::get<EditorServer::EngineCmdMsg>(msg.Data).cmd = line;
     EditorClient::EnqueueToSend(msg);
+}
+
+void MainDialog::OnSaveSceneAs()
+{
+    wchar_t nameBuf[MAX_PATH + 1];
+    ::ZeroMemory(nameBuf, sizeof(wchar_t) * (MAX_PATH + 1));
+    CFileDialog dlgFile(FALSE);             // FALSE for FileSaveAs
+    OPENFILENAME& ofn = dlgFile.GetOFN();
+    ofn.Flags &= ~OFN_ALLOWMULTISELECT;
+    ofn.lpstrFile = nameBuf;
+    ofn.nMaxFile = MAX_PATH + 1;
+    dlgFile.DoModal();
+    if (wcslen(nameBuf))
+    {
+        m_strSavePath = nameBuf;
+        SaveSceneInternal();
+    }
+}
+
+void MainDialog::OnSaveScene()
+{
+    if (m_strSavePath != _T(""))
+    {
+        SaveSceneInternal();
+    }
+    else
+    {
+        OnSaveSceneAs();
+    }
+}
+
+void MainDialog::SaveSceneInternal()
+{
+    ASSERT(m_strSavePath != _T(""));
+    const pugi::xml_document& doc = m_dlgMainPropSheet.GetDoc();
+    doc.save_file(m_strSavePath);
 }
 
 

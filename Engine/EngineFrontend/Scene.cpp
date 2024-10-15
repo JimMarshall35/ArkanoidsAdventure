@@ -91,7 +91,8 @@ namespace Scn
 					*ar << pl->GetH();
 				ar->PopObj();
 				ar->PushObj("Name");
-					*ar << pl->GetName();
+					EString name = pl->GetName();
+					*ar << name;
 				ar->PopObj();
 			ar->PopObj();
 			return false;

@@ -163,7 +163,7 @@ void PipeLine::IteratePipelines(bool(*callBack)(PipeLine* pn, void* pUser), void
 
 int PipeLine::NumPipelines()
 {
-	int num;
+	int num = 0;
 	auto fn = [](PipeLine* p, void* pUser) -> bool
 	{
 		int* pNum = (int*)pUser;

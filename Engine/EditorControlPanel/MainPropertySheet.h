@@ -20,6 +20,7 @@ public:
     void HandleMessageRecieved(const EditorServer::Msg& msg);
     void HandleGetSceneXmlResponseMsg(const EditorServer::Msg& msg);
     void HandleEditComponentMsg(const EditorServer::Msg& msg);
+    const pugi::xml_document& GetDoc() const { return m_Doc; };
 protected:
     CEntitiesPropertyPage* m_pEntitiesPropertyPage = nullptr;
     TexturesPropertyPage* m_pAssetsPropertyPage = nullptr;
