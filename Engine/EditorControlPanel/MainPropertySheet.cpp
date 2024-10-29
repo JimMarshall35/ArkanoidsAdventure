@@ -17,16 +17,16 @@ MainPropertySheet::MainPropertySheet()
 	m_psh.dwFlags &= ~(PSH_HASHELP);
 	GetXMLSceneFn getScn = [this]() {return m_Scn; };
 	m_pEntitiesPropertyPage = new CEntitiesPropertyPage(getScn);
-	m_pAssetsPropertyPage = new TexturesPropertyPage(getScn);
+	m_pTexturesPropertySheetPage = new TexturesPropertyPage(getScn);
 	AddPage(m_pEntitiesPropertyPage);
-	AddPage(m_pAssetsPropertyPage);
+	AddPage(m_pTexturesPropertySheetPage);
 }
 
 MainPropertySheet::~MainPropertySheet()
 {
-	if (m_pAssetsPropertyPage)
+	if (m_pTexturesPropertySheetPage)
 	{
-		delete m_pAssetsPropertyPage;
+		delete m_pTexturesPropertySheetPage;
 	}
 	if (m_pEntitiesPropertyPage)
 	{
@@ -53,11 +53,14 @@ void MainPropertySheet::HandleMessageRecieved(const EditorServer::Msg& msg)
 	case EditorServer::MsgType::GetSceneXML_Response:
 		HandleGetSceneXmlResponseMsg(msg);
 		m_pEntitiesPropertyPage->HandleMsgRecieved(msg);
+		m_pTexturesPropertySheetPage->HandleMsgRecieved(msg);
 		break;
 	case EditorServer::MsgType::NewEntity_Response:
 		break;
 	case EditorServer::MsgType::EditComponent:
 		HandleEditComponentMsg(msg);
+		break;
+	case EditorServer::MsgType::RequestAssetsFolderPath_Response:
 		break;
 	default:
 		ASSERT(false);

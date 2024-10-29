@@ -56,7 +56,9 @@ extern "C"
 			&ImGuiWrapper::SetGizmoOperation,
 			&ImGuiWrapper::BeginFrame,
 			&ImGuiWrapper::UpdateGizmo,
-			&ImGuiWrapper::EndFrame
+			&ImGuiWrapper::EndFrame,
+			&Sys::GetAssetsFolderFullPath,
+			&Sys::GetAssetFilePath
 		};
 	}
 }

@@ -55,34 +55,11 @@ Entity BasicScn::Load(Scn::Scene& scn)
 
     // Textures
     scn.textureReg.Clear();
-    int width, height, nrChannels;
-    unsigned char* data = stbi_load("Shuriken.tga", &width, &height, &nrChannels, 0);
-
-    TextureData td;
-    td.HeightPx = height;
-    td.WidthPx = width;
-    td.pData = data;
-    td.DataSize = height * width * nrChannels;
-    td.Name = "Shuriken";
-    td.Path = "Shuriken.tga";
-
-    scn.textureReg.RegisterTexture(td, [](void* pData) {stbi_image_free(pData); });
+    scn.textureReg.UploadTextureFile("Shuriken.tga", "Shuriken");
 
     // Meshes
-    EVec<EString> errors;
-    long bufSize = 0;
-    const char* fileData = LoadFileIntoBuffer("Shuriken.obj", bufSize);
-    PipelineMeshData md("Shuriken");
-    if (OBJLoader::LoadFromFile(fileData, bufSize, errors, md))
-    {
-        for (const EString& error : errors)
-        {
-            printf("%s", error.c_str());
-        }
-    }
-    free((void*)fileData);
-    scn.meshReg.UploadMeshData(md);
-    HMesh shurikenMesh = scn.meshReg.TryGetMesh("Shuriken");
+    scn.meshReg.UploadMeshData("Shuriken.obj");
+    HMesh shurikenMesh = scn.meshReg.TryGetMesh("Shuriken.obj");
 
     // Entities
     EntityReg& reg = scn.entities.GetReg();

@@ -23,7 +23,7 @@ public:
     const pugi::xml_document& GetDoc() const { return m_Doc; };
 protected:
     CEntitiesPropertyPage* m_pEntitiesPropertyPage = nullptr;
-    TexturesPropertyPage* m_pAssetsPropertyPage = nullptr;
+    TexturesPropertyPage* m_pTexturesPropertySheetPage = nullptr;
     pugi::xml_document m_Doc;
     pugi::xml_node m_Scn;
     DECLARE_MESSAGE_MAP()

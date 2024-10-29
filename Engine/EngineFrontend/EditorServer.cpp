@@ -17,6 +17,7 @@
 #include "ComponentReg.h"
 #include "ConsoleCmdInterpreter.h"
 #include "Gizmo.h"
+#include "IBackendApp.h"
 
 #include <variant>
 
@@ -141,6 +142,19 @@ namespace Editor {
 		case EditorServer::MsgType::SetGizmoOperation:
 			{
 				Gizmo::SetGizmoOperation((GizmoOperation)std::get<EditorServer::SetGizmoOperationMsg>(msgIn.Data).operation);
+				break;
+			}
+		case EditorServer::MsgType::RequestAssetsFolderPath:
+			{
+				const BackendAPI& api = Engine::GetAPI();
+				EditorServer::Msg response;
+				const char* assetsFolderPath = api.GetAssetsFolderFullPath();
+				response.Data = EditorServer::RequestAssetsFolderPath_Response{
+					assetsFolderPath
+				};
+				response.Type = EditorServer::MsgType::RequestAssetsFolderPath_Response;
+				gSendQueue.Push(response);
+
 				break;
 			}
 		}

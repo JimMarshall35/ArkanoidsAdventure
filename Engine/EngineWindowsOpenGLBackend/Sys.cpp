@@ -9,6 +9,10 @@
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 namespace Sys
 {
 	static uint32_t WIDTH = 800;
@@ -93,6 +97,27 @@ namespace Sys
 	int GetH()
 	{
 		return HEIGHT;
+	}
+
+	const char* GetAssetsFolderFullPath()
+	{
+#ifdef _WIN32
+		static char buf[MAX_PATH];
+		LPSTR filePart;
+		GetFullPathNameA("./Assets", MAX_PATH, buf, &filePart);
+		return buf;
+#endif
+	}
+
+	const char* GetAssetFilePath(const char* assetFolderRelative)
+	{
+		static char buf[MAX_PATH];
+		const char* assetsFolderPath = GetAssetsFolderFullPath();
+		strcpy(buf, assetsFolderPath);
+		size_t len = strlen(buf);
+		buf[len++] = '\\';
+		strcpy(&buf[len], assetFolderRelative);
+		return buf;
 	}
 
 

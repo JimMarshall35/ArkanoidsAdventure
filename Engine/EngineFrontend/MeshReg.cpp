@@ -4,6 +4,41 @@
 #include "IArchive.h"
 #include "PipelineMeshData.h"
 #include "EngineDLLInterface.h"
+#include "OBJ/ObjFile.h"
+
+static const char* LoadFileIntoBuffer(const char* path, long& outBufferSize)
+{
+	char* source = NULL;
+
+	FILE* fp = nullptr;
+	fopen_s(&fp, path, "r");
+	if (fp != NULL) {
+		/* Go to the end of the file. */
+		if (fseek(fp, 0L, SEEK_END) == 0) {
+			/* Get the size of the file. */
+			outBufferSize = ftell(fp);
+			if (outBufferSize == -1) { /* Error */ }
+
+			/* Allocate our buffer to that size. */
+			source = (char*)malloc(sizeof(char) * (outBufferSize + 1));
+
+			/* Go back to the start of the file. */
+			if (fseek(fp, 0L, SEEK_SET) != 0) { /* Error */ }
+
+			/* Read the entire file into memory. */
+			size_t newLen = fread(source, sizeof(char), outBufferSize, fp);
+			if (ferror(fp) != 0) {
+				fputs("Error reading file", stderr);
+			}
+			else {
+				source[newLen++] = '\0'; /* Just to be safe. */
+			}
+		}
+		fclose(fp);
+	}
+	return source;
+}
+
 
 bool MeshReg::UploadMeshData(PipelineMeshData& data)
 {
@@ -27,7 +62,52 @@ bool MeshReg::UploadMeshData(PipelineMeshData& data)
 	return true;
 }
 
+std::string GetFileExtension(const char* file)
+{
+	size_t len = strnlen_s(file, 260);
+	while (file[--len] != '.')
+	{
+	}
+	const char* r = &file[len];
+	return r;
+}
 
+bool MeshReg::UploadMeshData(const char* filePath)
+{
+	EVec<EString> errors;
+	long bufSize = 0;
+	const BackendAPI& api = Engine::GetAPI();
+	const char* fullPath = api.GetAssetFullPathFn(filePath);
+	const char* fileData = LoadFileIntoBuffer(fullPath, bufSize);
+	PipelineMeshData md(filePath);
+	std::string extension = GetFileExtension(filePath);
+	if (extension == ".obj")
+	{
+		if (OBJLoader::LoadFromFile(fileData, bufSize, errors, md))
+		{
+			for (const EString& error : errors)
+			{
+				Err::LogError(error.c_str());
+			}
+		}
+		else
+		{
+			UploadMeshData(md);
+		}
+	}
+	else
+	{
+		Err::LogError("Invalid file extension '%s'", extension.c_str());
+	}
+	
+	if (fileData)
+	{
+		free((void*)fileData);
+	}
+	return false;
+}
+
+ 
 void MeshReg::Clear()
 {
 	const BackendAPI& api = Engine::GetAPI();

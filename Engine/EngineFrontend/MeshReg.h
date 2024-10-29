@@ -10,6 +10,7 @@ class ENGINE_FRONTEND_API MeshReg
 {
 public:
 	bool UploadMeshData(PipelineMeshData& data);
+	bool UploadMeshData(const char* filePath);
 	void Clear();
 	PipelineMeshData* TryGetPipelineMeshData(HMesh mesh);
 	void Serialize(IArchive& archive);

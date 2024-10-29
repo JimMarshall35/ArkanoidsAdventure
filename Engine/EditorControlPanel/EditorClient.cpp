@@ -9,6 +9,8 @@
 #include "EditorServerMsg.h"
 #include "CommonEditorServerDefines.h"
 #include <chrono>
+#include <vector>
+#include <algorithm>
 
 #ifdef _DEBUG
 #define verify(v) assert(v)
@@ -25,6 +27,25 @@ namespace EditorClient
     static std::atomic<bool> gThreadsContinue = true;
     TSQueueFixedSizeStackAllocatedQueue<EDITOR_GUI_SEND_QUEUE_SIZE,EditorServer::Msg> gSendQueue("send queue");
     TSQueueFixedSizeStackAllocatedQueue<EDITOR_GUI_RECIEVE_QUEUE_SIZE, EditorServer::Msg> gRecieveQueue("recieve queue");
+
+    std::vector<std::function<void(const char*)>> gGetAssetFolderPathCallbacks;
+
+    /* was the message handled as an async callback? */
+    bool DoAsyncCallbackTypeMessages(EditorServer::Msg& msg)
+    {
+        switch (msg.Type)
+        {
+        case EditorServer::MsgType::RequestAssetsFolderPath_Response:
+            for (std::function<void(const char*)> callback : gGetAssetFolderPathCallbacks)
+            {
+                auto r = std::get<EditorServer::RequestAssetsFolderPath_Response>(msg.Data);
+                callback(r.absolutePath.c_str());
+            }
+            gGetAssetFolderPathCallbacks.clear();
+            return true;
+        }
+        return false;
+    }
 
     void ClientRecieveThread()
     {
@@ -169,7 +190,17 @@ namespace EditorClient
     }
     bool PopRecieveQueue(EditorServer::Msg& msg)
     {
-        return gRecieveQueue.Pop(msg);
+        bool bVal = gRecieveQueue.Pop(msg);
+        DoAsyncCallbackTypeMessages(msg);
+        return bVal;
+    }
+    void GetAssetFolderPathAsync(std::function<void(const char*)> callback)
+    {
+        gGetAssetFolderPathCallbacks.push_back(callback);
+        EditorServer::Msg msg;
+        msg.Type = EditorServer::MsgType::RequestAssetsFolderPath;
+        msg.Data = EditorServer::RequestAssetsFolderPath{};
+        gSendQueue.Push(msg);
     }
 }
 

@@ -76,6 +76,9 @@
     <Filter Include="Source Files\Input">
       <UniqueIdentifier>{5cf5de75-ec40-4e01-8558-9108482b58f2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Editor">
+      <UniqueIdentifier>{1ed5d776-42f1-43ad-94a8-c6db487e265c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EngineDLLInterface.h">
@@ -195,9 +198,6 @@
     <ClInclude Include="InputFrontend.h">
       <Filter>Header Files\Input</Filter>
     </ClInclude>
-    <ClInclude Include="EditorServer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TestPipelineMaterialComponent.h">
       <Filter>Header Files\Components</Filter>
     </ClInclude>
@@ -207,8 +207,11 @@
     <ClInclude Include="GizmoOperation.h">
       <Filter>Header Files\Library</Filter>
     </ClInclude>
+    <ClInclude Include="EditorServer.h">
+      <Filter>Header Files\Editor</Filter>
+    </ClInclude>
     <ClInclude Include="Gizmo.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Editor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

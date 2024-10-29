@@ -85,7 +85,8 @@ typedef void                                   (*SetGizmoFn)                    
 typedef void                                   (*ClearGizmoFn)                        (void);
 typedef void                                   (*SetGizmoOperationFn)                 (GizmoOperation op);
 typedef bool                                   (*UpdateGizmoFn)                       (glm::mat4* pV, glm::mat4* pP);
-
+typedef const char*                            (*GetAssetsFolderFullPathFn)           (void); // only a sith DOESN'T deal in absolutes
+typedef const char*                            (*GetAssetFullPathFn)                  (const char*); // takes a file path and concatnates it to the asset folder root
 struct BackendAPI 
 {
 	// window, input, ect
@@ -149,4 +150,7 @@ struct BackendAPI
 	VoidFn BeginImGuiFrame = nullptr;
 	UpdateGizmoFn UpdateGizmo = nullptr;
 	VoidFn EndImGuiFrame = nullptr;
+
+	GetAssetsFolderFullPathFn GetAssetsFolderFullPath = nullptr;
+	GetAssetFullPathFn GetAssetFullPathFn = nullptr;
 };

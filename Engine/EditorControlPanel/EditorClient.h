@@ -1,4 +1,6 @@
 #pragma once
+#include <functional>
+
 namespace EditorServer
 {
 	struct Msg;
@@ -14,5 +16,6 @@ namespace EditorClient
 	bool EnqueueToSend(const EditorServer::Msg& msg);
 	bool RecieveQueueEmpty();
 	bool PopRecieveQueue(EditorServer::Msg& msg);
+	void GetAssetFolderPathAsync(std::function<void(const char*)> callback);
 };
 

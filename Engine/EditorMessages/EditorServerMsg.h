@@ -7,6 +7,8 @@
 #include "EngineCommandMsg.h"
 #include <variant>
 #include "SetGizmoEntityMessage.h"
+#include "GetAssetsFolderPathMsg.h"
+
 namespace EditorServer
 {
 	struct Msg
@@ -18,7 +20,8 @@ namespace EditorServer
 			EditComponentMsg, EditComponentMsg_Response,
 			EngineCmdMsg, EngineLogMsg,
 			SetEntityGizmoMsg, ClearEntityGizmoMsg,
-			SetGizmoOperationMsg
+			SetGizmoOperationMsg,
+			RequestAssetsFolderPath, RequestAssetsFolderPath_Response
 		> Data;
 	};
 

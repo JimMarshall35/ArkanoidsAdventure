@@ -78,6 +78,9 @@ void OutputLogMsgToConsole(const EditorServer::EngineLogMsg& msg, Console& conso
     case EditorServer::LogSource::Backend:
         s += "[Backend]";
         break;
+    case EditorServer::LogSource::Editor:
+        s += "[Editor]";
+        break;
     }
     switch (msg.severity)
     {
@@ -105,6 +108,15 @@ void MainDialog::HandleMessageRecieved(const EditorServer::Msg& msg)
     case EditorServer::MsgType::EngineLog:
         OutputLogMsgToConsole(std::get<EditorServer::EngineLogMsg>(msg.Data), m_ctlConsole);
         break;
+    case EditorServer::MsgType::RequestAssetsFolderPath_Response:
+    {
+        EditorServer::EngineLogMsg logMsg;
+        logMsg.severity = EditorServer::LogSeverity::Info;
+        logMsg.src = EditorServer::LogSource::Editor;
+        logMsg.msg = std::get<EditorServer::RequestAssetsFolderPath_Response>(msg.Data).absolutePath;
+        OutputLogMsgToConsole(logMsg, m_ctlConsole);
+        // intentional fall-through
+    }
     case EditorServer::MsgType::EditComponent:
     case EditorServer::MsgType::GetSceneXML_Response:
     case EditorServer::MsgType::NewEntity_Response:

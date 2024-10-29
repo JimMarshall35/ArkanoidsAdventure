@@ -5,6 +5,47 @@
 #include "EngineDLLInterface.h"
 #include "IBackendApp.h"
 #include "stb_image.h"
+#include "Scene.h"
+#include "FrontendError.h"
+
+bool TextureReg::UploadTextureFile(const char* assetFolderPath, const char* textureName, const UploadTextureFileOptions* options /*= nullptr*/)
+{
+	const BackendAPI& api = Engine::GetAPI();
+	UploadTextureFileOptions defaultOptions;
+	if (!options)
+	{
+		options = &defaultOptions;
+	}
+	Scn::Scene& scn = Scn::GetScene();
+
+	// Textures
+	int width, height, nrChannels;
+	const char* path = api.GetAssetFullPathFn(assetFolderPath);
+	unsigned char* data = stbi_load(path, &width, &height, &nrChannels, options->requiredComponents);
+	if (!data)
+	{
+		Err::LogError("can't load texture file: '%s'", path);
+		return true;
+	}
+	TextureData td;
+	td.HeightPx = height;
+	td.WidthPx = width;
+	td.pData = options->bRetainDataCPUMemory ? data : nullptr;
+	td.DataSize = height * width * nrChannels;
+	td.Name = textureName;
+	td.Path = assetFolderPath;
+
+	if (options->bRetainDataCPUMemory)
+	{
+		scn.textureReg.RegisterTexture(td, [](void* pData) {stbi_image_free(pData); });
+	}
+	else
+	{
+		scn.textureReg.RegisterTexture(td, [](void* pData) {});
+		stbi_image_free(data);
+	}
+	return false;
+}
 
 bool TextureReg::RegisterTexture(const TextureData& data, TextureDataFreeFn freer)
 {
@@ -95,11 +136,12 @@ void TextureReg::Serialize(IArchive& archive)
 }
 void TextureReg::ReloadTextures(EMap<HTexture, HTexture>& outOldToNewHandleMap)
 {
-	//EVec<EPair<TextureData, HTexture>> m_
+	const BackendAPI& api = Engine::GetAPI();
 	for (EPair<TextureData, HTexture>& p : m_Textures)
 	{
+		const char* absolutePath = api.GetAssetFullPathFn(p.first.Path.c_str());
 		int width, height, nrChannels;
-		unsigned char* data = stbi_load(p.first.Path.c_str(), &width, &height, &nrChannels, 0);
+		unsigned char* data = stbi_load(absolutePath, &width, &height, &nrChannels, 0);
 
 		TextureData& td = p.first;;
 		td.HeightPx = height;

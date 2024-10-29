@@ -74,6 +74,8 @@ void CEntitiesPropertyPage::Test()
 	msg.Type = EditorServer::MsgType::GetSceneXML;
 	msg.Data = EditorServer::GetSceneXmlMsg{};
 	EditorClient::EnqueueToSend(msg);
+	msg.Type = EditorServer::MsgType::RequestAssetsFolderPath;
+	EditorClient::EnqueueToSend(msg);
 }
 
 void CEntitiesPropertyPage::HandleMsgRecieved(const EditorServer::Msg& msg)

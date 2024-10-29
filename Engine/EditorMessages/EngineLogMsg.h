@@ -15,7 +15,8 @@ namespace EditorServer
 	enum class LogSource : std::uint8_t
 	{
 		Backend,
-		Frontend
+		Frontend,
+		Editor
 	};
 
 	/*

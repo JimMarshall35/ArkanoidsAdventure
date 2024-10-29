@@ -76,6 +76,19 @@ namespace EditorServer
 		{
 			msg.Data = SetGizmoOperationMsg{};
 			std::get<SetGizmoOperationMsg>(msg.Data).operation = *((uint8_t*)msgData);
+			break;
+		}
+		case MsgType::RequestAssetsFolderPath:
+		{
+			msg.Data = RequestAssetsFolderPath{};
+			break;
+		}
+		case MsgType::RequestAssetsFolderPath_Response:
+		{
+			msg.Data = RequestAssetsFolderPath_Response();
+			assert(data[dataLen - 1] == '\0');
+			std::get<RequestAssetsFolderPath_Response>(msg.Data).absolutePath = (const char*)msgData;
+			break;
 		}
 		}
 		return msg;
@@ -116,6 +129,11 @@ namespace EditorServer
 			break;
 		case MsgType::SetGizmoOperation:
 			outSize++;
+			break;
+		case MsgType::RequestAssetsFolderPath:
+			break;
+		case MsgType::RequestAssetsFolderPath_Response:
+			outSize += std::get<RequestAssetsFolderPath_Response>(msg.Data).absolutePath.length() + 1;
 			break;
 		default:
 			break;
@@ -183,6 +201,15 @@ namespace EditorServer
 		{
 			*((uint8_t*)pWriteData) = std::get<SetGizmoOperationMsg>(msg.Data).operation;
 
+			break;
+		}
+		case MsgType::RequestAssetsFolderPath:
+		{
+			break;
+		}
+		case MsgType::RequestAssetsFolderPath_Response:
+		{
+			strcpy((char*)pWriteData, std::get<RequestAssetsFolderPath_Response>(msg.Data).absolutePath.c_str());
 			break;
 		}
 		default:

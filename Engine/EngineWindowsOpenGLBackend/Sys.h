@@ -17,4 +17,7 @@ namespace Sys
 
 	int GetW();
 	int GetH();
+
+	const char* GetAssetsFolderFullPath();
+	const char* GetAssetFilePath(const char* assetFolderRelative);
 }

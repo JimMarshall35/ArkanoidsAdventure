@@ -10,6 +10,7 @@ namespace EditorServer
 		EngineCmd, EngineLog,
 		SetEntityGizmo,
 		ClearGizmoEntity,
-		SetGizmoOperation
+		SetGizmoOperation,
+		RequestAssetsFolderPath, RequestAssetsFolderPath_Response
 	};
 }
