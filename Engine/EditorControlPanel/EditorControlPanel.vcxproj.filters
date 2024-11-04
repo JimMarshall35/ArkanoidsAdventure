@@ -72,6 +72,12 @@
     <ClInclude Include="stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PickTextureFilesToUploadDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FilePathHelpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EditorControlPanel.cpp">
@@ -113,6 +119,12 @@
     <ClCompile Include="TexturePreviewStatic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PickTextureFilesToUploadDlg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FilePathHelpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="EditorControlPanel.rc">
@@ -126,6 +138,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\EditorControlPanel.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\icon1.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

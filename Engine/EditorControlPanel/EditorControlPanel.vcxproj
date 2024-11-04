@@ -192,6 +192,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Console.h" />
+    <ClInclude Include="FilePathHelpers.h" />
+    <ClInclude Include="PickTextureFilesToUploadDlg.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="TexturePreviewStatic.h" />
     <ClInclude Include="TexturePropertyPage.h" />
@@ -213,6 +215,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Console.cpp" />
+    <ClCompile Include="FilePathHelpers.cpp" />
+    <ClCompile Include="PickTextureFilesToUploadDlg.cpp" />
     <ClCompile Include="TexturePreviewStatic.cpp" />
     <ClCompile Include="TexturePropertyPage.cpp" />
     <ClCompile Include="ComponentInspectorPropertyGrid.cpp" />
@@ -239,6 +243,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\EditorControlPanel.ico" />
+    <Image Include="res\icon1.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

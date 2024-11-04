@@ -167,6 +167,7 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="SetGizmoEntityMessage.h" />
     <ClInclude Include="ThreadSafeQueue.h" />
+    <ClInclude Include="UploadTextureFileMsg.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />

@@ -5,12 +5,13 @@
 
 namespace EditorServer
 {
-
 	Msg DeserializeMsg(unsigned char* data, size_t dataLen)
 	{
 		Msg msg;
 		msg.Type = (MsgType)data[0];
 		unsigned char* msgData = &data[1];
+#define L(type, d) *((type*)d); d += sizeof(type);
+#define LS(d) (const char*)d; while(*d++ != '\0'){};
 		switch (msg.Type)
 		{
 		case MsgType::GetSceneXML:
@@ -32,15 +33,13 @@ namespace EditorServer
 			break;
 		case MsgType::EditComponent:
 		{
-			size_t entity = *((size_t*)msgData);
-			msgData += sizeof(size_t);
+			size_t entity = L(size_t, msgData);
 			msg.Data = EditComponentMsg(entity, (const char*)msgData);
 			break;
 		}
 		case MsgType::EditComponent_Response:
 		{
-			bool bVal = *((bool*)msgData);
-			msgData += sizeof(bool);
+			bool bVal = L(bool, msgData);
 			msg.Data = EditComponentMsg_Response{ bVal };
 			break;
 		}
@@ -54,17 +53,15 @@ namespace EditorServer
 		case MsgType::EngineLog:
 		{
 			msg.Data = EngineLogMsg();
-			std::get<EngineLogMsg>(msg.Data).src = *((LogSource*)msgData);
-			msgData += sizeof(LogSource);
-			std::get<EngineLogMsg>(msg.Data).severity = *((LogSeverity*)msgData);
-			msgData += sizeof(LogSeverity);
+			std::get<EngineLogMsg>(msg.Data).src = L(LogSource, msgData);
+			std::get<EngineLogMsg>(msg.Data).severity = L(LogSeverity, msgData);
 			std::get<EngineLogMsg>(msg.Data).msg = (const char*)msgData;
 			break;
 		}
 		case MsgType::SetEntityGizmo:
 		{
 			msg.Data = SetEntityGizmoMsg{};
-			std::get<SetEntityGizmoMsg>(msg.Data).entity = *((size_t*)msgData);
+			std::get<SetEntityGizmoMsg>(msg.Data).entity = L(size_t, msgData);
 			break;
 		}
 		case MsgType::ClearGizmoEntity:
@@ -75,7 +72,7 @@ namespace EditorServer
 		case MsgType::SetGizmoOperation:
 		{
 			msg.Data = SetGizmoOperationMsg{};
-			std::get<SetGizmoOperationMsg>(msg.Data).operation = *((uint8_t*)msgData);
+			std::get<SetGizmoOperationMsg>(msg.Data).operation = L(uint8_t, msgData);
 			break;
 		}
 		case MsgType::RequestAssetsFolderPath:
@@ -88,6 +85,15 @@ namespace EditorServer
 			msg.Data = RequestAssetsFolderPath_Response();
 			assert(data[dataLen - 1] == '\0');
 			std::get<RequestAssetsFolderPath_Response>(msg.Data).absolutePath = (const char*)msgData;
+			break;
+		}
+		case MsgType::UploadTextureFile:
+		{
+			msg.Data = UploadTextureFileMsg{};
+			UploadTextureFileMsg& data = std::get<UploadTextureFileMsg>(msg.Data);
+			data.options = L(UploadTextureFileOptions, msgData);
+			data.name = LS(msgData);
+			data.assetFolderRelativePath = LS(msgData);
 			break;
 		}
 		}
@@ -134,6 +140,11 @@ namespace EditorServer
 			break;
 		case MsgType::RequestAssetsFolderPath_Response:
 			outSize += std::get<RequestAssetsFolderPath_Response>(msg.Data).absolutePath.length() + 1;
+			break;
+		case MsgType::UploadTextureFile:
+			outSize += sizeof(UploadTextureFileOptions);
+			outSize += std::get<UploadTextureFileMsg>(msg.Data).name.length() + 1;
+			outSize += std::get<UploadTextureFileMsg>(msg.Data).assetFolderRelativePath.length() + 1;
 			break;
 		default:
 			break;
@@ -210,6 +221,17 @@ namespace EditorServer
 		case MsgType::RequestAssetsFolderPath_Response:
 		{
 			strcpy((char*)pWriteData, std::get<RequestAssetsFolderPath_Response>(msg.Data).absolutePath.c_str());
+			break;
+		}
+		case MsgType::UploadTextureFile:
+		{
+			const UploadTextureFileMsg& data = std::get<UploadTextureFileMsg>(msg.Data);
+			*((UploadTextureFileOptions*)pWriteData) = data.options;
+			pWriteData += sizeof(UploadTextureFileOptions);
+			strcpy((char*)pWriteData, data.name.c_str());
+			pWriteData += data.name.length() + 1;
+			strcpy((char*)pWriteData, data.assetFolderRelativePath.c_str());
+			pWriteData += data.name.length() + 1;
 			break;
 		}
 		default:

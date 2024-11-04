@@ -2,6 +2,9 @@
 #include "EngineLib.h"
 #include <glm/glm.hpp>
 class IArchive;
+
+// KEEP THESE ENUMS IN SYNC WITH THE ONES IN EditorCommon PROJECT IN "UploadTextureFileMsg.h"
+
 enum class TexFormat : u32
 {
 	R8G8B8,

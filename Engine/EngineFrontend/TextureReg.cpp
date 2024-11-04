@@ -35,6 +35,32 @@ bool TextureReg::UploadTextureFile(const char* assetFolderPath, const char* text
 	td.Name = textureName;
 	td.Path = assetFolderPath;
 
+	td.MinifyFiltering = options->MinifyFiltering;
+	td.MagnifyFiltering = options->MagnifyFiltering;
+	td.bGenerateMipMaps = options->bGenerateMipMaps;
+	td.TextureClampS = options->TextureClampS;
+	td.TextureClampT = options->TextureClampT;
+	/*
+		behavior of stbi_load:
+			- if requiredChannels arg is passed in as 0, nrChannels out arg is set to the number of channels
+			- if requiredChannels is not 0, nrChannels out arg will be set to same value as it would be if 0 was passed in for requiredChannels,
+			  but the number of channels will actually be requiredChannels
+	
+		hence the expression in the switch statement below - we want to switch the actual number of channels in the loaded data
+	*/
+	switch (options->requiredComponents ? options->requiredComponents : nrChannels)
+	{
+	case 3:
+		td.Format = TexFormat::R8G8B8;
+		break;
+	case 4:
+		td.Format = TexFormat::R8G8B8A8;
+		break;
+	default:
+		Err::LogWarning("unsuppored number of channels (%i) in image '%s'");
+		break;
+	}
+
 	if (options->bRetainDataCPUMemory)
 	{
 		scn.textureReg.RegisterTexture(td, [](void* pData) {stbi_image_free(pData); });

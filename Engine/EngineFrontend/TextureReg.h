@@ -2,8 +2,8 @@
 #include "EngineLib.h"
 #include "ExportMacro.h"
 #include "PipelineTypes.h"
+#include "Texture.h"
 
-struct TextureData;
 class IArchive;
 
 typedef void(*TextureDataFreeFn)(void*);
@@ -11,7 +11,15 @@ typedef void(*TextureDataFreeFn)(void*);
 struct UploadTextureFileOptions
 {
 	bool bRetainDataCPUMemory = true;
-	int requiredComponents = 0;
+	int requiredComponents = 0; // 0 == auto, however many the file actually has. Other numbers can force more or less channels
+
+	TextureFiltering MinifyFiltering = TextureFiltering::Nearest_MipMapNearest;
+	TextureFiltering MagnifyFiltering = TextureFiltering::Nearest;
+	TextureClamp TextureClampS = TextureClamp::Repeat;
+	TextureClamp TextureClampT = TextureClamp::Repeat;
+	glm::vec4 borderColour = glm::vec4{ 0,0,0,0 };
+	bool bGenerateMipMaps = true;
+
 };
 
 class ENGINE_FRONTEND_API TextureReg

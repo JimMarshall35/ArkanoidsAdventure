@@ -3,6 +3,8 @@
 #include "resource.h"
 #include "EditorServerMsg.h"
 #include "StringHelpers.h"
+#include "PickTextureFilesToUploadDlg.h"
+
 
 BEGIN_MESSAGE_MAP(TexturesPropertyPage, CPropertyPage)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LOADED_TEXTURES_LIST, OnTextureListSelChange)
@@ -176,13 +178,22 @@ void TexturesPropertyPage::OnContextMenu(CWnd* pWnd, CPoint pos)
 		int c = menu.GetMenuItemCount();
 		CMenu* popup = menu.GetSubMenu(0);
 		popup->TrackPopupMenu(0, screenPos.x, screenPos.y, this, NULL);
-
 	}
 }
 
 void TexturesPropertyPage::AddTexture()
 {
-	printf("dfjifdjo");
+	PickTextureFilesToUploadDlg dlg;
+
+	if (dlg.DoModal() == IDOK)
+	{
+		const std::unordered_map<std::wstring, EditorServer::UploadTextureFileMsg>&  data = dlg.GetData();
+		for (const std::pair<std::wstring, EditorServer::UploadTextureFileMsg>& d : data)
+		{
+			const EditorServer::UploadTextureFileMsg& msg = d.second;
+			printf("dfjiidf");
+		}
+	}
 }
 
 void TexturesPropertyPage::EditTexture()

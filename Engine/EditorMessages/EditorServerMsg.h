@@ -8,6 +8,7 @@
 #include <variant>
 #include "SetGizmoEntityMessage.h"
 #include "GetAssetsFolderPathMsg.h"
+#include "UploadTextureFileMsg.h"
 
 namespace EditorServer
 {
@@ -21,7 +22,8 @@ namespace EditorServer
 			EngineCmdMsg, EngineLogMsg,
 			SetEntityGizmoMsg, ClearEntityGizmoMsg,
 			SetGizmoOperationMsg,
-			RequestAssetsFolderPath, RequestAssetsFolderPath_Response
+			RequestAssetsFolderPath, RequestAssetsFolderPath_Response,
+			UploadTextureFileMsg
 		> Data;
 	};
 

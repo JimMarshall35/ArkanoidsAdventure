@@ -157,6 +157,21 @@ namespace Editor {
 
 				break;
 			}
+		case EditorServer::MsgType::UploadTextureFile:
+			{
+				Scn::Scene& s = Scn::GetScene();
+				const EditorServer::UploadTextureFileMsg& data = std::get<EditorServer::UploadTextureFileMsg>(msgIn.Data);
+				UploadTextureFileOptions options;
+				options.bGenerateMipMaps = data.options.bGenerateMipMaps;
+				options.bRetainDataCPUMemory = data.options.bRetainDataCPUMemory;
+				options.MagnifyFiltering = (TextureFiltering)data.options.MagnifyFiltering;
+				options.MinifyFiltering = (TextureFiltering)data.options.MinifyFiltering;
+				options.requiredComponents = data.options.requiredComponents;
+				options.TextureClampS = (TextureClamp)data.options.TextureClampS;
+				options.TextureClampT = (TextureClamp)data.options.TextureClampT;
+				s.textureReg.UploadTextureFile(data.assetFolderRelativePath.c_str(), data.name.c_str(), &options);
+				break;
+			}
 		}
 	}
 

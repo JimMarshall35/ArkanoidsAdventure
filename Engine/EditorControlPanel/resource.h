@@ -18,15 +18,29 @@
 #define IDD_TEXTURE_PROPERTY_SHEET_PAGE 136
 #define IDR_TEXTURE_HOVERRED_CTXT_MENU  138
 #define IDR_TEXTURE_NOT_HOVERRED_CTXT_MENU 139
+#define IDD_DIALOG1                     140
+#define IDD_TEXTURE_FILE_PICKER         140
+#define IDI_ICON1                       142
 #define IDC_TESTBTN                     1000
 #define IDC_ENTITIES_TREE               1002
 #define IDC_COMPONENT_INSPECTOR_PROPERTY_GRID 1003
 #define IDC_SELECTED_COMPONENT_TITLE    1004
 #define IDC_LIST1                       1006
 #define IDC_LOADED_TEXTURES_LIST        1006
+#define IDC_TEXTURES_TO_LOAD_LIST       1006
 #define IDC_MAINPROPSHEET               1007
 #define IDC_CONSOLE                     1011
 #define IDC_TEXTURE_PREVIEW_STATIC      1012
+#define IDC_NAME_EDIT                   1013
+#define IDC_REQUIRED_COMPONENTS_COMBO   1014
+#define IDC_MIN_FILTERING               1015
+#define IDC_MAG_FILTERING               1016
+#define IDC_CLAMP_S                     1017
+#define IDC_CLAMP_T                     1018
+#define IDC_GENERATE_MIPMAPS_CB         1019
+#define IDC_RETAIN_CPU_CB               1020
+#define IDC_BUTTON1                     1021
+#define IDC_ADD_TEXTURE_FILE_BTN        1021
 #define ID_FILE_SAVESCENEAS             32771
 #define ID_FILE_SAVESCENE               32772
 #define ID_FILE_LOADSCENE               32773
@@ -40,9 +54,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        140
+#define _APS_NEXT_RESOURCE_VALUE        143
 #define _APS_NEXT_COMMAND_VALUE         32779
-#define _APS_NEXT_CONTROL_VALUE         1013
+#define _APS_NEXT_CONTROL_VALUE         1022
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
