@@ -7,7 +7,7 @@
 class ENGINE_FRONTEND_API XMLArchive : public IArchive
 {
 public:
-	XMLArchive(const char* path, bool bStoring);
+	XMLArchive(const char* path, bool bStoring, bool bAddSceneNodeAsRoot = true);
 	XMLArchive(const char* xml);
 	pugi::xml_node GetRoot() { return m_Doc.root(); }
 	~XMLArchive();

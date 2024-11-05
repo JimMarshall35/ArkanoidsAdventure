@@ -4,12 +4,19 @@
 #include <stdio.h>
 #include <sstream>
 
-XMLArchive::XMLArchive(const char* path, bool bStoring)
+XMLArchive::XMLArchive(const char* path, bool bStoring, bool bAddSceneNodeAsRoot /*= true*/)
     :m_bStoring(bStoring), m_strPath(path)
 {
     if (bStoring)
     {
-        m_Root = m_Doc.append_child("Scene");
+        if (bAddSceneNodeAsRoot)
+        {
+            m_Root = m_Doc.append_child("Scene");
+        }
+        else
+        {
+            m_Root = m_Doc.root();
+        }
     }
     else
     {

@@ -31,6 +31,9 @@ public:
 	void Serialize(IArchive& archive);
 	void ReloadTextures(EMap<HTexture, HTexture>& outOldToNewHandleMap);
 	HTexture GetTexture(const char* name) const;
+	const TextureData* GetTextureData(const char* name) const;
+	TextureData* GetTextureData(const char* name);
+
 private:
 	EVec<EPair<TextureData, HTexture>> m_Textures;
 	EMap<EString, TextureDataFreeFn> m_Freeers;

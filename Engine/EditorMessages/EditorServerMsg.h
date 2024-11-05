@@ -23,7 +23,7 @@ namespace EditorServer
 			SetEntityGizmoMsg, ClearEntityGizmoMsg,
 			SetGizmoOperationMsg,
 			RequestAssetsFolderPath, RequestAssetsFolderPath_Response,
-			UploadTextureFileMsg
+			UploadTextureFileMsg, UploadTextureFile_Response
 		> Data;
 	};
 

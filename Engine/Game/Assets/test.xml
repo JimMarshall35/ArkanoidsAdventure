@@ -1,0 +1,439 @@
+<?xml version="1.0"?>
+<Scene u32Val="1">
+	<rootTransformEntity ID="0" />
+	<activeCameraAntity ID="4" />
+	<Entities i32Val="1">
+		<Entity u32Val="4">
+			<Transform>
+				<Version i32Val="1" />
+				<Pos x="0" y="0" z="5" />
+				<Rotation x="0" y="0" z="0" />
+				<Scale x="1" y="1" z="1" />
+				<Model v0v0="1" v0v0="1" v0v1="0" v0v2="0" v0v3="0" v1v0="0" v1v1="1" v1v2="0" v1v3="0" v2v0="0" v2v1="0" v2v2="1" v2v3="0" v3v0="0" v3v1="0" v3v2="5" v3v3="1" />
+				<IsDirty boolVal="false" />
+				<Parent ID="0" />
+				<Children u64Val="0" />
+			</Transform>
+			<EditorCamControlsComponent i32Val="1">
+				<YawAxis u64Val="1" />
+				<PitchAxis u64Val="2" />
+				<ActivateButton u64Val="1" />
+				<MoveSpeedUpBtn u64Val="8" />
+				<MoveSpeedDownBtn u64Val="9" />
+				<UpBtn u64Val="6" />
+				<DownBtn u64Val="7" />
+				<LeftBtn u64Val="4" />
+				<RightBtn u64Val="5" />
+				<ForwardBtn u64Val="2" />
+				<BackwardBtn u64Val="3" />
+			</EditorCamControlsComponent>
+			<CameraComponent i32Val="1">
+				<Name str="EditorCam" />
+				<aspect floatVal="1.33333337" />
+				<fovY floatVal="1" />
+				<zNear floatVal="0.100000001" />
+				<zFar floatVal="5000" />
+				<bIsMain boolVal="true" />
+				<bScreenAspect boolVal="true" />
+				<worldUp x="0" y="0" z="1" />
+			</CameraComponent>
+		</Entity>
+		<Entity u32Val="3">
+			<Transform>
+				<Version i32Val="1" />
+				<Pos x="0" y="100" z="0" />
+				<Rotation x="0" y="0" z="0" />
+				<Scale x="1" y="1" z="1" />
+				<Model v0v0="1" v0v0="1" v0v1="0" v0v2="0" v0v3="0" v1v0="0" v1v1="1" v1v2="0" v1v3="0" v2v0="0" v2v1="0" v2v2="1" v2v3="0" v3v0="0" v3v1="100" v3v2="0" v3v3="1" />
+				<IsDirty boolVal="false" />
+				<Parent ID="0" />
+				<Children u64Val="0" />
+			</Transform>
+			<PointLightComponent i32Val="1">
+				<Colour x="1" y="1" z="1" />
+			</PointLightComponent>
+		</Entity>
+		<Entity u32Val="2">
+			<TestPipelineMaterial i32Val="1">
+				<ambientStrength floatVal="0.400000006" />
+				<diffuseStrength floatVal="0.5" />
+				<specularStrength floatVal="0.200000003" />
+				<shininess floatVal="8" />
+				<hTexture u64Val="1" />
+			</TestPipelineMaterial>
+			<MeshComponent i32Val="1">
+				<HMesh u64Val="1" />
+				<HPipeline u64Val="1" />
+				<HDrawable u64Val="2" />
+			</MeshComponent>
+			<Transform>
+				<Version i32Val="1" />
+				<Pos x="1.73125422" y="1.21585965" z="0" />
+				<Rotation x="0" y="-0" z="0" />
+				<Scale x="1" y="1" z="1" />
+				<Model v0v0="1" v0v0="1" v0v1="0" v0v2="0" v0v3="0" v1v0="0" v1v1="1" v1v2="0" v1v3="0" v2v0="0" v2v1="0" v2v2="1" v2v3="0" v3v0="1.73125422" v3v1="1.21585965" v3v2="0" v3v3="1" />
+				<IsDirty boolVal="false" />
+				<Parent ID="1" />
+				<Children u64Val="0" />
+			</Transform>
+		</Entity>
+		<Entity u32Val="1">
+			<TestPipelineMaterial i32Val="1">
+				<ambientStrength floatVal="0.400000006" />
+				<diffuseStrength floatVal="0.5" />
+				<specularStrength floatVal="0.200000003" />
+				<shininess floatVal="8" />
+				<hTexture u64Val="1" />
+			</TestPipelineMaterial>
+			<MeshComponent i32Val="1">
+				<HMesh u64Val="1" />
+				<HPipeline u64Val="1" />
+				<HDrawable u64Val="1" />
+			</MeshComponent>
+			<Transform>
+				<Version i32Val="1" />
+				<Pos x="6.094769" y="0.748785853" z="-12.7072811" />
+				<Rotation x="0" y="-0" z="0" />
+				<Scale x="1" y="1" z="1" />
+				<Model v0v0="1" v0v0="1" v0v1="0" v0v2="0" v0v3="0" v1v0="0" v1v1="1" v1v2="0" v1v3="0" v2v0="0" v2v1="0" v2v2="1" v2v3="0" v3v0="6.9247508" v3v1="0.748785853" v3v2="-11.944068" v3v3="1" />
+				<IsDirty boolVal="false" />
+				<Parent ID="0" />
+				<Children u64Val="1">
+					<Child ID="2" />
+				</Children>
+			</Transform>
+		</Entity>
+		<Entity u32Val="0">
+			<Transform>
+				<Version i32Val="1" />
+				<Pos x="0.829981983" y="0" z="0.763213336" />
+				<Rotation x="0" y="-0" z="0" />
+				<Scale x="1" y="1" z="1" />
+				<Model v0v0="1" v0v0="1" v0v1="0" v0v2="0" v0v3="0" v1v0="0" v1v1="1" v1v2="0" v1v3="0" v2v0="0" v2v1="0" v2v2="1" v2v3="0" v3v0="0.829981983" v3v1="0" v3v2="0.763213336" v3v3="1" />
+				<IsDirty boolVal="false" />
+				<Parent ID="4294967295" />
+				<Children u64Val="3">
+					<Child ID="1" />
+					<Child ID="3" />
+					<Child ID="4" />
+				</Children>
+			</Transform>
+		</Entity>
+	</Entities>
+	<MeshReg>
+		<Version i32Val="1" />
+		<Meshes u64Val="1">
+			<Mesh>
+				<Handle u64Val="1" />
+				<PipelineMeshData i32Val="1">
+					<Name str="Shuriken.obj" />
+					<Buffers u64Val="4">
+						<Buffer i32Val="1">
+							<Type u32Val="2" />
+							<Semantics u16Val="1" />
+							<Data u64Val="48">
+								<Data x="0" y="0" z="0" />
+								<Data x="1" y="-1" z="0" />
+								<Data x="1" y="0" z="0" />
+								<Data x="2" y="1" z="0" />
+								<Data x="1" y="1" z="0" />
+								<Data x="0" y="2" z="0" />
+								<Data x="0" y="1" z="0" />
+								<Data x="-1" y="0" z="0" />
+								<Data x="0" y="0" z="1" />
+								<Data x="1" y="-1" z="1" />
+								<Data x="1" y="0" z="1" />
+								<Data x="2" y="1" z="1" />
+								<Data x="1" y="1" z="1" />
+								<Data x="0" y="2" z="1" />
+								<Data x="0" y="1" z="1" />
+								<Data x="-1" y="0" z="1" />
+								<Data x="0" y="0" z="0" />
+								<Data x="1" y="-1" z="0" />
+								<Data x="0" y="0" z="1" />
+								<Data x="1" y="-1" z="1" />
+								<Data x="1" y="-1" z="0" />
+								<Data x="1" y="0" z="0" />
+								<Data x="1" y="-1" z="1" />
+								<Data x="1" y="0" z="1" />
+								<Data x="1" y="0" z="0" />
+								<Data x="2" y="1" z="0" />
+								<Data x="1" y="0" z="1" />
+								<Data x="2" y="1" z="1" />
+								<Data x="2" y="1" z="0" />
+								<Data x="1" y="1" z="0" />
+								<Data x="2" y="1" z="1" />
+								<Data x="1" y="1" z="1" />
+								<Data x="1" y="1" z="0" />
+								<Data x="0" y="2" z="0" />
+								<Data x="1" y="1" z="1" />
+								<Data x="0" y="2" z="1" />
+								<Data x="0" y="2" z="0" />
+								<Data x="0" y="1" z="0" />
+								<Data x="0" y="2" z="1" />
+								<Data x="0" y="1" z="1" />
+								<Data x="0" y="1" z="0" />
+								<Data x="-1" y="0" z="0" />
+								<Data x="0" y="1" z="1" />
+								<Data x="-1" y="0" z="1" />
+								<Data x="-1" y="0" z="0" />
+								<Data x="0" y="0" z="0" />
+								<Data x="-1" y="0" z="1" />
+								<Data x="0" y="0" z="1" />
+							</Data>
+						</Buffer>
+						<Buffer i32Val="1">
+							<Type u32Val="2" />
+							<Semantics u16Val="2" />
+							<Data u64Val="48">
+								<Data x="0" y="0" z="-1" />
+								<Data x="0" y="0" z="-1" />
+								<Data x="0" y="0" z="-1" />
+								<Data x="0" y="0" z="-1" />
+								<Data x="0" y="0" z="-1" />
+								<Data x="0" y="0" z="-1" />
+								<Data x="0" y="0" z="-1" />
+								<Data x="0" y="0" z="-1" />
+								<Data x="0" y="0" z="1" />
+								<Data x="0" y="0" z="1" />
+								<Data x="0" y="0" z="1" />
+								<Data x="0" y="0" z="1" />
+								<Data x="0" y="0" z="1" />
+								<Data x="0" y="0" z="1" />
+								<Data x="0" y="0" z="1" />
+								<Data x="0" y="0" z="1" />
+								<Data x="-0.707099974" y="-0.707099974" z="0" />
+								<Data x="-0.707099974" y="-0.707099974" z="0" />
+								<Data x="-0.707099974" y="-0.707099974" z="0" />
+								<Data x="-0.707099974" y="-0.707099974" z="-0" />
+								<Data x="1" y="-0" z="-0" />
+								<Data x="1" y="-0" z="-0" />
+								<Data x="1" y="-0" z="-0" />
+								<Data x="1" y="0" z="0" />
+								<Data x="0.707099974" y="-0.707099974" z="-0" />
+								<Data x="0.707099974" y="-0.707099974" z="-0" />
+								<Data x="0.707099974" y="-0.707099974" z="-0" />
+								<Data x="0.707099974" y="-0.707099974" z="-0" />
+								<Data x="-0" y="1" z="-0" />
+								<Data x="-0" y="1" z="-0" />
+								<Data x="-0" y="1" z="-0" />
+								<Data x="-0" y="1" z="-0" />
+								<Data x="0.707099974" y="0.707099974" z="-0" />
+								<Data x="0.707099974" y="0.707099974" z="-0" />
+								<Data x="0.707099974" y="0.707099974" z="-0" />
+								<Data x="0.707099974" y="0.707099974" z="0" />
+								<Data x="-1" y="-0" z="0" />
+								<Data x="-1" y="-0" z="0" />
+								<Data x="-1" y="-0" z="0" />
+								<Data x="-1" y="0" z="-0" />
+								<Data x="-0.707099974" y="0.707099974" z="-0" />
+								<Data x="-0.707099974" y="0.707099974" z="-0" />
+								<Data x="-0.707099974" y="0.707099974" z="-0" />
+								<Data x="-0.707099974" y="0.707099974" z="-0" />
+								<Data x="-0" y="-1" z="-0" />
+								<Data x="-0" y="-1" z="-0" />
+								<Data x="-0" y="-1" z="-0" />
+								<Data x="-0" y="-1" z="-0" />
+							</Data>
+						</Buffer>
+						<Buffer i32Val="1">
+							<Type u32Val="1" />
+							<Semantics u16Val="8" />
+							<Data u64Val="48">
+								<Data x="0.345679998" y="0.728309989" />
+								<Data x="0.60364002" y="0.818270028" />
+								<Data x="0.517650008" y="0.63835001" />
+								<Data x="0.60364002" y="0.368470013" />
+								<Data x="0.43167001" y="0.458429992" />
+								<Data x="0.173700005" y="0.368470013" />
+								<Data x="0.259689987" y="0.548389971" />
+								<Data x="0.173700005" y="0.818270028" />
+								<Data x="0.172930002" y="0.360839993" />
+								<Data x="0.430900007" y="0.450800002" />
+								<Data x="0.344909996" y="0.270880014" />
+								<Data x="0.430900007" y="0.00100000005" />
+								<Data x="0.258920014" y="0.0909600034" />
+								<Data x="0.000959999976" y="0.00100000005" />
+								<Data x="0.086939998" y="0.180920005" />
+								<Data x="0.000959999976" y="0.450800002" />
+								<Data x="0.999040008" y="0.123489998" />
+								<Data x="0.999040008" y="0.408630013" />
+								<Data x="0.807099998" y="0.123489998" />
+								<Data x="0.807099998" y="0.408630013" />
+								<Data x="0.822449982" y="0.968869984" />
+								<Data x="0.822449982" y="0.781719983" />
+								<Data x="0.622839987" y="0.968869984" />
+								<Data x="0.622839987" y="0.781719983" />
+								<Data x="0.822449982" y="0.781719983" />
+								<Data x="0.822449982" y="0.500999987" />
+								<Data x="0.622839987" y="0.781719983" />
+								<Data x="0.622839987" y="0.500999987" />
+								<Data x="0.208250001" y="0.494980007" />
+								<Data x="0.208250001" y="0.695779979" />
+								<Data x="0.0163100008" y="0.494980007" />
+								<Data x="0.0163100008" y="0.695779979" />
+								<Data x="0.513429999" y="0.798189998" />
+								<Data x="0.240879998" y="0.798189998" />
+								<Data x="0.513429999" y="0.998989999" />
+								<Data x="0.240879998" y="0.998989999" />
+								<Data x="0.805180013" y="0.0271000005" />
+								<Data x="0.805180013" y="0.214249998" />
+								<Data x="0.605560005" y="0.0271000005" />
+								<Data x="0.605560005" y="0.214249998" />
+								<Data x="0.805180013" y="0.214249998" />
+								<Data x="0.805180013" y="0.494980007" />
+								<Data x="0.605560005" y="0.214249998" />
+								<Data x="0.605560005" y="0.494980007" />
+								<Data x="0.390590012" y="0.354409993" />
+								<Data x="0.390590012" y="0.153610006" />
+								<Data x="0.582530022" y="0.354409993" />
+								<Data x="0.582530022" y="0.153610006" />
+							</Data>
+						</Buffer>
+						<Buffer i32Val="1">
+							<Type u32Val="6" />
+							<Semantics u16Val="16" />
+							<Data u64Val="84">
+								<Data u32Val="2" />
+								<Data u32Val="1" />
+								<Data u32Val="0" />
+								<Data u32Val="4" />
+								<Data u32Val="3" />
+								<Data u32Val="2" />
+								<Data u32Val="6" />
+								<Data u32Val="5" />
+								<Data u32Val="4" />
+								<Data u32Val="0" />
+								<Data u32Val="7" />
+								<Data u32Val="6" />
+								<Data u32Val="2" />
+								<Data u32Val="0" />
+								<Data u32Val="6" />
+								<Data u32Val="4" />
+								<Data u32Val="2" />
+								<Data u32Val="6" />
+								<Data u32Val="8" />
+								<Data u32Val="9" />
+								<Data u32Val="10" />
+								<Data u32Val="10" />
+								<Data u32Val="11" />
+								<Data u32Val="12" />
+								<Data u32Val="12" />
+								<Data u32Val="13" />
+								<Data u32Val="14" />
+								<Data u32Val="14" />
+								<Data u32Val="15" />
+								<Data u32Val="8" />
+								<Data u32Val="14" />
+								<Data u32Val="8" />
+								<Data u32Val="10" />
+								<Data u32Val="14" />
+								<Data u32Val="10" />
+								<Data u32Val="12" />
+								<Data u32Val="16" />
+								<Data u32Val="17" />
+								<Data u32Val="18" />
+								<Data u32Val="19" />
+								<Data u32Val="18" />
+								<Data u32Val="17" />
+								<Data u32Val="20" />
+								<Data u32Val="21" />
+								<Data u32Val="22" />
+								<Data u32Val="23" />
+								<Data u32Val="22" />
+								<Data u32Val="21" />
+								<Data u32Val="24" />
+								<Data u32Val="25" />
+								<Data u32Val="26" />
+								<Data u32Val="27" />
+								<Data u32Val="26" />
+								<Data u32Val="25" />
+								<Data u32Val="28" />
+								<Data u32Val="29" />
+								<Data u32Val="30" />
+								<Data u32Val="31" />
+								<Data u32Val="30" />
+								<Data u32Val="29" />
+								<Data u32Val="32" />
+								<Data u32Val="33" />
+								<Data u32Val="34" />
+								<Data u32Val="35" />
+								<Data u32Val="34" />
+								<Data u32Val="33" />
+								<Data u32Val="36" />
+								<Data u32Val="37" />
+								<Data u32Val="38" />
+								<Data u32Val="39" />
+								<Data u32Val="38" />
+								<Data u32Val="37" />
+								<Data u32Val="40" />
+								<Data u32Val="41" />
+								<Data u32Val="42" />
+								<Data u32Val="43" />
+								<Data u32Val="42" />
+								<Data u32Val="41" />
+								<Data u32Val="44" />
+								<Data u32Val="45" />
+								<Data u32Val="46" />
+								<Data u32Val="47" />
+								<Data u32Val="46" />
+								<Data u32Val="45" />
+							</Data>
+						</Buffer>
+					</Buffers>
+					<Sphere>
+						<Center x="0.527328849" y="0.508430898" z="0.422522724" />
+						<Radius floatVal="1.70377016" />
+					</Sphere>
+					<m_bBoundingSphereSet boolVal="true" />
+				</PipelineMeshData>
+			</Mesh>
+		</Meshes>
+	</MeshReg>
+	<TextureReg i32Val="1">
+		<Textures u64Val="2">
+			<Pair>
+				<Handle u64Val="1" />
+				<TextureData i32Val="1">
+					<Path str="Shuriken.tga" />
+					<Name str="Shuriken" />
+					<WidthPx u64Val="521" />
+					<HeightPx u64Val="498" />
+					<Format u32Val="0" />
+					<RowAlignment u32Val="1" />
+					<MinifyFiltering u32Val="2" />
+					<MagnifyFiltering u32Val="0" />
+					<TextureClampS u32Val="0" />
+					<TextureClampT u32Val="0" />
+					<borderColour x="-107374176" y="-107374176" z="-107374176" w="-107374176" />
+					<bGenerateMipMaps boolVal="true" />
+					<DataSize u64Val="778374" />
+				</TextureData>
+			</Pair>
+			<Pair>
+				<Handle u64Val="3" />
+				<TextureData i32Val="1">
+					<Path str="UnitCube.tga" />
+					<Name str="UnitCube" />
+					<WidthPx u64Val="312" />
+					<HeightPx u64Val="208" />
+					<Format u32Val="0" />
+					<RowAlignment u32Val="1" />
+					<MinifyFiltering u32Val="2" />
+					<MagnifyFiltering u32Val="0" />
+					<TextureClampS u32Val="0" />
+					<TextureClampT u32Val="0" />
+					<borderColour x="-107374176" y="-107374176" z="-107374176" w="-107374176" />
+					<bGenerateMipMaps boolVal="true" />
+					<DataSize u64Val="194688" />
+				</TextureData>
+			</Pair>
+		</Textures>
+	</TextureReg>
+	<Pipelines i32Val="1">
+		<Pipeline>
+			<Handle u64Val="1" />
+			<Name str="Test" />
+		</Pipeline>
+	</Pipelines>
+</Scene>

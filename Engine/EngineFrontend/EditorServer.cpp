@@ -169,7 +169,26 @@ namespace Editor {
 				options.requiredComponents = data.options.requiredComponents;
 				options.TextureClampS = (TextureClamp)data.options.TextureClampS;
 				options.TextureClampT = (TextureClamp)data.options.TextureClampT;
-				s.textureReg.UploadTextureFile(data.assetFolderRelativePath.c_str(), data.name.c_str(), &options);
+				if (!s.textureReg.UploadTextureFile(data.assetFolderRelativePath.c_str(), data.name.c_str(), &options))
+				{
+					HTexture t = s.textureReg.GetTexture(data.name.c_str());
+					TextureData* pTexData = s.textureReg.GetTextureData(data.name.c_str());
+					XMLArchive archive("", true, false);
+					archive.PushObj("Pair");
+						archive.PushObj("Handle");
+							archive << t;
+						archive.PopObj();
+						pTexData->Serialize(&archive);
+					archive.PopObj();
+
+					EditorServer::Msg msg;
+					msg.Type = EditorServer::MsgType::UploadTextureFile_Response;
+					msg.Data = EditorServer::UploadTextureFile_Response{
+						archive.AsString()
+					};
+					gSendQueue.Push(msg);
+
+				}
 				break;
 			}
 		}

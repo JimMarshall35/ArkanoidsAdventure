@@ -96,6 +96,11 @@ namespace EditorServer
 			data.assetFolderRelativePath = LS(msgData);
 			break;
 		}
+		case MsgType::UploadTextureFile_Response:
+			msg.Data = UploadTextureFile_Response{};
+			assert(data[dataLen - 1] == '\0');
+			std::get<UploadTextureFile_Response>(msg.Data).newHandleDataPair = (const char*)msgData;
+			break;
 		}
 		return msg;
 	}
@@ -145,6 +150,9 @@ namespace EditorServer
 			outSize += sizeof(UploadTextureFileOptions);
 			outSize += std::get<UploadTextureFileMsg>(msg.Data).name.length() + 1;
 			outSize += std::get<UploadTextureFileMsg>(msg.Data).assetFolderRelativePath.length() + 1;
+			break;
+		case MsgType::UploadTextureFile_Response:
+			outSize += std::get<UploadTextureFile_Response>(msg.Data).newHandleDataPair.length() + 1;
 			break;
 		default:
 			break;
@@ -234,6 +242,9 @@ namespace EditorServer
 			pWriteData += data.name.length() + 1;
 			break;
 		}
+		case MsgType::UploadTextureFile_Response:
+			strcpy((char*)pWriteData, std::get<UploadTextureFile_Response>(msg.Data).newHandleDataPair.c_str());
+			break;
 		default:
 			break;
 		}

@@ -120,6 +120,7 @@ void MainDialog::HandleMessageRecieved(const EditorServer::Msg& msg)
     case EditorServer::MsgType::EditComponent:
     case EditorServer::MsgType::GetSceneXML_Response:
     case EditorServer::MsgType::NewEntity_Response:
+    case EditorServer::MsgType::UploadTextureFile_Response:
         m_dlgMainPropSheet.HandleMessageRecieved(msg);
         break;
     default:

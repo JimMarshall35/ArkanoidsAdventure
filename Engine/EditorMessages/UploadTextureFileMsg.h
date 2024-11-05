@@ -66,4 +66,8 @@ namespace EditorServer
 		std::string name;
 	};
 
+	struct UploadTextureFile_Response
+	{
+		std::string newHandleDataPair;
+	};
 }

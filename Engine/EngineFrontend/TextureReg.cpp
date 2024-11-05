@@ -192,3 +192,21 @@ HTexture TextureReg::GetTexture(const char* name) const
 	}
 	return m_NameMap.at(name)->second;
 }
+
+const TextureData* TextureReg::GetTextureData(const char* name) const
+{
+	if (m_NameMap.find(name) == m_NameMap.end())
+	{
+		return nullptr;
+	}
+	return &(m_NameMap.at(name)->first);
+}
+
+TextureData* TextureReg::GetTextureData(const char* name)
+{
+	if (m_NameMap.find(name) == m_NameMap.end())
+	{
+		return nullptr;
+	}
+	return &(m_NameMap.at(name)->first);
+}

@@ -62,6 +62,21 @@ void MainPropertySheet::HandleMessageRecieved(const EditorServer::Msg& msg)
 		break;
 	case EditorServer::MsgType::RequestAssetsFolderPath_Response:
 		break;
+	case EditorServer::MsgType::UploadTextureFile_Response:
+	{
+		/* add xml to document here */
+		pugi::xml_node textures = m_Doc.child("Scene").child("TextureReg").child("Textures");
+		const EditorServer::UploadTextureFile_Response& data = std::get<EditorServer::UploadTextureFile_Response>(msg.Data);
+		textures.append_buffer(data.newHandleDataPair.c_str(), data.newHandleDataPair.length());
+		unsigned long long num = textures.attribute("u64Val").as_ullong();
+		textures.attribute("u64Val").set_value(num + 1);
+
+
+		/* notify texture sheet page to update ui */
+		m_pTexturesPropertySheetPage->HandleMsgRecieved(msg);
+		break;
+	}
+		
 	default:
 		ASSERT(false);
 		break;

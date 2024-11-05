@@ -4,7 +4,7 @@
 #include "EditorServerMsg.h"
 #include "StringHelpers.h"
 #include "PickTextureFilesToUploadDlg.h"
-
+#include "EditorClient.h"
 
 BEGIN_MESSAGE_MAP(TexturesPropertyPage, CPropertyPage)
 	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LOADED_TEXTURES_LIST, OnTextureListSelChange)
@@ -73,6 +73,10 @@ void TexturesPropertyPage::HandleMsgRecieved(const EditorServer::Msg& msg)
 		break;
 	}
 	case EditorServer::MsgType::NewEntity_Response:
+		break;
+	case EditorServer::MsgType::UploadTextureFile_Response:
+		// notification that scene has been updated with new texture
+		PopulateUIFromScene();
 		break;
 	default:
 		break;
@@ -190,8 +194,12 @@ void TexturesPropertyPage::AddTexture()
 		const std::unordered_map<std::wstring, EditorServer::UploadTextureFileMsg>&  data = dlg.GetData();
 		for (const std::pair<std::wstring, EditorServer::UploadTextureFileMsg>& d : data)
 		{
-			const EditorServer::UploadTextureFileMsg& msg = d.second;
-			printf("dfjiidf");
+			const EditorServer::UploadTextureFileMsg& msgData = d.second;
+			//printf("dfjiidf");
+			EditorServer::Msg msg;
+			msg.Data = msgData;
+			msg.Type = EditorServer::MsgType::UploadTextureFile;
+			EditorClient::EnqueueToSend(msg);
 		}
 	}
 }
