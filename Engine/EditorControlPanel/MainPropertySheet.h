@@ -8,7 +8,7 @@ namespace EditorServer
 }
 class CEntitiesPropertyPage;
 class TexturesPropertyPage;
-
+class MeshesPropertyPage;
 
 class MainPropertySheet :
     public CPropertySheet
@@ -24,6 +24,7 @@ public:
 protected:
     CEntitiesPropertyPage* m_pEntitiesPropertyPage = nullptr;
     TexturesPropertyPage* m_pTexturesPropertySheetPage = nullptr;
+    MeshesPropertyPage* m_pMeshesPropertyPage = nullptr;
     pugi::xml_document m_Doc;
     pugi::xml_node m_Scn;
     DECLARE_MESSAGE_MAP()

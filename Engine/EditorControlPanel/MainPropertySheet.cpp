@@ -6,7 +6,7 @@
 #include "TexturePropertyPage.h"
 #include "EntitiesPropertyPage.h"
 #include "CommonPropertyPageDefines.h"
-
+#include "MeshPropertyPage.h"
 
 BEGIN_MESSAGE_MAP(MainPropertySheet, CPropertySheet)
 END_MESSAGE_MAP()
@@ -18,8 +18,10 @@ MainPropertySheet::MainPropertySheet()
 	GetXMLSceneFn getScn = [this]() {return m_Scn; };
 	m_pEntitiesPropertyPage = new CEntitiesPropertyPage(getScn);
 	m_pTexturesPropertySheetPage = new TexturesPropertyPage(getScn);
+	m_pMeshesPropertyPage = new MeshesPropertyPage(getScn);
 	AddPage(m_pEntitiesPropertyPage);
 	AddPage(m_pTexturesPropertySheetPage);
+	AddPage(m_pMeshesPropertyPage);
 }
 
 MainPropertySheet::~MainPropertySheet()
@@ -31,6 +33,10 @@ MainPropertySheet::~MainPropertySheet()
 	if (m_pEntitiesPropertyPage)
 	{
 		delete m_pEntitiesPropertyPage;
+	}
+	if (m_pMeshesPropertyPage)
+	{
+		delete m_pMeshesPropertyPage;
 	}
 }
 
@@ -54,6 +60,7 @@ void MainPropertySheet::HandleMessageRecieved(const EditorServer::Msg& msg)
 		HandleGetSceneXmlResponseMsg(msg);
 		m_pEntitiesPropertyPage->HandleMsgRecieved(msg);
 		m_pTexturesPropertySheetPage->HandleMsgRecieved(msg);
+		m_pMeshesPropertyPage->HandleMsgRecieved(msg);
 		break;
 	case EditorServer::MsgType::NewEntity_Response:
 		break;
@@ -75,8 +82,21 @@ void MainPropertySheet::HandleMessageRecieved(const EditorServer::Msg& msg)
 		/* notify texture sheet page to update ui */
 		m_pTexturesPropertySheetPage->HandleMsgRecieved(msg);
 		break;
+	
 	}
-		
+	case EditorServer::MsgType::UploadMeshFileMsg_Response:
+	{
+		/* add xml to document here */
+		pugi::xml_node textures = m_Doc.child("Scene").child("MeshReg").child("Meshes");
+		const EditorServer::UploadMeshFileMsg_Response& data = std::get<EditorServer::UploadMeshFileMsg_Response>(msg.Data);
+		textures.append_buffer(data.loadedMeshXML.c_str(), data.loadedMeshXML.length());
+		unsigned long long num = textures.attribute("u64Val").as_ullong();
+		textures.attribute("u64Val").set_value(num + 1);
+
+		/* notify mesh sheet page to update ui */
+		m_pMeshesPropertyPage->HandleMsgRecieved(msg);
+		break;
+	}
 	default:
 		ASSERT(false);
 		break;

@@ -89,6 +89,7 @@ bool MeshReg::UploadMeshData(const char* filePath)
 			{
 				Err::LogError(error.c_str());
 			}
+			return true;
 		}
 		else
 		{
@@ -98,6 +99,7 @@ bool MeshReg::UploadMeshData(const char* filePath)
 	else
 	{
 		Err::LogError("Invalid file extension '%s'", extension.c_str());
+		return true;
 	}
 	
 	if (fileData)

@@ -101,7 +101,19 @@ namespace EditorServer
 			assert(data[dataLen - 1] == '\0');
 			std::get<UploadTextureFile_Response>(msg.Data).newHandleDataPair = (const char*)msgData;
 			break;
+
+		case MsgType::UploadMeshFileMsg:
+			msg.Data = UploadMeshFileMsg();
+			assert(data[dataLen - 1] == '\0');
+			std::get<UploadMeshFileMsg>(msg.Data).assetFolderRelativePath = (const char*)msgData;
+			break;
+		case MsgType::UploadMeshFileMsg_Response:
+			msg.Data = UploadMeshFileMsg_Response();
+			assert(data[dataLen - 1] == '\0');
+			std::get<UploadMeshFileMsg_Response>(msg.Data).loadedMeshXML = (const char*)msgData;
+			break;
 		}
+		
 		return msg;
 	}
 
@@ -153,6 +165,12 @@ namespace EditorServer
 			break;
 		case MsgType::UploadTextureFile_Response:
 			outSize += std::get<UploadTextureFile_Response>(msg.Data).newHandleDataPair.length() + 1;
+			break;
+		case MsgType::UploadMeshFileMsg:
+			outSize += std::get<UploadMeshFileMsg>(msg.Data).assetFolderRelativePath.length() + 1;
+			break;
+		case MsgType::UploadMeshFileMsg_Response:
+			outSize += std::get<UploadMeshFileMsg_Response>(msg.Data).loadedMeshXML.length() + 1;
 			break;
 		default:
 			break;
@@ -244,6 +262,12 @@ namespace EditorServer
 		}
 		case MsgType::UploadTextureFile_Response:
 			strcpy((char*)pWriteData, std::get<UploadTextureFile_Response>(msg.Data).newHandleDataPair.c_str());
+			break;
+		case MsgType::UploadMeshFileMsg:
+			strcpy((char*)pWriteData, std::get<UploadMeshFileMsg>(msg.Data).assetFolderRelativePath.c_str());
+			break;
+		case MsgType::UploadMeshFileMsg_Response:
+			strcpy((char*)pWriteData, std::get<UploadMeshFileMsg_Response>(msg.Data).loadedMeshXML.c_str());
 			break;
 		default:
 			break;

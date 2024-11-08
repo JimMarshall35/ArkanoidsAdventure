@@ -12,6 +12,7 @@ namespace EditorServer
 		ClearGizmoEntity,
 		SetGizmoOperation,
 		RequestAssetsFolderPath, RequestAssetsFolderPath_Response,
-		UploadTextureFile, UploadTextureFile_Response
+		UploadTextureFile, UploadTextureFile_Response,
+		UploadMeshFileMsg, UploadMeshFileMsg_Response
 	};
 }

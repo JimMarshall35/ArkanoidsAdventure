@@ -8,9 +8,9 @@
 #include "EngineLib.h"
 #include "ThreadSafeQueue.h"
 #include "CommonEditorServerDefines.h"
+
 #include "EditorServerMsg.h"
-#include "NewEntityMessage.h"
-#include "GetSceneXMLMessage.h"
+
 #include "MessageTypes.h"
 #include "Scene.h"
 #include "XMLArchive.h"
@@ -187,8 +187,37 @@ namespace Editor {
 						archive.AsString()
 					};
 					gSendQueue.Push(msg);
-
 				}
+				break;
+			}
+		case EditorServer::MsgType::UploadMeshFileMsg:
+			{
+				const EditorServer::UploadMeshFileMsg& data = std::get<EditorServer::UploadMeshFileMsg>(msgIn.Data);
+				Scn::Scene& s = Scn::GetScene();
+				EString loadedMeshXML;
+				if (!s.meshReg.UploadMeshData(data.assetFolderRelativePath.c_str()))
+				{
+					// success
+					HMesh hMesh = s.meshReg.TryGetMesh(data.assetFolderRelativePath);
+					if (PipelineMeshData* pMesh = s.meshReg.TryGetPipelineMeshData(hMesh))
+					{
+						XMLArchive archive("", true, false);
+						archive.PushObj("Mesh");
+							archive.PushObj("Handle");
+								archive << hMesh;
+							archive.PopObj();
+							pMesh->Serialize(archive);
+						archive.PopObj();
+						loadedMeshXML = archive.AsString();
+					}
+				}
+
+				EditorServer::Msg msg;
+				msg.Type = EditorServer::MsgType::UploadMeshFileMsg_Response;
+				msg.Data = EditorServer::UploadMeshFileMsg_Response{
+					loadedMeshXML
+				};
+				gSendQueue.Push(msg);
 				break;
 			}
 		}

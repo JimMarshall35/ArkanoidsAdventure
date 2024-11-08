@@ -12,6 +12,7 @@
 #define IDS_ASSETSTAB                   104
 #define IDS_PIPELINESTAB                105
 #define IDS_TEXTURESTAB                 106
+#define IDS_MESHESTAB                   107
 #define IDR_MAINFRAME                   128
 #define IDR_MAIN_DIALOG_MENU            130
 #define IDD_MAIN                        134
@@ -20,6 +21,9 @@
 #define IDR_TEXTURE_NOT_HOVERRED_CTXT_MENU 139
 #define IDD_DIALOG1                     140
 #define IDD_TEXTURE_FILE_PICKER         140
+#define IDR_MESH_NOT_HOVERRED_CTXT_MENU 140
+#define IDD_MESH_PROPERTY_SHEET_PAGE    141
+#define IDR_MESH_HOVERRED_CTXT_MENU     141
 #define IDI_ICON1                       142
 #define IDC_TESTBTN                     1000
 #define IDC_ENTITIES_TREE               1002
@@ -41,6 +45,7 @@
 #define IDC_RETAIN_CPU_CB               1020
 #define IDC_BUTTON1                     1021
 #define IDC_ADD_TEXTURE_FILE_BTN        1021
+#define IDC_LOADED_MESHES_LIST          1022
 #define ID_FILE_SAVESCENEAS             32771
 #define ID_FILE_SAVESCENE               32772
 #define ID_FILE_LOADSCENE               32773
@@ -49,14 +54,18 @@
 #define ID_CONTEXT_DELETETEXTURE        32776
 #define ID_CONTEXT_ADDTEXTURE           32777
 #define ID_CONTEXT_EDITTEXTURE          32778
+#define ID_CONTEXT_ADDMESH              32779
+#define ID_CONTEXT_DELETE_MESH          32780
+#define ID_CONTEXT_EDIT_MESH            32781
+#define ID_CONTEXT_ADD_MESH             32782
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        143
-#define _APS_NEXT_COMMAND_VALUE         32779
-#define _APS_NEXT_CONTROL_VALUE         1022
+#define _APS_NEXT_RESOURCE_VALUE        144
+#define _APS_NEXT_COMMAND_VALUE         32783
+#define _APS_NEXT_CONTROL_VALUE         1023
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

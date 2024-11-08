@@ -9,6 +9,7 @@
 #include "SetGizmoEntityMessage.h"
 #include "GetAssetsFolderPathMsg.h"
 #include "UploadTextureFileMsg.h"
+#include "UploadMeshFileMsg.h"
 
 namespace EditorServer
 {
@@ -23,7 +24,8 @@ namespace EditorServer
 			SetEntityGizmoMsg, ClearEntityGizmoMsg,
 			SetGizmoOperationMsg,
 			RequestAssetsFolderPath, RequestAssetsFolderPath_Response,
-			UploadTextureFileMsg, UploadTextureFile_Response
+			UploadTextureFileMsg, UploadTextureFile_Response,
+			UploadMeshFileMsg, UploadMeshFileMsg_Response
 		> Data;
 	};
 

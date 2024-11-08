@@ -57,6 +57,9 @@
     <ClInclude Include="UploadTextureFileMsg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="UploadMeshFileMsg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
