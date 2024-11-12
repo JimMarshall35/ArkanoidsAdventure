@@ -20,12 +20,12 @@
 				<ActivateButton u64Val="1" />
 				<MoveSpeedUpBtn u64Val="8" />
 				<MoveSpeedDownBtn u64Val="9" />
-				<UpBtn u64Val="6" />
-				<DownBtn u64Val="7" />
-				<LeftBtn u64Val="4" />
-				<RightBtn u64Val="5" />
-				<ForwardBtn u64Val="2" />
-				<BackwardBtn u64Val="3" />
+				<UpBtn u64Val="6" Hint="5" />
+				<DownBtn u64Val="7" Hint="5" />
+				<LeftBtn u64Val="4" Hint="5" />
+				<RightBtn u64Val="5" Hint="5" />
+				<ForwardBtn u64Val="2" Hint="5" />
+				<BackwardBtn u64Val="3" Hint="5" />
 			</EditorCamControlsComponent>
 			<CameraComponent i32Val="1">
 				<Name str="EditorCam" />
@@ -54,68 +54,68 @@
 			</PointLightComponent>
 		</Entity>
 		<Entity u32Val="2">
-			<TestPipelineMaterial i32Val="1">
-				<ambientStrength floatVal="0.400000006" />
-				<diffuseStrength floatVal="0.5" />
-				<specularStrength floatVal="0.200000003" />
-				<shininess floatVal="8" />
-				<hTexture u64Val="1" />
-			</TestPipelineMaterial>
-			<MeshComponent i32Val="1">
-				<HMesh u64Val="1" />
-				<HPipeline u64Val="1" />
-				<HDrawable u64Val="2" />
-			</MeshComponent>
 			<Transform>
 				<Version i32Val="1" />
-				<Pos x="1.73125422" y="1.21585965" z="0" />
-				<Rotation x="0" y="-0" z="0" />
+				<Pos x="0" y="10" z="0" />
+				<Rotation x="0" y="0" z="0" />
 				<Scale x="1" y="1" z="1" />
-				<Model v0v0="1" v0v0="1" v0v1="0" v0v2="0" v0v3="0" v1v0="0" v1v1="1" v1v2="0" v1v3="0" v2v0="0" v2v1="0" v2v2="1" v2v3="0" v3v0="1.73125422" v3v1="1.21585965" v3v2="0" v3v3="1" />
+				<Model v0v0="1" v0v0="1" v0v1="0" v0v2="0" v0v3="0" v1v0="0" v1v1="1" v1v2="0" v1v3="0" v2v0="0" v2v1="0" v2v2="1" v2v3="0" v3v0="0" v3v1="10" v3v2="0" v3v3="1" />
 				<IsDirty boolVal="false" />
 				<Parent ID="1" />
 				<Children u64Val="0" />
 			</Transform>
-		</Entity>
-		<Entity u32Val="1">
 			<TestPipelineMaterial i32Val="1">
 				<ambientStrength floatVal="0.400000006" />
 				<diffuseStrength floatVal="0.5" />
 				<specularStrength floatVal="0.200000003" />
 				<shininess floatVal="8" />
-				<hTexture u64Val="1" />
+				<hTexture u64Val="1" Hint="3" />
 			</TestPipelineMaterial>
 			<MeshComponent i32Val="1">
-				<HMesh u64Val="1" />
-				<HPipeline u64Val="1" />
-				<HDrawable u64Val="1" />
+				<HMesh u64Val="1" Hint="1" />
+				<HPipeline u64Val="1" Hint="6" />
+				<HDrawable u64Val="2" Hint="2" />
 			</MeshComponent>
+		</Entity>
+		<Entity u32Val="1">
 			<Transform>
 				<Version i32Val="1" />
-				<Pos x="6.094769" y="0.748785853" z="-12.7072811" />
-				<Rotation x="0" y="-0" z="0" />
+				<Pos x="0" y="0" z="0" />
+				<Rotation x="0" y="0" z="0" />
 				<Scale x="1" y="1" z="1" />
-				<Model v0v0="1" v0v0="1" v0v1="0" v0v2="0" v0v3="0" v1v0="0" v1v1="1" v1v2="0" v1v3="0" v2v0="0" v2v1="0" v2v2="1" v2v3="0" v3v0="6.9247508" v3v1="0.748785853" v3v2="-11.944068" v3v3="1" />
+				<Model v0v0="1" v0v0="1" v0v1="0" v0v2="0" v0v3="0" v1v0="0" v1v1="1" v1v2="0" v1v3="0" v2v0="0" v2v1="0" v2v2="1" v2v3="0" v3v0="0" v3v1="0" v3v2="0" v3v3="1" />
 				<IsDirty boolVal="false" />
 				<Parent ID="0" />
 				<Children u64Val="1">
-					<Child ID="2" />
+					<Child ID="2" Hint="0" />
 				</Children>
 			</Transform>
+			<TestPipelineMaterial i32Val="1">
+				<ambientStrength floatVal="0.400000006" />
+				<diffuseStrength floatVal="0.5" />
+				<specularStrength floatVal="0.200000003" />
+				<shininess floatVal="8" />
+				<hTexture u64Val="1" Hint="3" />
+			</TestPipelineMaterial>
+			<MeshComponent i32Val="1">
+				<HMesh u64Val="1" Hint="1" />
+				<HPipeline u64Val="1" Hint="6" />
+				<HDrawable u64Val="1" Hint="2" />
+			</MeshComponent>
 		</Entity>
 		<Entity u32Val="0">
 			<Transform>
 				<Version i32Val="1" />
-				<Pos x="0.829981983" y="0" z="0.763213336" />
-				<Rotation x="0" y="-0" z="0" />
+				<Pos x="0" y="0" z="0" />
+				<Rotation x="0" y="0" z="0" />
 				<Scale x="1" y="1" z="1" />
-				<Model v0v0="1" v0v0="1" v0v1="0" v0v2="0" v0v3="0" v1v0="0" v1v1="1" v1v2="0" v1v3="0" v2v0="0" v2v1="0" v2v2="1" v2v3="0" v3v0="0.829981983" v3v1="0" v3v2="0.763213336" v3v3="1" />
+				<Model v0v0="1" v0v0="1" v0v1="0" v0v2="0" v0v3="0" v1v0="0" v1v1="1" v1v2="0" v1v3="0" v2v0="0" v2v1="0" v2v2="1" v2v3="0" v3v0="0" v3v1="0" v3v2="0" v3v3="1" />
 				<IsDirty boolVal="false" />
 				<Parent ID="4294967295" />
 				<Children u64Val="3">
-					<Child ID="1" />
-					<Child ID="3" />
-					<Child ID="4" />
+					<Child ID="1" Hint="0" />
+					<Child ID="3" Hint="0" />
+					<Child ID="4" Hint="0" />
 				</Children>
 			</Transform>
 		</Entity>
@@ -391,7 +391,7 @@
 		</Meshes>
 	</MeshReg>
 	<TextureReg i32Val="1">
-		<Textures u64Val="2">
+		<Textures u64Val="1">
 			<Pair>
 				<Handle u64Val="1" />
 				<TextureData i32Val="1">
@@ -410,24 +410,6 @@
 					<DataSize u64Val="778374" />
 				</TextureData>
 			</Pair>
-			<Pair>
-				<Handle u64Val="3" />
-				<TextureData i32Val="1">
-					<Path str="UnitCube.tga" />
-					<Name str="UnitCube" />
-					<WidthPx u64Val="312" />
-					<HeightPx u64Val="208" />
-					<Format u32Val="0" />
-					<RowAlignment u32Val="1" />
-					<MinifyFiltering u32Val="2" />
-					<MagnifyFiltering u32Val="0" />
-					<TextureClampS u32Val="0" />
-					<TextureClampT u32Val="0" />
-					<borderColour x="-107374176" y="-107374176" z="-107374176" w="-107374176" />
-					<bGenerateMipMaps boolVal="true" />
-					<DataSize u64Val="194688" />
-				</TextureData>
-			</Pair>
 		</Textures>
 	</TextureReg>
 	<Pipelines i32Val="1">
@@ -436,4 +418,54 @@
 			<Name str="Test" />
 		</Pipeline>
 	</Pipelines>
+	<ComponentTypes>
+		<MeshComponent i32Val="1">
+			<HMesh u64Val="0" Hint="1" />
+			<HPipeline u64Val="0" Hint="6" />
+			<HDrawable u64Val="0" Hint="2" />
+		</MeshComponent>
+		<Transform>
+			<Version i32Val="1" />
+			<Pos x="0" y="0" z="0" />
+			<Rotation x="0" y="0" z="0" />
+			<Scale x="1" y="1" z="1" />
+			<Model v0v0="1" v0v0="1" v0v1="0" v0v2="0" v0v3="0" v1v0="0" v1v1="1" v1v2="0" v1v3="0" v2v0="0" v2v1="0" v2v2="1" v2v3="0" v3v0="0" v3v1="0" v3v2="0" v3v3="1" />
+			<IsDirty boolVal="true" />
+			<Parent ID="4294967295" />
+			<Children u64Val="0" />
+		</Transform>
+		<TestPipelineMaterial i32Val="1">
+			<ambientStrength floatVal="0" />
+			<diffuseStrength floatVal="0" />
+			<specularStrength floatVal="0" />
+			<shininess floatVal="0" />
+			<hTexture u64Val="0" Hint="3" />
+		</TestPipelineMaterial>
+		<PointLightComponent i32Val="1">
+			<Colour x="0" y="0" z="0" />
+		</PointLightComponent>
+		<EditorCamControlsComponent i32Val="1">
+			<YawAxis u64Val="0" />
+			<PitchAxis u64Val="0" />
+			<ActivateButton u64Val="0" />
+			<MoveSpeedUpBtn u64Val="0" />
+			<MoveSpeedDownBtn u64Val="0" />
+			<UpBtn u64Val="0" Hint="5" />
+			<DownBtn u64Val="0" Hint="5" />
+			<LeftBtn u64Val="0" Hint="5" />
+			<RightBtn u64Val="0" Hint="5" />
+			<ForwardBtn u64Val="0" Hint="5" />
+			<BackwardBtn u64Val="0" Hint="5" />
+		</EditorCamControlsComponent>
+		<CameraComponent i32Val="1">
+			<Name str="" />
+			<aspect floatVal="0" />
+			<fovY floatVal="0" />
+			<zNear floatVal="0" />
+			<zFar floatVal="0" />
+			<bIsMain boolVal="false" />
+			<bScreenAspect boolVal="true" />
+			<worldUp x="0" y="0" z="1" />
+		</CameraComponent>
+	</ComponentTypes>
 </Scene>

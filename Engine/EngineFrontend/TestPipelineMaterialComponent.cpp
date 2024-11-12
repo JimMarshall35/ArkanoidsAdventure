@@ -17,7 +17,7 @@ static void SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, EntityReg
 				AR_STORE(mc, diffuseStrength)
 				AR_STORE(mc, specularStrength)
 				AR_STORE(mc, shininess)
-				AR_STORE(mc, hTexture)
+				AR_STORE_TEXTURE(mc, hTexture)
 			ar->PopObj();
 		}
 	}

@@ -56,12 +56,15 @@ void MeshComponent::SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, E
 					*ar << version;
 					ar->PushObj("HMesh");
 						*ar << mc->GetMesh();
+						ar->HintUsage(HandleType::Mesh);
 					ar->PopObj();	
 					ar->PushObj("HPipeline");
 						*ar << mc->GetPipeline();
+						ar->HintUsage(HandleType::Pipeline);
 					ar->PopObj();
 					ar->PushObj("HDrawable");
 						*ar << mc->GetDrawable();
+						ar->HintUsage(HandleType::Drawable);
 					ar->PopObj();
 				ar->PopObj();
 			}
@@ -120,4 +123,5 @@ static void OnMeshComponentUpdate(entt::registry& r, entt::entity e)
 
 }
 
+// using the normal META_IMPL macro here causes a null function ptr in the v table entry for EmplaceDefaultComponent?!
 META_IMPL_EX(MeshComponent, MetaReg, MeshComponent::SerializeC, OnMeshComponentCreate, OnMeshCmpntDestroy, OnMeshComponentUpdate)

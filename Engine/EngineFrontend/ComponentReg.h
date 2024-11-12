@@ -14,13 +14,19 @@ namespace Comp
 		virtual void Meta() = 0;
 		virtual void Serialize(IArchive* ar, Entity e, EntityReg& reg) = 0;
 		virtual void RegisterListeners(EntityReg& reg) = 0;
-		virtual const char* GetName() { return ""; }
+		virtual const char* GetName() = 0;
 		static ComponentMeta* FindByName(const char* name);
+		EString GetDefaultComponentXMLString();
+		void SerializeDefaultComponent(IArchive* ar);
+	protected:
+		virtual void EmplaceDefaultComponent(EntityReg& reg, Entity e) = 0;
 	};
 	void Init();
+
+	const EMap<EString, Comp::ComponentMeta*>& GetComponentMetaMap();
 }
 #define META_DECL(ckassName)\
-	Comp::ComponentMeta* ckassName##_GetMeta();
+	Comp::ComponentMeta* className##_GetMeta();
 
 #define META_IMPL(className, metaFn, SerializeFn) class className##_Meta : public Comp::ComponentMeta {\
 	public:\
@@ -32,6 +38,8 @@ namespace Comp
 		}\
 		virtual void RegisterListeners(EntityReg& reg) {}\
 		virtual const char* GetName() override { return #className ; }\
+	protected:\
+		virtual void EmplaceDefaultComponent(EntityReg& reg,  Entity e) override { reg.emplace< className >(e); }\
 	};\
 	className##_Meta className##_Meta_Instance;\
 	Comp::ComponentMeta* className##_GetMeta() { return (Comp::ComponentMeta*)&className##_Meta_Instance; }
@@ -51,6 +59,8 @@ namespace Comp
 			reg.on_update<##className##>().connect<&##UpdateFn##>();\
 		}\
 		virtual const char* GetName() override { return #className ; }\
+	protected:\
+		virtual void EmplaceDefaultComponent(EntityReg& reg,  Entity e) override { reg.emplace< className >(e); }\
 	};\
 	className##_Meta className##_Meta_Instance;\
 	Comp::ComponentMeta* className##_GetMeta() { return (Comp::ComponentMeta*)&className##_Meta_Instance; }

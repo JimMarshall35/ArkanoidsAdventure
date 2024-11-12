@@ -15,22 +15,28 @@ static void SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, EntityReg
 				AR_STORE(mc, MoveSpeedUpBtn)
 				AR_STORE(mc, MoveSpeedDownBtn)
 				ar->PushObj("UpBtn");
-				*ar << mc->MovementButtons[(u32)Directions::UP];
+					*ar << mc->MovementButtons[(u32)Directions::UP];
+					ar->HintUsage(HandleType::LogicalBtn);
 				ar->PopObj();
 				ar->PushObj("DownBtn");
-				*ar << mc->MovementButtons[(u32)Directions::DOWN];
+					*ar << mc->MovementButtons[(u32)Directions::DOWN];
+					ar->HintUsage(HandleType::LogicalBtn);
 				ar->PopObj();
 				ar->PushObj("LeftBtn");
-				*ar << mc->MovementButtons[(u32)Directions::LEFT];
+					*ar << mc->MovementButtons[(u32)Directions::LEFT];
+					ar->HintUsage(HandleType::LogicalBtn);
 				ar->PopObj();
 				ar->PushObj("RightBtn");
-				*ar << mc->MovementButtons[(u32)Directions::RIGHT];
+					*ar << mc->MovementButtons[(u32)Directions::RIGHT];
+					ar->HintUsage(HandleType::LogicalBtn);
 				ar->PopObj();
 				ar->PushObj("ForwardBtn");
-				*ar << mc->MovementButtons[(u32)Directions::FORWARD];
+					*ar << mc->MovementButtons[(u32)Directions::FORWARD];
+					ar->HintUsage(HandleType::LogicalBtn);
 				ar->PopObj();
 				ar->PushObj("BackwardBtn");
-				*ar << mc->MovementButtons[(u32)Directions::BACKWARD];
+					*ar << mc->MovementButtons[(u32)Directions::BACKWARD];
+					ar->HintUsage(HandleType::LogicalBtn);
 				ar->PopObj();
 			ar->PopObj();
 		}

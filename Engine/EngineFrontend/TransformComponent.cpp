@@ -285,10 +285,12 @@ void Transform::SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, Entit
 			ar->PopObj();
 			ar->PushObj("Children");
 				*ar << t->m_children.size();
+				ar->HintUsage(HandleType::Array);
 				for (Entity t : t->m_children)
 				{
 					ar->PushObj("Child");
-					*ar << t;
+						*ar << t;
+						ar->HintUsage(HandleType::Entity);
 					ar->PopObj();
 				}
 			ar->PopObj();
@@ -350,4 +352,22 @@ void Transform::SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, Entit
 	}
 }
 
-META_IMPL(Transform, MetaReg, Transform::SerializeC)
+
+
+static void OnMeshComponentCreate(entt::registry& r, entt::entity e)
+{
+
+
+}
+
+static void OnMeshComponentUpdate(entt::registry& r, entt::entity e)
+{
+
+}
+
+static void OnMeshComponentDestroy(entt::registry& r, entt::entity e)
+{
+
+}
+
+META_IMPL_EX(Transform, MetaReg, Transform::SerializeC, OnMeshComponentCreate, OnMeshComponentDestroy, OnMeshComponentUpdate)

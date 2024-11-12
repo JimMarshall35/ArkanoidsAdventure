@@ -5,6 +5,7 @@
 #include "PrismMesh.h"
 #include "Shader.h"
 #include "IDragAcceptor.h"
+#include "OpenGLStatic.h"
 
 class Poly2D;
 struct ExtrudeParameters;
@@ -17,7 +18,7 @@ enum
 	UV_BUFFER_INDEX,
 };
 
-class PrismView3DStatic : public CStatic, public IDragAcceptor
+class PrismView3DStatic : public OpenGLStatic, public IDragAcceptor
 {
 public:
 	PrismView3DStatic();
@@ -37,20 +38,20 @@ public:
 	virtual void UpdateDrag(const glm::vec2& lastPt) override;
 	
 	bool IsMeshSet() { return m_bMeshSet; }
-	void Clear();
-private:
-	afx_msg void OnPaint();
-	afx_msg BOOL OnEraseBkgnd(CDC*);
 
-	void DeleteOpenGLContext();
-	void CreateOpenGLContext();
+	void Clear();
+
+private:
 	void SetProjectionMatrix();
-	void DrawMesh();
 
 	void SetLight(const glm::vec3& position, const glm::vec3& colour);
 	void SetMaterial(const glm::vec3& objectColour, float ambientStrength, float diffuseStrength, float specularStrength, float shininess);
 	void SetMeshModelMatrix(const glm::vec3& position);
-	void InitRenderer();
+
+	// Inherited via OpenGLStatic
+	virtual void Draw() override;
+	virtual void InitRenderer() override;
+
 
 private:
 	Camera m_Cam;
@@ -68,8 +69,8 @@ private:
 	float m_ViewportWidth;
 	float m_ViewportHeight;
 private:
-	DECLARE_MESSAGE_MAP()
 protected:
 	DECLARE_SERIAL(PrismView3DStatic)
+
 };
 

@@ -71,7 +71,7 @@ public:
 	virtual int CountChildren() override;
 	virtual void PushChild(int c) override;
 
-	virtual void HintHandleUsage(HandleType type) override;
+	virtual void HintUsage(HandleType type) override;
 
 	void Test() { m_Doc.print(std::cout); }
 private:

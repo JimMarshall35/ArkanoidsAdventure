@@ -28,5 +28,12 @@ enum class ArchiveType
 	IVec3,
 	Vec4,
 	Mat4x4,
-	Entity
+	Entity,
+	Texture,
+	Mesh,
+	Pipeline,
+	Button,
+	Axis,
+	Drawable,
+	Array
 };

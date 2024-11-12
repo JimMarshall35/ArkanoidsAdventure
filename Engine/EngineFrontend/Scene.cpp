@@ -103,6 +103,17 @@ namespace Scn
 		archive.PopObj();
 	}
 
+	void SerializeComponentTypes(IArchive* ar)
+	{
+		const EMap<EString, Comp::ComponentMeta*>&  map = Comp::GetComponentMetaMap();
+		ar->PushObj("ComponentTypes");
+		for (const std::pair<EString, Comp::ComponentMeta*>& p : map)
+		{
+			p.second->SerializeDefaultComponent(ar);
+		}
+		ar->PopObj();
+	}
+
 	void SerializeScene(IArchive& archive)
 	{
 		const u32 version = 1;
@@ -120,7 +131,7 @@ namespace Scn
 			s.meshReg.Serialize(archive);
 			s.textureReg.Serialize(archive);
 			SerializePipelineHandles_Storing(archive);
-
+			SerializeComponentTypes(&archive);
 		}
 		else
 		{

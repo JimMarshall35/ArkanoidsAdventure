@@ -1,14 +1,19 @@
 #include "ComponentReg.h"
 #include <unordered_map>
 #include "FrontendError.h"
+#include "XMLArchive.h"
+
 static EMap<EString, Comp::ComponentMeta*> gNameMap;
+
 Comp::ComponentMeta::ComponentMeta()
 	: Autolist<ComponentMeta>(true)
 {
 }
+
 Comp::ComponentMeta::~ComponentMeta()
 {
 }
+
 Comp::ComponentMeta* Comp::ComponentMeta::FindByName(const char* name)
 {
 	EString s(name);
@@ -22,6 +27,22 @@ Comp::ComponentMeta* Comp::ComponentMeta::FindByName(const char* name)
 		return nullptr;
 	}
 }
+
+EString Comp::ComponentMeta::GetDefaultComponentXMLString()
+{
+	XMLArchive ar("", true, false);
+	SerializeDefaultComponent(&ar);
+	return ar.AsString();
+}
+
+void Comp::ComponentMeta::SerializeDefaultComponent(IArchive* ar)
+{
+	EntityReg reg;
+	Entity e = reg.create();
+	EmplaceDefaultComponent(reg, e);
+	Serialize(ar, e, reg);
+}
+
 void Comp::Init()
 {
 	Autolist<ComponentMeta>* head = Autolist<ComponentMeta>::GetHead();
@@ -32,4 +53,9 @@ void Comp::Init()
 		gNameMap[name] = pMeta;
 		head = head->GetNext();
 	}
+}
+
+const EMap<EString, Comp::ComponentMeta*>& Comp::GetComponentMetaMap()
+{
+	return gNameMap;
 }

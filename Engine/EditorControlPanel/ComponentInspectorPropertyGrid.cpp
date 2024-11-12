@@ -26,6 +26,28 @@ static pugi::xml_attribute GetXmlAttributeHandleFromDWordPtr(DWORD_PTR pDWord)
 bool TryGetXMLNodeArchiveType(ArchiveType& outType, pugi::xml_node node)
 {
 	using namespace pugi;
+
+	auto twoComponentHint = [](pugi::xml_attribute n, ArchiveType& outType) -> bool
+	{
+		const ArchiveType LUT[8] =
+		{
+			ArchiveType::Entity,
+			ArchiveType::Mesh,
+			ArchiveType::Drawable,
+			ArchiveType::Texture,
+			ArchiveType::Axis,
+			ArchiveType::Button,
+			ArchiveType::Pipeline,
+			ArchiveType::Array
+		};
+		unsigned int i = n.as_uint();
+		if (i < 8)
+		{
+			outType = LUT[i];
+			return true;
+		}
+		return false;
+	};
 	size_t numAttributes = std::distance(node.attributes().begin(), node.attributes().end());
 	switch (numAttributes)
 	{
@@ -104,8 +126,9 @@ bool TryGetXMLNodeArchiveType(ArchiveType& outType, pugi::xml_node node)
 	case 2:
 	{
 		xml_attribute attr = node.first_attribute();
+		xml_attribute lastAttr = node.last_attribute();
 		const char* sName = attr.name();
-
+		const char* lastAttrName = lastAttr.name();
 		if (strcmp(sName, "x") == 0)
 		{
 			outType = ArchiveType::Vec2;
@@ -116,6 +139,11 @@ bool TryGetXMLNodeArchiveType(ArchiveType& outType, pugi::xml_node node)
 			outType = ArchiveType::IVec2;
 			return true;
 		}
+		else if (strcmp(lastAttrName, "Hint") == 0)
+		{
+			return twoComponentHint(lastAttr, outType);
+		}
+		
 		break;
 	}
 	case 3:
@@ -285,6 +313,70 @@ void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pu
 				v.uintVal = std::stoul(attr.value());
 				v.vt = VT_UINT;
 				CMFCPropertyGridProperty* pAttrProp = new CMFCPropertyGridProperty(L"Entity", v);
+				pProp->AddSubItem(pAttrProp);
+				pAttrProp->SetData(StoreXmlAttributeHandleInDwordPtr(attr));
+			}
+			break;
+		case ArchiveType::Texture:
+			if (xml_attribute attr = n.attribute("u64Val"))
+			{
+				COleVariant v = std::stol(attr.value());
+				CMFCPropertyGridProperty* pAttrProp = new CMFCPropertyGridProperty(L"Texture Handle", v);
+				pProp->AddSubItem(pAttrProp);
+				pAttrProp->SetData(StoreXmlAttributeHandleInDwordPtr(attr));
+			}
+			break;
+		case ArchiveType::Mesh:
+			if (xml_attribute attr = n.attribute("u64Val"))
+			{
+				COleVariant v = std::stol(attr.value());
+				CMFCPropertyGridProperty* pAttrProp = new CMFCPropertyGridProperty(L"Mesh Handle", v);
+				pProp->AddSubItem(pAttrProp);
+				pAttrProp->SetData(StoreXmlAttributeHandleInDwordPtr(attr));
+			}
+			break;
+		case ArchiveType::Pipeline:
+			if (xml_attribute attr = n.attribute("u64Val"))
+			{
+				COleVariant v = std::stol(attr.value());
+				CMFCPropertyGridProperty* pAttrProp = new CMFCPropertyGridProperty(L"Pipeline Handle", v);
+				pProp->AddSubItem(pAttrProp);
+				pAttrProp->SetData(StoreXmlAttributeHandleInDwordPtr(attr));
+			}
+			break;
+		case ArchiveType::Button:
+			if (xml_attribute attr = n.attribute("u64Val"))
+			{
+				COleVariant v = std::stol(attr.value());
+				CMFCPropertyGridProperty* pAttrProp = new CMFCPropertyGridProperty(L"Button Handle", v);
+				pProp->AddSubItem(pAttrProp);
+				pAttrProp->SetData(StoreXmlAttributeHandleInDwordPtr(attr));
+			}
+			break;
+		case ArchiveType::Axis:
+			if (xml_attribute attr = n.attribute("u64Val"))
+			{
+				COleVariant v = std::stol(attr.value());
+				CMFCPropertyGridProperty* pAttrProp = new CMFCPropertyGridProperty(L"Axis Handle", v);
+				pProp->AddSubItem(pAttrProp);
+				pAttrProp->SetData(StoreXmlAttributeHandleInDwordPtr(attr));
+			}
+			break;
+		case ArchiveType::Drawable:
+			if (xml_attribute attr = n.attribute("u64Val"))
+			{
+				COleVariant v = std::stol(attr.value());
+				CMFCPropertyGridProperty* pAttrProp = new CMFCPropertyGridProperty(L"Drawable Handle", v);
+				pProp->AddSubItem(pAttrProp);
+				pAttrProp->SetData(StoreXmlAttributeHandleInDwordPtr(attr));
+			}
+			break;
+		case ArchiveType::Array:
+			// todo: make a ui that lets you edit the contents of the array
+			if (xml_attribute attr = n.attribute("u64Val"))
+			{
+				COleVariant v = std::stol(attr.value());
+				CMFCPropertyGridProperty* pAttrProp = new CMFCPropertyGridProperty(L"Array", v);
 				pProp->AddSubItem(pAttrProp);
 				pAttrProp->SetData(StoreXmlAttributeHandleInDwordPtr(attr));
 			}
