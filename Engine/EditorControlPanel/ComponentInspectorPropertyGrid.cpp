@@ -176,6 +176,12 @@ bool TryGetXMLNodeArchiveType(ArchiveType& outType, pugi::xml_node node)
 	return false;
 }
 
+CComponentInspectorPropertyGrid::CComponentInspectorPropertyGrid(bool bSendMessageOnChange /* = true */)
+	:m_bSendMessageOnChange(bSendMessageOnChange)
+{
+
+}
+
 void CComponentInspectorPropertyGrid::OnNewComponentSelected(uint32_t entity, pugi::xml_node node)
 {
 	RemoveAll();
@@ -575,8 +581,11 @@ void CComponentInspectorPropertyGrid::OnPropertyChanged(CMFCPropertyGridProperty
 	pugi::xml_attribute attr = GetXmlAttributeHandleFromDWordPtr(d);
 	COleVariant val = pProp->GetValue();
 	SetXMLAttribValue(attr, val);
-	EditorServer::Msg msg = MakeEditComponentMsg(m_Node, m_hEntity);
-	EditorClient::EnqueueToSend(msg);
+	if (m_bSendMessageOnChange)
+	{
+		EditorServer::Msg msg = MakeEditComponentMsg(m_Node, m_hEntity);
+		EditorClient::EnqueueToSend(msg);
+	}
 }
 
 void CComponentInspectorPropertyGrid::UpdateComponent(size_t entity, pugi::xml_node newNode, const char* componentName)

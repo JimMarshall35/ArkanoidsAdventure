@@ -12,6 +12,19 @@ namespace EditorServer
 	struct Msg;
 }
 
+class CPrefabListbox : public CListBox
+{
+public:
+	void OnContextMenu(CPoint pos);
+	void OnNewSceneRecieved(const pugi::xml_node node);
+protected:
+	afx_msg void AddPrefab();
+private:
+	pugi::xml_node m_Types;
+	int m_nSelectedItemContextMenu = -1;
+	DECLARE_MESSAGE_MAP()
+
+};
 
 // CEditorControlPanelDlg dialog
 class CEntitiesPropertyPage : public CPropertyPage
@@ -31,6 +44,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV support
 	afx_msg void OnSelChangedTreeCtrl(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnDestroy();
+	afx_msg void OnContextMenu(CWnd* pWnd, CPoint pos);
 
 // Implementation
 protected:
@@ -40,6 +54,8 @@ protected:
 	CComponentInspectorPropertyGrid m_ctlComponentInspector;
 	CStatic m_ctlSelectedComponentTitle;
 	GetXMLSceneFn m_fpGetScn;
+	CPrefabListbox m_ctlPrefabListBox;
+
 	// Generated message map functions
 	virtual BOOL OnInitDialog();
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);

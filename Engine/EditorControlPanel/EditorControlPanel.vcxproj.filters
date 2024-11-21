@@ -81,6 +81,9 @@
     <ClInclude Include="MeshPropertyPage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NewPrefabDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EditorControlPanel.cpp">
@@ -129,6 +132,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MeshPropertyPage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NewPrefabDlg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

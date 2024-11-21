@@ -3,6 +3,12 @@
 //
 
 #include "pch.h"
+#include <variant>
+#include <codecvt>
+#include <locale> 
+#include <array>
+#include <algorithm>
+#include <functional>
 #include "framework.h"
 #include "EditorControlPanel.h"
 #include "EntitiesPropertyPage.h"
@@ -11,12 +17,8 @@
 #include "StringHelpers.h"
 #include "EditorServerMsg.h"
 #include "resource.h"
-#include <variant>
-#include <codecvt>
-#include <locale> 
-#include <array>
-#include <algorithm>
-#include <functional>
+#include "NewPrefabDlg.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -38,6 +40,7 @@ void CEntitiesPropertyPage::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_ENTITIES_TREE, m_ctlEntityTree);
 	DDX_Control(pDX, IDC_COMPONENT_INSPECTOR_PROPERTY_GRID, m_ctlComponentInspector);
 	DDX_Control(pDX, IDC_SELECTED_COMPONENT_TITLE, m_ctlSelectedComponentTitle);
+	DDX_Control(pDX, IDC_PREFAB_LIST, m_ctlPrefabListBox);
 	CPropertyPage::DoDataExchange(pDX);
 }
 
@@ -85,6 +88,7 @@ void CEntitiesPropertyPage::HandleMsgRecieved(const EditorServer::Msg& msg)
 	case EditorServer::MsgType::GetSceneXML_Response:
 		{
 			m_ctlEntityTree.OnNewSceneRecived(m_fpGetScn());
+			m_ctlPrefabListBox.OnNewSceneRecieved(m_fpGetScn());
 			break;
 		}
 	case EditorServer::MsgType::NewEntity_Response:
@@ -117,6 +121,15 @@ void CEntitiesPropertyPage::OnDestroy()
 	CPropertyPage::OnDestroy();
 }
 
+void CEntitiesPropertyPage::OnContextMenu(CWnd* pWnd, CPoint pos)
+{
+
+	if (pWnd == &m_ctlPrefabListBox)
+	{
+		m_ctlPrefabListBox.OnContextMenu(pos);
+	}
+}
+
 BEGIN_MESSAGE_MAP(CEntitiesPropertyPage, CPropertyPage)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
@@ -124,7 +137,7 @@ BEGIN_MESSAGE_MAP(CEntitiesPropertyPage, CPropertyPage)
 	ON_BN_CLICKED(IDC_TESTBTN, &Test)
 	ON_WM_DESTROY()
 	ON_NOTIFY(TVN_SELCHANGED, IDC_ENTITIES_TREE, &OnSelChangedTreeCtrl)
-
+	ON_WM_CONTEXTMENU()
 END_MESSAGE_MAP()
 
 
@@ -207,6 +220,73 @@ HCURSOR CEntitiesPropertyPage::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
+BEGIN_MESSAGE_MAP(CPrefabListbox, CListBox)
+	ON_COMMAND(ID_ADDNEWPREFAB, &AddPrefab)
+END_MESSAGE_MAP()
 
+void CPrefabListbox::OnContextMenu(CPoint pos)
+{
+	CPoint client;
+	ScreenToClient(&client);
+	CRect r;
+	//int rmenu = (i >= 0) ? IDR_TEXTURE_HOVERRED_CTXT_MENU : IDR_TEXTURE_NOT_HOVERRED_CTXT_MENU;
+	m_nSelectedItemContextMenu = -1;
 
+	
 
+	int menuID = IDR_PREFAB_NOT_HOVERRED_CTXT_MENU;
+	for (int i = 0; i < GetCount(); i++)
+	{
+		if (GetItemRect(i, &r) != LB_ERR)
+		{
+			if (r.PtInRect(client))
+			{
+				// item i selected
+				m_nSelectedItemContextMenu = i;
+				menuID = IDR_PREFAB_HOVERRED_CTXT_MENU;
+				break;
+			}
+		}
+	}
+
+	CMenu menu;
+	menu.LoadMenu(menuID);
+	int c = menu.GetMenuItemCount();
+	CMenu* popup = menu.GetSubMenu(0);
+	popup->TrackPopupMenu(0, pos.x, pos.y, this, NULL);
+}
+
+void CPrefabListbox::OnNewSceneRecieved(const pugi::xml_node node)
+{
+	using namespace pugi;
+	static_assert(sizeof(DWORD_PTR) == sizeof(xml_node));
+	m_Types = node.child("ComponentTypes");
+
+	if (xml_node prefabs = node.child("Prefabs"))
+	{
+		ResetContent();
+		for (xml_node prefab : prefabs)
+		{
+			std::wstring ws = s2ws(prefab.name());
+			InsertString(-1, ws.c_str());
+			DWORD_PTR p;
+			memcpy(&p, &prefab, sizeof(DWORD_PTR));;
+			SetItemData(GetCount() - 1, p);
+		}
+	}
+}
+
+void CPrefabListbox::AddPrefab()
+{
+	NewPrefabDlg dlg;
+	dlg.SetData(m_Types);
+	if (dlg.DoModal() == IDOK)
+	{
+		printf("ok");
+	}
+	else
+	{
+		printf("ok");
+
+	}
+}

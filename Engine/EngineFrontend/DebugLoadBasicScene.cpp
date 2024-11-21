@@ -157,6 +157,12 @@ In::EnableDisableBtn(handleStoreLocation, true);
     BTN(editorCamMoveSpeedUpBtn, controls.MoveSpeedUpBtn);
     BTN(editorCamMoveSpeedDownBtn, controls.MoveSpeedDownBtn);
 
+    BTN(Ent1, controls.Ent1);
+    BTN(Ent2, controls.Ent2);
+    BTN(Ent3, controls.Ent3);
+    BTN(Ent4, controls.Ent4);
+
+
 #undef BTN
 
     In::LogicalAxis editorCamX;
@@ -188,6 +194,11 @@ In::EnableDisableBtn(handleStoreLocation, true);
     In::MapLogicalButtonToKeyboardKey(controls.MovementButtons[(u32)Directions::UP], api.GetInputCodeForAscii('e'));
     In::MapLogicalButtonToKeyboardKey(controls.MovementButtons[(u32)Directions::DOWN], api.GetInputCodeForAscii('q'));
 
+    In::MapLogicalButtonToKeyboardKey(controls.Ent1, api.GetInputCodeForAscii('1'));
+    In::MapLogicalButtonToKeyboardKey(controls.Ent2, api.GetInputCodeForAscii('2'));
+    In::MapLogicalButtonToKeyboardKey(controls.Ent3, api.GetInputCodeForAscii('3'));
+    In::MapLogicalButtonToKeyboardKey(controls.Ent4, api.GetInputCodeForAscii('4'));
+
     In::InputSet editorInputSet = In::GetCurrentInputSet();
 
     DrawSystem* ds = DrawSystem::GetByName(DRAW_MESH_COMPONENT_SYSTEM_NAME);
@@ -195,9 +206,6 @@ In::EnableDisableBtn(handleStoreLocation, true);
     
     UpdateSystem* up = UpdateSystem::GetByName(EDITOR_CONTROLS_SYSTEM_NAME);
     HUpdateSystem hUS = scn.sysReg.RegisterUpdateSystem(up);
-
-    //UpdateSystem* up2 = UpdateSystem::GetByName(TRANSFORM_MATRIX_UPDATE_SYSTEM_NAME);
-    //HUpdateSystem hUS2 = scn.sysReg.RegisterUpdateSystem(up2);
 
     return meshEntity;
 }

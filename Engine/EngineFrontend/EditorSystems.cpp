@@ -11,6 +11,8 @@
 #define SENSITIVITY 0.4f
 #define EDITOR_CAM_MOVEMENT_SPEED 20.0f
 
+EString gEntityPalette[ENTITY_PALETTE_SIZE];                                                                                                 
+
 static void EditorControls(Scn::Scene& s, double deltaT)
 {
 	EntityReg& r = s.entities.GetReg();
@@ -82,6 +84,24 @@ static void EditorControls(Scn::Scene& s, double deltaT)
 			bSpeedChanged = true;
 		}
 
+		if (In::GetPressOccured(controls.Ent1) && gEntityPalette[0] != "")
+		{
+			Err::LogInfo("Ent1");
+		}
+		if (In::GetPressOccured(controls.Ent2) && gEntityPalette[1] != "")
+		{
+			Err::LogInfo("Ent2");
+		}
+		if (In::GetPressOccured(controls.Ent3) && gEntityPalette[2] != "")
+		{
+			Err::LogInfo("Ent3");
+		}
+		if (In::GetPressOccured(controls.Ent4) && gEntityPalette[3] != "")
+		{
+			Err::LogInfo("Ent4");
+		}
+
+
 		if (bSpeedChanged)
 		{
 			Err::LogInfo("Editor Cam speed %.2f", controls.MovementSpeed);
@@ -98,3 +118,13 @@ static void EditorControls(Scn::Scene& s, double deltaT)
 }
 
 UpdateSystem gEditorControlsSystem = { &EditorControls, UpdateFunctionGroup::PrePhysics, EDITOR_CONTROLS_SYSTEM_NAME };
+
+void SetEntityPaletteEntry(const char* e, int paletteIndex)
+{
+	if (paletteIndex >= ENTITY_PALETTE_SIZE)
+	{
+		Err::LogWarning("SetEntityPaletteEntry: index %i out of range", paletteIndex);
+		return;
+	}
+	gEntityPalette[paletteIndex] = e;
+}

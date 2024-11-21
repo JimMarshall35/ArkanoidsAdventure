@@ -57,7 +57,12 @@ bool MeshReg::UploadMeshData(PipelineMeshData& data)
 	}
 	m_Meshes.push_back(EPair<PipelineMeshData, HMesh>(data, hmesh));
 	m_NameToHandle[data.GetName()] = hmesh;
-	m_HandleToData[hmesh] = &(m_Meshes.back().first);
+	m_HandleToData.clear();
+	for (EPair<PipelineMeshData, HMesh>& p : m_Meshes)
+	{
+		m_HandleToData[p.second] = &p.first;
+	}
+	//m_HandleToData[hmesh] = &(m_Meshes.back().first);
 	Err::LogInfo("Mesh named '%s' successfully uploaded. Handle: %i", data.GetName().c_str(), hmesh);
 	return true;
 }

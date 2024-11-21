@@ -194,6 +194,7 @@
     <ClInclude Include="Console.h" />
     <ClInclude Include="FilePathHelpers.h" />
     <ClInclude Include="MeshPropertyPage.h" />
+    <ClInclude Include="NewPrefabDlg.h" />
     <ClInclude Include="PickTextureFilesToUploadDlg.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="TexturePreviewStatic.h" />
@@ -218,6 +219,7 @@
     <ClCompile Include="Console.cpp" />
     <ClCompile Include="FilePathHelpers.cpp" />
     <ClCompile Include="MeshPropertyPage.cpp" />
+    <ClCompile Include="NewPrefabDlg.cpp" />
     <ClCompile Include="PickTextureFilesToUploadDlg.cpp" />
     <ClCompile Include="TexturePreviewStatic.cpp" />
     <ClCompile Include="TexturePropertyPage.cpp" />

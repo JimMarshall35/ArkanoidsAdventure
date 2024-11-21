@@ -19,6 +19,7 @@
 
 
 #define ENGINE_NULL_HANDLE 0
+#define NULL_ENTITY entt::null
 
 typedef size_t Handle_t;
 typedef std::int64_t i64;
