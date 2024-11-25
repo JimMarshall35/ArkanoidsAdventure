@@ -554,6 +554,7 @@ namespace OGL
 				glDrawArrays(GL_TRIANGLES, 0, pMesh->NumIndsOrVertsToDraw);
 			}
 		}
+		glBindVertexArray(0);
 		i++;
 	}
 
