@@ -222,38 +222,43 @@ HCURSOR CEntitiesPropertyPage::OnQueryDragIcon()
 
 BEGIN_MESSAGE_MAP(CPrefabListbox, CListBox)
 	ON_COMMAND(ID_ADDNEWPREFAB, &AddPrefab)
+	ON_COMMAND(ID_ADDTOPALETTESLOT1, &AddToPalette1)
+	ON_COMMAND(ID_ADDTOPALETTESLOT2, &AddToPalette2)
+	ON_COMMAND(ID_ADDTOPALETTESLOT3, &AddToPalette3)
+	ON_COMMAND(ID_ADDTOPALETTESLOT4, &AddToPalette4)
 END_MESSAGE_MAP()
 
 void CPrefabListbox::OnContextMenu(CPoint pos)
 {
-	CPoint client;
-	ScreenToClient(&client);
-	CRect r;
-	//int rmenu = (i >= 0) ? IDR_TEXTURE_HOVERRED_CTXT_MENU : IDR_TEXTURE_NOT_HOVERRED_CTXT_MENU;
-	m_nSelectedItemContextMenu = -1;
-
 	
 
-	int menuID = IDR_PREFAB_NOT_HOVERRED_CTXT_MENU;
-	for (int i = 0; i < GetCount(); i++)
+	auto HitItem = [this](const CPoint& pt) -> int
 	{
-		if (GetItemRect(i, &r) != LB_ERR)
+		CRect r;
+		for (int i = 0; i < GetCount(); i++)
 		{
-			if (r.PtInRect(client))
+			GetItemRect(i, &r);
+			if (r.PtInRect(pt))
 			{
-				// item i selected
-				m_nSelectedItemContextMenu = i;
-				menuID = IDR_PREFAB_HOVERRED_CTXT_MENU;
-				break;
+				return i;
 			}
 		}
-	}
+		return -1;
+	};
+
+	CPoint screen = pos;
+	ScreenToClient(&pos);
+	CRect r;
+	m_nSelectedItemContextMenu = -1;
+
+	m_nSelectedItemContextMenu = HitItem(pos);
+	int menuID = m_nSelectedItemContextMenu < 0 ? IDR_PREFAB_NOT_HOVERRED_CTXT_MENU : IDR_PREFAB_HOVERRED_CTXT_MENU;
 
 	CMenu menu;
 	menu.LoadMenu(menuID);
 	int c = menu.GetMenuItemCount();
 	CMenu* popup = menu.GetSubMenu(0);
-	popup->TrackPopupMenu(0, pos.x, pos.y, this, NULL);
+	popup->TrackPopupMenu(0, screen.x, screen.y, this, NULL);
 }
 
 void CPrefabListbox::OnNewSceneRecieved(const pugi::xml_node node)
@@ -282,11 +287,67 @@ void CPrefabListbox::AddPrefab()
 	dlg.SetData(m_Types);
 	if (dlg.DoModal() == IDOK)
 	{
-		printf("ok");
-	}
-	else
-	{
-		printf("ok");
+		CString name;
+		std::string data = dlg.GetData(name);
+		if (!PrefabNameTaken(name))
+		{
+			m_ListboxEntryXMLs.push_back(data);
 
+			int i = InsertString(-1, name);
+			SetItemData(i, (DWORD_PTR)&m_ListboxEntryXMLs.back());
+		}
+		else
+		{
+			CString s;
+			s.Format(L"Prefab name '%s' taken.", name);
+			AfxMessageBox(s);
+		}
 	}
+}
+
+void CPrefabListbox::AddToPalette1()
+{
+	AddToPalette(0);
+}
+
+void CPrefabListbox::AddToPalette2()
+{
+	AddToPalette(1);
+}
+
+void CPrefabListbox::AddToPalette3()
+{
+	AddToPalette(2);
+}
+
+void CPrefabListbox::AddToPalette4()
+{
+	AddToPalette(3);
+}
+
+bool CPrefabListbox::PrefabNameTaken(const CString& name)
+{
+	for (int i = 0; i < GetCount(); i++)
+	{
+		CString lbString;
+		GetText(i, lbString);
+		if (lbString == name)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void CPrefabListbox::AddToPalette(char slot)
+{
+	CString s;
+	GetText(m_nSelectedItemContextMenu, s);
+	std::string name = ws2s(s);
+	std::string* xml = (std::string*)GetItemData(m_nSelectedItemContextMenu);
+
+	EditorClient::SetPrefabPaletteAsync(name.c_str(), xml->c_str(), slot, [](const char* name, char slot, bool bSuccess)
+	{
+		printf("fjidj");
+	});
 }

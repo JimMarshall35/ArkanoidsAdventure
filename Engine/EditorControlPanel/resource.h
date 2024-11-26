@@ -61,6 +61,7 @@
 #define IDC_COMPONENT_PROPERTY_GRID     1024
 #define IDC_TRANSFORM_POS_FROM_CAMERA   1026
 #define IDC_TRANSFORM_ROT_FROM_CAMERA   1028
+#define IDC_NEW_PREFAB_NAME             1029
 #define ID_FILE_SAVESCENEAS             32771
 #define ID_FILE_SAVESCENE               32772
 #define ID_FILE_LOADSCENE               32773
@@ -82,14 +83,22 @@
 #define ID_EDITNICKNAME                 32790
 #define ID_DELETEPREFAB                 32791
 #define ID_EDITPREFAB                   32792
+#define ID_ROOT_ADDTOPALETTESLOT1       32793
+#define ID_ROOT_ADDTOPALETTESLOT2       32794
+#define ID_ROOT_ADDTOPALETTESLOT3       32795
+#define ID_ROOT_ADDTOPALETTESLOT4       32796
+#define ID_ADDTOPALETTESLOT1            32797
+#define ID_ADDTOPALETTESLOT2            32798
+#define ID_ADDTOPALETTESLOT3            32799
+#define ID_ADDTOPALETTESLOT4            32800
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        152
-#define _APS_NEXT_COMMAND_VALUE         32793
-#define _APS_NEXT_CONTROL_VALUE         1027
+#define _APS_NEXT_COMMAND_VALUE         32801
+#define _APS_NEXT_CONTROL_VALUE         1030
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -12,6 +12,7 @@ public:
 	pugi::xml_node GetRoot() { return m_Doc.root(); }
 	~XMLArchive();
 public:
+	void SetStoring(bool bStoring) { m_bStoring = bStoring; }
 	// Inherited via IArchive
 	virtual bool IsStoring() override;
 	virtual void operator<<(float f) override;
@@ -74,7 +75,7 @@ public:
 	virtual void HintUsage(HandleType type) override;
 
 	void Test() { m_Doc.print(std::cout); }
-private:
+public:
 	pugi::xml_node TopNode() const;
 private:
 	pugi::xml_document m_Doc;

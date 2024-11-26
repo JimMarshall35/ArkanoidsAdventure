@@ -13,6 +13,7 @@ namespace EditorServer
 		SetGizmoOperation,
 		RequestAssetsFolderPath, RequestAssetsFolderPath_Response,
 		UploadTextureFile, UploadTextureFile_Response,
-		UploadMeshFileMsg, UploadMeshFileMsg_Response
+		UploadMeshFileMsg, UploadMeshFileMsg_Response,
+		SetPrefabPaletteSlotMsg, SetPrefabPaletteSlotMsg_Response
 	};
 }

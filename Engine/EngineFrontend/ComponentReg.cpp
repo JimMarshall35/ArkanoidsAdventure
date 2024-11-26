@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include "FrontendError.h"
 #include "XMLArchive.h"
+#include "Scene.h"
 
 static EMap<EString, Comp::ComponentMeta*> gNameMap;
 
@@ -46,12 +47,14 @@ void Comp::ComponentMeta::SerializeDefaultComponent(IArchive* ar)
 void Comp::Init()
 {
 	Autolist<ComponentMeta>* head = Autolist<ComponentMeta>::GetHead();
+	Scn::Scene& s = Scn::GetScene();
 	while (head)
 	{
 		ComponentMeta* pMeta = (ComponentMeta*)head;
 		EString name = pMeta->GetName();
 		gNameMap[name] = pMeta;
 		head = head->GetNext();
+		pMeta->RegisterListeners(s.entities.GetReg());
 	}
 }
 

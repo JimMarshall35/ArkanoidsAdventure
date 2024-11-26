@@ -21,4 +21,5 @@ struct EditorCamControlsComponent
 	float MovementSpeed = 20.0f;
 };
 
+
 META_DECL(EditorCamControlsComponent)

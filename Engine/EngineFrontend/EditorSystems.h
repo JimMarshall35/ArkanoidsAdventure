@@ -6,4 +6,4 @@
 extern UpdateSystem gEditorControlsSystem;
 
 
-void SetEntityPaletteEntry(const char* e, int paletteIndex);
+bool SetEntityPaletteEntry(const char* e, int paletteIndex);

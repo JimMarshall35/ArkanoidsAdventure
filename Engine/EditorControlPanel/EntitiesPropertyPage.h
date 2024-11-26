@@ -6,6 +6,7 @@
 #include "ComponentInspectorPropertyGrid.h"
 #include "EntityTreeCtrl.h"
 #include "CommonPropertyPageDefines.h"
+#include <list>
 
 namespace EditorServer
 {
@@ -19,9 +20,17 @@ public:
 	void OnNewSceneRecieved(const pugi::xml_node node);
 protected:
 	afx_msg void AddPrefab();
+	afx_msg void AddToPalette1();
+	afx_msg void AddToPalette2();
+	afx_msg void AddToPalette3();
+	afx_msg void AddToPalette4();
+
+	bool PrefabNameTaken(const CString& name);
+	void AddToPalette(char slot);
 private:
 	pugi::xml_node m_Types;
 	int m_nSelectedItemContextMenu = -1;
+	std::list<std::string> m_ListboxEntryXMLs;
 	DECLARE_MESSAGE_MAP()
 
 };

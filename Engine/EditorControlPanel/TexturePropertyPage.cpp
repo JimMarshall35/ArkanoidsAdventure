@@ -41,6 +41,7 @@ BOOL TexturesPropertyPage::OnInitDialog()
 	m_ctlLoadedTexturesList.InsertColumn(8, _T("TextureClampT"), LVCFMT_LEFT, nColInterval);
 	m_ctlLoadedTexturesList.InsertColumn(9, _T("bGenerateMipMaps"), LVCFMT_LEFT, nColInterval);
 	m_ctlLoadedTexturesList.InsertColumn(10, _T("DataSize"), LVCFMT_LEFT, nColInterval);
+	m_ctlLoadedTexturesList.InsertColumn(11, _T("Handle"), LVCFMT_LEFT, nColInterval);
 
 	if (m_bSceneRecieved)
 	{
@@ -95,6 +96,7 @@ void TexturesPropertyPage::PopulateUIFromScene()
 
 		for (pugi::xml_node pair : texReg.child("Textures").children())
 		{
+			pugi::xml_node handle = pair.child("Handle");
 			pugi::xml_node texData = pair.child("TextureData");
 			const char* name = texData.child("Path").attribute("str").as_string();
 			std::wstring s = s2ws(name);
@@ -109,7 +111,7 @@ void TexturesPropertyPage::PopulateUIFromScene()
 
 			name = texData.child("Name").attribute("str").as_string();
 			s = s2ws(name);
-			strItem.Format(_T("%d"), 10 * i);
+			strItem.Format(_T("%d"), 11 * i);
 			lvi.iSubItem = 1;
 			lvi.pszText = (LPTSTR)s.c_str();
 			m_ctlLoadedTexturesList.SetItem(&lvi);
@@ -142,6 +144,12 @@ void TexturesPropertyPage::PopulateUIFromScene()
 			U32SubItem("TextureClampT", 8)
 			U32SubItem("bGenerateMipMaps", 9)
 			U64SubItem("DataSize", 10)
+			
+			u32 = handle.attribute("u64Val").as_uint();
+			strItem.Format(_T("%lu"), u32);
+			lvi.iSubItem = 11;
+			lvi.pszText = (LPTSTR)(LPCTSTR)(strItem); 
+			m_ctlLoadedTexturesList.SetItem(&lvi);
 		}
 	}
 	else

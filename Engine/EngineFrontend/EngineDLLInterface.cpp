@@ -115,7 +115,9 @@ namespace Engine
         gBackendAPI.RegisterResize(&ResizeHandler);
 
         gBackendAPI.InitRenderer();
-        
+
+        Comp::Init();
+
         // gizmo test begin
         Entity hMeshEnt = entt::null;
         // gizmo test end
@@ -136,8 +138,6 @@ namespace Engine
             Editor::Init({});
         }
         
-        Comp::Init();
-
         double previous = gBackendAPI.GetTime();
         double lag = 0.0;
 

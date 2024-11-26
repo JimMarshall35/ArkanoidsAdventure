@@ -60,6 +60,9 @@
     <ClInclude Include="UploadMeshFileMsg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SetPrefabPalette.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">

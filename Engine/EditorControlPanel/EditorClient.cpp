@@ -30,6 +30,19 @@ namespace EditorClient
 
     std::vector<std::function<void(const char*)>> gGetAssetFolderPathCallbacks;
 
+
+    struct SetPrefabPaletteCallbackData
+    {
+        std::string prefabName; char slot;  
+        std::function<void(const char*, char, bool)> callback;
+        bool wasSuccessful = false;
+        void Call()
+        {
+            callback(prefabName.c_str(), slot, wasSuccessful);
+        }
+    };
+
+    std::vector<SetPrefabPaletteCallbackData> gSetPrefabPaletteXMLCallbacks;
     /* was the message handled as an async callback? */
     bool DoAsyncCallbackTypeMessages(EditorServer::Msg& msg)
     {
@@ -43,6 +56,15 @@ namespace EditorClient
             }
             gGetAssetFolderPathCallbacks.clear();
             return true;
+        case EditorServer::MsgType::SetPrefabPaletteSlotMsg_Response:
+            for (SetPrefabPaletteCallbackData& cb : gSetPrefabPaletteXMLCallbacks)
+            {
+                cb.wasSuccessful = std::get<EditorServer::SetPrefabPaletteSlotMsg_Response>(msg.Data).bSuccess;
+                cb.Call();
+            }
+            gSetPrefabPaletteXMLCallbacks.clear();
+            return true;
+
         }
         return false;
     }
@@ -200,6 +222,14 @@ namespace EditorClient
         EditorServer::Msg msg;
         msg.Type = EditorServer::MsgType::RequestAssetsFolderPath;
         msg.Data = EditorServer::RequestAssetsFolderPath{};
+        gSendQueue.Push(msg);
+    }
+    void SetPrefabPaletteAsync(const char* prefabName, const char* xml, char slot, std::function<void(const char*, char, bool)> callback)
+    {
+        gSetPrefabPaletteXMLCallbacks.push_back({ prefabName, slot, callback});
+        EditorServer::Msg msg;
+        msg.Type = EditorServer::MsgType::SetPrefabPaletteSlotMsg;
+        msg.Data = EditorServer::SetPrefabPaletteSlotMsg{slot, xml};
         gSendQueue.Push(msg);
     }
 }

@@ -114,8 +114,6 @@ static void OnMeshCmpntDestroy(entt::registry& r, entt::entity e)
 
 static void OnMeshComponentCreate(entt::registry& r, entt::entity e)
 {
-
-	printf("jdifjidf");
 }
 
 static void OnMeshComponentUpdate(entt::registry& r, entt::entity e)

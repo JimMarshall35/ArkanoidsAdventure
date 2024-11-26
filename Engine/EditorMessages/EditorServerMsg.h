@@ -10,6 +10,7 @@
 #include "GetAssetsFolderPathMsg.h"
 #include "UploadTextureFileMsg.h"
 #include "UploadMeshFileMsg.h"
+#include "SetPrefabPalette.h"
 
 namespace EditorServer
 {
@@ -25,7 +26,8 @@ namespace EditorServer
 			SetGizmoOperationMsg,
 			RequestAssetsFolderPath, RequestAssetsFolderPath_Response,
 			UploadTextureFileMsg, UploadTextureFile_Response,
-			UploadMeshFileMsg, UploadMeshFileMsg_Response
+			UploadMeshFileMsg, UploadMeshFileMsg_Response,
+			SetPrefabPaletteSlotMsg, SetPrefabPaletteSlotMsg_Response
 		> Data;
 	};
 

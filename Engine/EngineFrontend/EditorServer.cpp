@@ -10,6 +10,7 @@
 #include "CommonEditorServerDefines.h"
 
 #include "EditorServerMsg.h"
+#include "EditorSystems.h"
 
 #include "MessageTypes.h"
 #include "Scene.h"
@@ -216,6 +217,20 @@ namespace Editor {
 				msg.Type = EditorServer::MsgType::UploadMeshFileMsg_Response;
 				msg.Data = EditorServer::UploadMeshFileMsg_Response{
 					loadedMeshXML
+				};
+				gSendQueue.Push(msg);
+				break;
+			}
+		case EditorServer::MsgType::SetPrefabPaletteSlotMsg:
+			{
+				char slot = std::get<EditorServer::SetPrefabPaletteSlotMsg>(msgIn.Data).slot;
+				
+				bool b = SetEntityPaletteEntry(std::get<EditorServer::SetPrefabPaletteSlotMsg>(msgIn.Data).xml.c_str(), slot);
+
+				EditorServer::Msg msg;
+				msg.Type = EditorServer::MsgType::SetPrefabPaletteSlotMsg_Response;
+				msg.Data = EditorServer::SetPrefabPaletteSlotMsg_Response{
+					b
 				};
 				gSendQueue.Push(msg);
 				break;

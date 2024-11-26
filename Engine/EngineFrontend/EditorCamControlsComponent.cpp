@@ -1,5 +1,6 @@
 #include "EditorCamControlsComponent.h"
 #include "IArchive.h"
+
 static void SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, EntityReg& reg)
 {
 	if (ar->IsStoring())
@@ -96,3 +97,8 @@ static void MetaReg(Comp::ComponentMeta* m)
 }
 
 META_IMPL(EditorCamControlsComponent, MetaReg, SerializeC)
+
+bool SetEntityPrefabPaletteEntry(const char* xml, char slot)
+{
+	return false;
+}

@@ -112,6 +112,15 @@ namespace EditorServer
 			assert(data[dataLen - 1] == '\0');
 			std::get<UploadMeshFileMsg_Response>(msg.Data).loadedMeshXML = (const char*)msgData;
 			break;
+		case MsgType::SetPrefabPaletteSlotMsg:
+			msg.Data = SetPrefabPaletteSlotMsg();
+			std::get<SetPrefabPaletteSlotMsg>(msg.Data).slot = L(char, msgData);
+			std::get<SetPrefabPaletteSlotMsg>(msg.Data).xml = (const char*)msgData;
+			break;
+		case MsgType::SetPrefabPaletteSlotMsg_Response:
+			msg.Data = SetPrefabPaletteSlotMsg_Response();
+			std::get<SetPrefabPaletteSlotMsg_Response>(msg.Data).bSuccess = L(bool, msgData);
+			break;
 		}
 		
 		return msg;
@@ -171,6 +180,13 @@ namespace EditorServer
 			break;
 		case MsgType::UploadMeshFileMsg_Response:
 			outSize += std::get<UploadMeshFileMsg_Response>(msg.Data).loadedMeshXML.length() + 1;
+			break;
+		case MsgType::SetPrefabPaletteSlotMsg:
+			outSize += sizeof(char);
+			outSize += std::get<SetPrefabPaletteSlotMsg>(msg.Data).xml.length() + 1;
+			break;
+		case MsgType::SetPrefabPaletteSlotMsg_Response:
+			outSize += sizeof(bool);
 			break;
 		default:
 			break;
@@ -269,6 +285,17 @@ namespace EditorServer
 		case MsgType::UploadMeshFileMsg_Response:
 			strcpy((char*)pWriteData, std::get<UploadMeshFileMsg_Response>(msg.Data).loadedMeshXML.c_str());
 			break;
+		case MsgType::SetPrefabPaletteSlotMsg:
+			*(char*)pWriteData = std::get<SetPrefabPaletteSlotMsg>(msg.Data).slot;
+			pWriteData++;
+			strcpy((char*)pWriteData, std::get<SetPrefabPaletteSlotMsg>(msg.Data).xml.c_str());
+			break;
+		case MsgType::SetPrefabPaletteSlotMsg_Response:
+		{
+			bool* b = (bool*)pWriteData;
+			*b = std::get<SetPrefabPaletteSlotMsg_Response>(msg.Data).bSuccess;
+			break;
+		}
 		default:
 			break;
 		}

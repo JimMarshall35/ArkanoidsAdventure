@@ -46,6 +46,7 @@ public:
 	glm::vec3 getForward();
 	glm::vec3 getGlobalScale();
 	Transform* GetParent() const;
+	void SetParent(Entity e) { m_hParent = e; }
 	void Rotate(float x, float y, float z);
 	void Translate(float x, float y, float z);
 

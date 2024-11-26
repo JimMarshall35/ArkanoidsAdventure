@@ -2,6 +2,7 @@
 #include "NewPrefabDlg.h"
 #include "Resource.h"
 #include "StringHelpers.h"
+#include <sstream>
 
 BEGIN_MESSAGE_MAP(NewPrefabDlg, CDialog)
 	ON_BN_CLICKED(IDC_ADD_COMPONENT, &OnAddComponent)
@@ -11,6 +12,7 @@ BEGIN_MESSAGE_MAP(NewPrefabDlg, CDialog)
 
 	ON_LBN_SELCHANGE(IDC_NEW_PREFAB_COMPONENTS, &NewPrefabDlg::OnNewPrefabItemChanged)
 	ON_LBN_SELCHANGE(IDC_ALL_COMPONENT_TYPES, &NewPrefabDlg::OnAllComponentsItemChanged)
+	ON_BN_CLICKED(IDOK, &NewPrefabDlg::OnBnClickedOk)
 END_MESSAGE_MAP()
 
 NewPrefabDlg::NewPrefabDlg()
@@ -24,6 +26,16 @@ void NewPrefabDlg::SetData(pugi::xml_node n)
 {
 	m_ComponentTypes = n;
 	
+}
+
+std::string NewPrefabDlg::GetData(CString& outName)
+{
+	//UpdateData(FALSE);
+	outName = m_strPrefabName;
+	std::stringstream ss;
+	m_Doc.save(ss);
+
+	return ss.str();
 }
 
 BOOL NewPrefabDlg::OnInitDialog()
@@ -49,6 +61,7 @@ void NewPrefabDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMPONENT_PROPERTY_GRID, m_ctlComponentInspectorPropGrid);
 	DDX_Control(pDX, IDC_ADD_COMPONENT, m_ctlAddButton);
 	DDX_Control(pDX, IDC_REMOVE_COMPONENT, m_ctlRemoveButton);
+	DDX_Text(pDX, IDC_NEW_PREFAB_NAME, m_strPrefabName);
 }
 
 static bool ComponentAlreadyAdded(CListBox& lb, CString component)
@@ -121,4 +134,12 @@ void NewPrefabDlg::OnRemoveComponent()
 		m_ctlNewPrefabComponentsListBox.DeleteString(m_ctlNewPrefabComponentsListBox.GetCurSel());
 	}
 	
+}
+
+
+void NewPrefabDlg::OnBnClickedOk()
+{
+	// TODO: Add your control notification handler code here
+	UpdateData(TRUE);
+	CDialog::OnOK();
 }

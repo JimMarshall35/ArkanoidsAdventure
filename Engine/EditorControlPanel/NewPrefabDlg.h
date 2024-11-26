@@ -9,6 +9,7 @@ class NewPrefabDlg : public CDialog
 public:
 	NewPrefabDlg();
 	void SetData(pugi::xml_node n);
+	std::string GetData(CString& outName);
 	virtual BOOL OnInitDialog() override;
 	virtual void DoDataExchange(CDataExchange* pDX) override;
 
@@ -23,6 +24,7 @@ private:
 	pugi::xml_node m_PrefabNode;
 	BOOL m_bTransformPosFromCamera = TRUE;
 	BOOL m_bTransformRotFromCamera = FALSE;
+	CString m_strPrefabName;
 private:
 	afx_msg void OnAddComponent();
 	afx_msg void OnRemoveComponent();
@@ -31,4 +33,5 @@ private:
 
 	DECLARE_MESSAGE_MAP()
 public:
+	afx_msg void OnBnClickedOk();
 };

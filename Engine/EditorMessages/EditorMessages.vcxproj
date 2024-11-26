@@ -166,6 +166,7 @@
     <ClInclude Include="NewEntityMessage.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="SetGizmoEntityMessage.h" />
+    <ClInclude Include="SetPrefabPalette.h" />
     <ClInclude Include="ThreadSafeQueue.h" />
     <ClInclude Include="UploadMeshFileMsg.h" />
     <ClInclude Include="UploadTextureFileMsg.h" />
