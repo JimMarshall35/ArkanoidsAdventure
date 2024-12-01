@@ -181,6 +181,9 @@ void TextureReg::ReloadTextures(EMap<HTexture, HTexture>& outOldToNewHandleMap)
 		HTexture t = Engine::GetAPI().UploadTexture(p.first);
 		outOldToNewHandleMap[p.second] = t;
 		p.second = t;
+
+		m_NameMap[td.Name] = &p;
+
 	}
 }
 

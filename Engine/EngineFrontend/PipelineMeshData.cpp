@@ -226,11 +226,11 @@ void SerializeBufferData(IArchive& ar, PipelineMeshBuffer& buf)
 			}
 			case PipelinePropertyType::Vec2:
 			{
-				EVec<u32> v;
+				EVec<glm::vec2> v;
 				for (int i = 0; i < num; i++)
 				{
 					ar.PushChild(i);
-					u32 f;
+					glm::vec2 f;
 					ar >> f;
 					v.push_back(f);
 					ar.PopObj();
@@ -363,15 +363,15 @@ bool PipelineMeshBuffer::CheckBufferDataSetRequest(const EVec<PipelinePropertySe
 		Errors.push_back(e);
 		allowed = false;
 	}
-	if (Semantics != psUnknown)
-	{
-		PipelineError e{
-			PipelineErrorType::NotExactlyOneSemanticBitSet,
-			"[PipelineMeshBuffer::CheckBufferDataSetRequest] already recieved data"
-		};
-		Errors.push_back(e);
-		allowed = false;
-	}
+	//if (Semantics != psUnknown)
+	//{
+	//	PipelineError e{
+	//		PipelineErrorType::NotExactlyOneSemanticBitSet,
+	//		"[PipelineMeshBuffer::CheckBufferDataSetRequest] already recieved data"
+	//	};
+	//	Errors.push_back(e);
+	//	allowed = false;
+	//}
 	if (std::find(allowedSemantics.begin(), allowedSemantics.end(), semanticsSet) == allowedSemantics.end())
 	{
 		PipelineError e{
@@ -457,7 +457,7 @@ void PipelineMeshData::Serialize(IArchive& archive)
 			{
 			case 1:
 				archive.PushObj("Name");
-					archive << Name;
+					archive >> Name;
 				archive.PopObj();
 				archive.PushObj("Buffers");
 					size_t sz;

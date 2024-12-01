@@ -49,21 +49,29 @@ void EntityRegWrapper::Serialize(IArchive& archive)
 		{
 		case 1:
 		{
+			
+			std::unordered_map<u32, u32> oldToNewEntityMap;
 			int num = archive.CountChildren();
 			for (int i = 0; i < num; i++)
 			{
-				archive.PushChild(i);
 				Entity e = m_Reg.create();
+			}
+			for (int i = 0; i < num; i++)
+			{
+				archive.PushChild(i);
+				u32 entID = 0;
+				archive >> entID;
 				Autolist<Comp::ComponentMeta>* pMeta = Autolist<Comp::ComponentMeta>::GetHead();
 				while (pMeta)
 				{
 					Comp::ComponentMeta* meta = (Comp::ComponentMeta*)pMeta;
-					meta->Serialize(&archive, e, m_Reg);
+					meta->Serialize(&archive, (Entity)entID, m_Reg);
 					pMeta = pMeta->GetNext();
 				}
 				archive.PopObj();
 			}
 			break;
+
 		}
 
 		default:
@@ -76,8 +84,17 @@ void EntityRegWrapper::Serialize(IArchive& archive)
 
 void EntityRegWrapper::PostSerializeFix(const EMap<HPipeline, EString>& pipelineHandleToMap, const EMap<HTexture, HTexture>& oldToNewTextureMap, const EMap<HMesh, HMesh>& oldToNewMeshMap)
 {
+	
+
+	Autolist<Comp::ComponentMeta>* pMeta = Autolist<Comp::ComponentMeta>::GetHead();
+	while (pMeta)
+	{
+		((Comp::ComponentMeta*)pMeta)->OnSceneLoad(pipelineHandleToMap, oldToNewTextureMap, oldToNewMeshMap);
+		pMeta = pMeta->GetNext();
+	}
+
+	/*
 	auto v = m_Reg.view<TestPipelineMaterial>();
-	// TODO URGENT: create a texture entity that the materials can use 
 	v.each([&](TestPipelineMaterial& t)
 	{
 		if (oldToNewTextureMap.find(t.hTexture) != oldToNewTextureMap.end())
@@ -88,28 +105,6 @@ void EntityRegWrapper::PostSerializeFix(const EMap<HPipeline, EString>& pipeline
 	auto v2 = m_Reg.view<MeshComponent>();
 	v2.each([&pipelineHandleToMap, &oldToNewMeshMap](const auto entity, MeshComponent& m)
 	{
-		if (pipelineHandleToMap.find(m.GetPipeline()) != pipelineHandleToMap.end())
-		{
-			if (oldToNewMeshMap.find(m.GetMesh()) != oldToNewMeshMap.end())
-			{
-				m.m_hMesh = oldToNewMeshMap.at(m.m_hMesh);
-				if (PipeLine* pl = PipeLine::TryGetPipeline(pipelineHandleToMap.at(m.m_hPipeline).c_str()))
-				{
-					m.Create(m.GetMesh(), *pl, entity);
-				}
-				else
-				{
-					Err::LogError("Can't get pipeline '%s'", (u32) entity, pipelineHandleToMap.at(m.m_hPipeline).c_str());
-				}
-			}
-			else
-			{
-				Err::LogError("Entity: '%i' using unknwon mesh: '%i'", (u32) entity, (u32)m.GetMesh());
-			}
-		}
-		else
-		{
-			Err::LogError("Entity: '%i' using unknwon pipeline: '%i'", (u32) entity, (u32)m.GetPipeline());
-		}
-	});
+		
+	});*/
 }

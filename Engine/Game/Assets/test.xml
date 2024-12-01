@@ -2,17 +2,217 @@
 <Scene u32Val="1">
 	<rootTransformEntity ID="0" />
 	<activeCameraAntity ID="4" />
+	<Input i32Val="1">
+		<numBtns u64Val="13" />
+		<Buttons>
+			<Button>
+				<Name str="editorcamActivateBtn" />
+			</Button>
+			<Button>
+				<Name str="editorCamForwardBtn" />
+			</Button>
+			<Button>
+				<Name str="editorCamBackwardBtn" />
+			</Button>
+			<Button>
+				<Name str="editorCamLeftBtn" />
+			</Button>
+			<Button>
+				<Name str="editorCamRightBtn" />
+			</Button>
+			<Button>
+				<Name str="editorCamUpBtn" />
+			</Button>
+			<Button>
+				<Name str="editorCamDownBtn" />
+			</Button>
+			<Button>
+				<Name str="editorCamMoveSpeedUpBtn" />
+			</Button>
+			<Button>
+				<Name str="editorCamMoveSpeedDownBtn" />
+			</Button>
+			<Button>
+				<Name str="Ent1" />
+			</Button>
+			<Button>
+				<Name str="Ent2" />
+			</Button>
+			<Button>
+				<Name str="Ent3" />
+			</Button>
+			<Button>
+				<Name str="Ent4" />
+			</Button>
+		</Buttons>
+		<numAxes u64Val="2" />
+		<Axes>
+			<Axis>
+				<Name str="EditorCamX" />
+				<Type i32Val="0" />
+			</Axis>
+			<Axis>
+				<Name str="EditorCamY" />
+				<Type i32Val="0" />
+			</Axis>
+		</Axes>
+		<BindingEndpoints u64Val="15">
+			<BindingEndpoint>
+				<type i32Val="1">
+					<Axis>
+						<type i32Val="1" />
+						<axis i32Val="0" />
+						<code i32Val="1" />
+					</Axis>
+				</type>
+			</BindingEndpoint>
+			<BindingEndpoint>
+				<type i32Val="1">
+					<Axis>
+						<type i32Val="1" />
+						<axis i32Val="1" />
+						<code i32Val="2" />
+					</Axis>
+				</type>
+			</BindingEndpoint>
+			<BindingEndpoint>
+				<type i32Val="0">
+					<Btn>
+						<type i32Val="1" />
+						<hBtn u64Val="1" />
+						<code i32Val="0" />
+					</Btn>
+				</type>
+			</BindingEndpoint>
+			<BindingEndpoint>
+				<type i32Val="0">
+					<Btn>
+						<type i32Val="1" />
+						<hBtn u64Val="8" />
+						<code i32Val="3" />
+					</Btn>
+				</type>
+			</BindingEndpoint>
+			<BindingEndpoint>
+				<type i32Val="0">
+					<Btn>
+						<type i32Val="1" />
+						<hBtn u64Val="9" />
+						<code i32Val="4" />
+					</Btn>
+				</type>
+			</BindingEndpoint>
+			<BindingEndpoint>
+				<type i32Val="0">
+					<Btn>
+						<type i32Val="0" />
+						<hBtn u64Val="2" />
+						<code i32Val="87" />
+					</Btn>
+				</type>
+			</BindingEndpoint>
+			<BindingEndpoint>
+				<type i32Val="0">
+					<Btn>
+						<type i32Val="0" />
+						<hBtn u64Val="3" />
+						<code i32Val="83" />
+					</Btn>
+				</type>
+			</BindingEndpoint>
+			<BindingEndpoint>
+				<type i32Val="0">
+					<Btn>
+						<type i32Val="0" />
+						<hBtn u64Val="4" />
+						<code i32Val="65" />
+					</Btn>
+				</type>
+			</BindingEndpoint>
+			<BindingEndpoint>
+				<type i32Val="0">
+					<Btn>
+						<type i32Val="0" />
+						<hBtn u64Val="5" />
+						<code i32Val="68" />
+					</Btn>
+				</type>
+			</BindingEndpoint>
+			<BindingEndpoint>
+				<type i32Val="0">
+					<Btn>
+						<type i32Val="0" />
+						<hBtn u64Val="6" />
+						<code i32Val="69" />
+					</Btn>
+				</type>
+			</BindingEndpoint>
+			<BindingEndpoint>
+				<type i32Val="0">
+					<Btn>
+						<type i32Val="0" />
+						<hBtn u64Val="7" />
+						<code i32Val="81" />
+					</Btn>
+				</type>
+			</BindingEndpoint>
+			<BindingEndpoint>
+				<type i32Val="0">
+					<Btn>
+						<type i32Val="0" />
+						<hBtn u64Val="10" />
+						<code i32Val="49" />
+					</Btn>
+				</type>
+			</BindingEndpoint>
+			<BindingEndpoint>
+				<type i32Val="0">
+					<Btn>
+						<type i32Val="0" />
+						<hBtn u64Val="11" />
+						<code i32Val="50" />
+					</Btn>
+				</type>
+			</BindingEndpoint>
+			<BindingEndpoint>
+				<type i32Val="0">
+					<Btn>
+						<type i32Val="0" />
+						<hBtn u64Val="12" />
+						<code i32Val="51" />
+					</Btn>
+				</type>
+			</BindingEndpoint>
+			<BindingEndpoint>
+				<type i32Val="0">
+					<Btn>
+						<type i32Val="0" />
+						<hBtn u64Val="13" />
+						<code i32Val="52" />
+					</Btn>
+				</type>
+			</BindingEndpoint>
+		</BindingEndpoints>
+		<enabledAxes>
+			<BitsetElement u64Val="3" />
+			<BitsetElement u64Val="0" />
+		</enabledAxes>
+		<enabledBtns>
+			<BitsetElement u64Val="8191" />
+			<BitsetElement u64Val="0" />
+		</enabledBtns>
+	</Input>
 	<Entities i32Val="1">
 		<Entity u32Val="4">
 			<Transform>
 				<Version i32Val="1" />
-				<Pos x="0" y="0" z="5" />
-				<Rotation x="0" y="0" z="0" />
+				<Pos x="-15.8227882" y="20.739151" z="20.4758167" />
+				<Rotation x="-34.4000053" y="-41.6000023" z="0" />
 				<Scale x="1" y="1" z="1" />
-				<Model v0v0="1" v0v0="1" v0v1="0" v0v2="0" v0v3="0" v1v0="0" v1v1="1" v1v2="0" v1v3="0" v2v0="0" v2v1="0" v2v2="1" v2v3="0" v3v0="0" v3v1="0" v3v2="5" v3v3="1" />
+				<Model v0v0="0.747798085" v0v0="0.747798085" v0v1="0" v0v2="0.663926244" v0v3="0" v1v0="0.37509647" v1v1="0.825113475" v1v2="-0.422481298" v1v3="0" v2v0="-0.547814488" v2v1="0.564967096" v2v2="0.617018282" v2v3="0" v3v0="-15.8227882" v3v1="20.739151" v3v2="20.4758167" v3v3="1" />
 				<IsDirty boolVal="false" />
 				<Parent ID="0" />
-				<Children u64Val="0" />
+				<Children u64Val="0" Hint="7" />
 			</Transform>
 			<EditorCamControlsComponent i32Val="1">
 				<YawAxis u64Val="1" />
@@ -20,6 +220,10 @@
 				<ActivateButton u64Val="1" />
 				<MoveSpeedUpBtn u64Val="8" />
 				<MoveSpeedDownBtn u64Val="9" />
+				<Ent1 u64Val="10" />
+				<Ent2 u64Val="11" />
+				<Ent3 u64Val="12" />
+				<Ent4 u64Val="13" />
 				<UpBtn u64Val="6" Hint="5" />
 				<DownBtn u64Val="7" Hint="5" />
 				<LeftBtn u64Val="4" Hint="5" />
@@ -47,7 +251,7 @@
 				<Model v0v0="1" v0v0="1" v0v1="0" v0v2="0" v0v3="0" v1v0="0" v1v1="1" v1v2="0" v1v3="0" v2v0="0" v2v1="0" v2v2="1" v2v3="0" v3v0="0" v3v1="100" v3v2="0" v3v3="1" />
 				<IsDirty boolVal="false" />
 				<Parent ID="0" />
-				<Children u64Val="0" />
+				<Children u64Val="0" Hint="7" />
 			</Transform>
 			<PointLightComponent i32Val="1">
 				<Colour x="1" y="1" z="1" />
@@ -62,7 +266,7 @@
 				<Model v0v0="1" v0v0="1" v0v1="0" v0v2="0" v0v3="0" v1v0="0" v1v1="1" v1v2="0" v1v3="0" v2v0="0" v2v1="0" v2v2="1" v2v3="0" v3v0="0" v3v1="10" v3v2="0" v3v3="1" />
 				<IsDirty boolVal="false" />
 				<Parent ID="1" />
-				<Children u64Val="0" />
+				<Children u64Val="0" Hint="7" />
 			</Transform>
 			<TestPipelineMaterial i32Val="1">
 				<ambientStrength floatVal="0.400000006" />
@@ -86,7 +290,7 @@
 				<Model v0v0="1" v0v0="1" v0v1="0" v0v2="0" v0v3="0" v1v0="0" v1v1="1" v1v2="0" v1v3="0" v2v0="0" v2v1="0" v2v2="1" v2v3="0" v3v0="0" v3v1="0" v3v2="0" v3v3="1" />
 				<IsDirty boolVal="false" />
 				<Parent ID="0" />
-				<Children u64Val="1">
+				<Children u64Val="1" Hint="7">
 					<Child ID="2" Hint="0" />
 				</Children>
 			</Transform>
@@ -112,7 +316,7 @@
 				<Model v0v0="1" v0v0="1" v0v1="0" v0v2="0" v0v3="0" v1v0="0" v1v1="1" v1v2="0" v1v3="0" v2v0="0" v2v1="0" v2v2="1" v2v3="0" v3v0="0" v3v1="0" v3v2="0" v3v3="1" />
 				<IsDirty boolVal="false" />
 				<Parent ID="4294967295" />
-				<Children u64Val="3">
+				<Children u64Val="3" Hint="7">
 					<Child ID="1" Hint="0" />
 					<Child ID="3" Hint="0" />
 					<Child ID="4" Hint="0" />
@@ -432,7 +636,7 @@
 			<Model v0v0="1" v0v0="1" v0v1="0" v0v2="0" v0v3="0" v1v0="0" v1v1="1" v1v2="0" v1v3="0" v2v0="0" v2v1="0" v2v2="1" v2v3="0" v3v0="0" v3v1="0" v3v2="0" v3v3="1" />
 			<IsDirty boolVal="true" />
 			<Parent ID="4294967295" />
-			<Children u64Val="0" />
+			<Children u64Val="0" Hint="7" />
 		</Transform>
 		<TestPipelineMaterial i32Val="1">
 			<ambientStrength floatVal="0" />
@@ -450,6 +654,10 @@
 			<ActivateButton u64Val="0" />
 			<MoveSpeedUpBtn u64Val="0" />
 			<MoveSpeedDownBtn u64Val="0" />
+			<Ent1 u64Val="0" />
+			<Ent2 u64Val="0" />
+			<Ent3 u64Val="0" />
+			<Ent4 u64Val="0" />
 			<UpBtn u64Val="0" Hint="5" />
 			<DownBtn u64Val="0" Hint="5" />
 			<LeftBtn u64Val="0" Hint="5" />

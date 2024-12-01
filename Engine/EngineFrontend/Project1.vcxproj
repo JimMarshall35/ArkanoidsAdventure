@@ -149,21 +149,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AABB.h" />
+    <ClInclude Include="AnimatedMeshPipeline.h" />
     <ClInclude Include="Autolist.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="ComponentReg.h" />
     <ClInclude Include="ConsoleCmdInterpreter.h" />
+    <ClInclude Include="Counter.h" />
     <ClInclude Include="DebugLoadBasicScene.h" />
     <ClInclude Include="DrawMeshComponentsFunction.h" />
     <ClInclude Include="EditorCamControlsComponent.h" />
     <ClInclude Include="EditorServer.h" />
     <ClInclude Include="EditorSystems.h" />
     <ClInclude Include="EntityRegWrapper.h" />
+    <ClInclude Include="FibreSafeQueue.h" />
     <ClInclude Include="FrontendError.h" />
     <ClInclude Include="Gizmo.h" />
     <ClInclude Include="GizmoOperation.h" />
     <ClInclude Include="IArchive.h" />
     <ClInclude Include="InputFrontend.h" />
+    <ClInclude Include="JobSystem.h" />
     <ClInclude Include="Lighting.h" />
     <ClInclude Include="MeshReg.h" />
     <ClInclude Include="PointLightComponent.h" />
@@ -184,6 +188,7 @@
     <ClInclude Include="PipelineTypes.h" />
     <ClInclude Include="Plane.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="Spinlock.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="SystemsReg.h" />
     <ClInclude Include="TestPipeline.h" />
@@ -191,6 +196,7 @@
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TextureReg.h" />
     <ClInclude Include="TransformComponent.h" />
+    <ClInclude Include="WaitList.h" />
     <ClInclude Include="XMLArchive.h" />
   </ItemGroup>
   <ItemGroup>
@@ -198,6 +204,7 @@
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="ComponentReg.cpp" />
     <ClCompile Include="ConsoleCmdInterpreter.cpp" />
+    <ClCompile Include="Counter.cpp" />
     <ClCompile Include="DebugLoadBasicScene.cpp" />
     <ClCompile Include="DrawMeshComponentsFunction.cpp" />
     <ClCompile Include="EditorCamControlsComponent.cpp" />
@@ -210,6 +217,7 @@
     <ClCompile Include="Gizmo.cpp" />
     <ClCompile Include="IBackendApp.cpp" />
     <ClCompile Include="InputFrontend.cpp" />
+    <ClCompile Include="JobSystem.cpp" />
     <ClCompile Include="Lighting.cpp" />
     <ClCompile Include="MeshReg.cpp" />
     <ClCompile Include="PointLightComponent.cpp" />
@@ -227,6 +235,7 @@
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TextureReg.cpp" />
     <ClCompile Include="TransformComponent.cpp" />
+    <ClCompile Include="WaitList.cpp" />
     <ClCompile Include="XMLArchive.cpp" />
   </ItemGroup>
   <ItemGroup>

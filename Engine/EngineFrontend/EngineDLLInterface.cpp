@@ -20,6 +20,8 @@
 #include "EditorServerMsg.h"
 #include "TransformComponent.h"
 #include "Gizmo.h"
+#include "DrawMeshComponentsFunction.h"
+#include "EditorSystems.h"
 #define MS_PER_UPDATE 20.0f
 #define S_PER_UPDATE (MS_PER_UPDATE / 1000.0f)
 
@@ -106,6 +108,12 @@ namespace Engine
         Scn::GetScene().sysReg.Draw();
     }
 
+    bool CreatePipeline(PipeLine* pl, void* pUser)
+    {
+        pl->Create();
+        return false;
+    }
+
     void MainLoop(const EngineInitArgs& args)
     {
         gBackendAPI.InitWindow(gWidth, gHeight);
@@ -121,6 +129,16 @@ namespace Engine
         // gizmo test begin
         Entity hMeshEnt = entt::null;
         // gizmo test end
+
+        PipeLine::IteratePipelines(&CreatePipeline, nullptr);
+
+        //TODO: make this part of serializing the scene
+        Scn::Scene& scn = Scn::GetScene();
+        DrawSystem* ds = DrawSystem::GetByName(DRAW_MESH_COMPONENT_SYSTEM_NAME);
+        HDrawSystem hDS = scn.sysReg.RegisterDrawSystem(ds);
+
+        UpdateSystem* up = UpdateSystem::GetByName(EDITOR_CONTROLS_SYSTEM_NAME);
+        HUpdateSystem hUS = scn.sysReg.RegisterUpdateSystem(up);
 
         if (args.InitialScenePath == "")
         {
@@ -165,6 +183,7 @@ namespace Engine
                 lag -= MS_PER_UPDATE;
                 Update(MS_PER_UPDATE);
             }
+
             gBackendAPI.PreRender();
             gBackendAPI.BeginImGuiFrame();
             Gizmo::UpdateGizmo();

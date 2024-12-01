@@ -114,5 +114,6 @@ public:
 	virtual void PushChild(int c) = 0;
 
 	virtual void HintUsage(HandleType type) = 0;
+
 };
 

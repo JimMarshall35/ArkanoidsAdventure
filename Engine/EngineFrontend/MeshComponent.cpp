@@ -121,5 +121,38 @@ static void OnMeshComponentUpdate(entt::registry& r, entt::entity e)
 
 }
 
+static void OnSceneLoaded(const EMap<HPipeline, EString>& pipelineHandleToMap, const EMap<HTexture, HTexture>& oldToNewTextureMap, const EMap<HMesh, HMesh>& oldToNewMeshMap)
+{
+	Scn::Scene& s = Scn::GetScene();
+	EntityReg& r = s.entities.GetReg();
+	auto v = r.view<MeshComponent>();
+	v.each([&](Entity e, MeshComponent& mc) 
+	{
+		if (pipelineHandleToMap.find(mc.GetPipeline()) != pipelineHandleToMap.end())
+		{
+			if (oldToNewMeshMap.find(mc.GetMesh()) != oldToNewMeshMap.end())
+			{
+				mc.m_hMesh = oldToNewMeshMap.at(mc.m_hMesh);
+				if (PipeLine* pl = PipeLine::TryGetPipeline(pipelineHandleToMap.at(mc.m_hPipeline).c_str()))
+				{
+					mc.Create(mc.GetMesh(), *pl, e);
+				}
+				else
+				{
+					Err::LogError("Can't get pipeline '%s'", (u32)e, pipelineHandleToMap.at(mc.m_hPipeline).c_str());
+				}
+			}
+			else
+			{
+				Err::LogError("Entity: '%i' using unknwon mesh: '%i'", (u32)e, (u32)mc.GetMesh());
+			}
+		}
+		else
+		{
+			Err::LogError("Entity: '%i' using unknwon pipeline: '%i'", (u32)e, (u32)mc.GetPipeline());
+		}
+	});
+}
+
 // using the normal META_IMPL macro here causes a null function ptr in the v table entry for EmplaceDefaultComponent?!
-META_IMPL_EX(MeshComponent, MetaReg, MeshComponent::SerializeC, OnMeshComponentCreate, OnMeshCmpntDestroy, OnMeshComponentUpdate)
+META_IMPL_EX(MeshComponent, MetaReg, MeshComponent::SerializeC, OnMeshComponentCreate, OnMeshCmpntDestroy, OnMeshComponentUpdate, OnSceneLoaded)

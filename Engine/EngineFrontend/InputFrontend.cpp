@@ -3,6 +3,7 @@
 #include "FrontendError.h"
 #include <string.h>
 #include "IBackendApp.h"
+#include "IArchive.h"
 
 namespace In
 {
@@ -31,7 +32,7 @@ namespace In
 			Err::LogWarning("RegisterLogicalButton, MAX_LOGICAL_BUTNS exceeded");
 			return ENGINE_NULL_HANDLE;
 		}
-		gBackendInputState.btns[gBackendInputState.numBtns++];
+		gBackendInputState.btns[gBackendInputState.numBtns++] = btn;
 		gBackendInputState.enabledBtns[gBackendInputState.numBtns - 1] = bInitiallyEnabled;
 		return gBackendInputState.numBtns;
 	}
@@ -55,7 +56,7 @@ namespace In
 			Err::LogWarning("RegisterLogicalButton, MAX_LOGICAL_AXES exceeded");
 			return ENGINE_NULL_HANDLE;
 		}
-		gBackendInputState.axis[gBackendInputState.numAxes++];
+		gBackendInputState.axis[gBackendInputState.numAxes++] = la;
 		gBackendInputState.enabledAxes[gBackendInputState.numAxes - 1] = bInitiallyEnabled;
 		return gBackendInputState.numAxes;
 	}
@@ -327,6 +328,11 @@ namespace In
 		return false;
 	}
 
+	void Serialize(IArchive& archive)
+	{
+		gBackendInputState.Serialize(archive);
+	}
+
 	void InputSet::operator=(const InputSet& rhs)
 	{
 		enabledAxes = rhs.enabledAxes;
@@ -346,5 +352,234 @@ namespace In
 	bool LogicalButton::HasReleaseOccured()
 	{
 		return !state[0] && state[1];
+	}
+	void BindingEndpoint::Serialize(IArchive& ar)
+	{
+		if (ar.IsStoring())
+		{
+			//ar.PushObj("BindingEndpoint");
+				ar.PushObj("type");
+					ar << (int)type;
+					switch (type)
+					{
+					case In::BindingType::Btn:
+						ar.PushObj("Btn");
+							ar.PushObj("type");
+								ar << (int)data.btn.type;
+							ar.PopObj();
+							ar.PushObj("hBtn");
+								ar << data.btn.btn;
+							ar.PopObj();
+							ar.PushObj("code");
+								ar << data.btn.code;
+							ar.PopObj();
+						ar.PopObj();
+						break;
+					case In::BindingType::Axis:
+						ar.PushObj("Axis");
+							ar.PushObj("type");
+								ar << (int)data.axis.type;
+							ar.PopObj();
+							ar.PushObj("axis");
+								ar << (int)data.axis.axis;
+							ar.PopObj();
+							ar.PushObj("code");
+								ar << (int)data.axis.la;
+							ar.PopObj();
+						ar.PopObj();
+						break;
+					}
+				ar.PopObj();
+			//ar.PopObj();
+		}
+		else
+		{
+			//ar.PushObj("BindingEndpoint");
+				ar.PushObj("type");
+					int t = 0;
+					ar >> t;//(int&)type;
+					type = (In::BindingType)t;
+					switch (type)
+					{
+					case In::BindingType::Btn:
+						ar.PushObj("Btn");
+							ar.PushObj("type");
+								ar >> (int&)data.btn.type;
+							ar.PopObj();
+							ar.PushObj("hBtn");
+								ar >> (size_t&)data.btn.btn;
+							ar.PopObj();
+							ar.PushObj("code");
+								ar >> data.btn.code;
+							ar.PopObj();
+						ar.PopObj();
+						break;
+					case In::BindingType::Axis:
+						ar.PushObj("Axis");
+							ar.PushObj("type");
+								ar >> (int&)data.axis.type;
+							ar.PopObj();
+							ar.PushObj("axis");
+								ar >> (int&)data.axis.axis;
+							ar.PopObj();
+							ar.PushObj("code");
+								ar >> (int&)data.axis.la;
+							ar.PopObj();
+						ar.PopObj();
+						break;
+					}
+				ar.PopObj();
+			//ar.PopObj();
+		}
+	}
+}
+
+template<size_t size>
+void SerializeBitset64(IArchive& ar, std::bitset<size>& bitset, const char* serializationName)
+{
+	static_assert(size % 64 == 0);
+	if (ar.IsStoring())
+	{
+		ar.PushObj(serializationName);
+			u64* pRead = (u64*)&bitset;
+			for (int i = 0; i < size / 64; i++)
+			{
+				ar.PushObj("BitsetElement");
+					ar << *pRead++;
+				ar.PopObj();
+			}
+		ar.PopObj();
+	}
+	else
+	{
+		ar.PushObj(serializationName);
+			u64* pWrite = (u64*)&bitset;
+			for (int i = 0; i < size / 64; i++)
+			{
+				ar.PushObj("BitsetElement");
+					ar >> *pWrite++;
+				ar.PopObj();
+			}
+		ar.PopObj();
+	}
+}
+
+void BackendInputState::Serialize(IArchive& ar)
+{
+	int version = 1;
+
+	if (ar.IsStoring())
+	{
+		ar.PushObj("Input");
+			ar << version;
+
+			ar.PushObj("numBtns");
+				ar << numBtns;
+			ar.PopObj();
+			ar.PushObj("Buttons");
+				for(int i=0; i<numBtns; i++)
+				{
+					ar.PushObj("Button");
+						ar.PushObj("Name");
+							ar << btns[i].name;
+						ar.PopObj();
+					ar.PopObj();
+				}
+			ar.PopObj();
+
+			ar.PushObj("numAxes");
+				ar << numAxes;
+			ar.PopObj();
+			ar.PushObj("Axes");
+				for(int i=0; i<numAxes; i++)
+				{
+					ar.PushObj("Axis");
+						ar.PushObj("Name");
+							ar << axis[i].name;
+						ar.PopObj();
+						ar.PushObj("Type");
+							ar << (int)axis[i].type;
+						ar.PopObj();
+					ar.PopObj();
+				}
+			ar.PopObj();
+
+			ar.PushObj("BindingEndpoints");
+				ar << endpts.size();
+				for (In::BindingEndpoint& ep : endpts)
+				{
+					ar.PushObj("BindingEndpoint");
+						ep.Serialize(ar);
+					ar.PopObj();
+				}
+			ar.PopObj();
+
+			SerializeBitset64<MAX_LOGICAL_AXES>(ar, enabledAxes, "enabledAxes");
+			SerializeBitset64<MAX_LOGICAL_BUTNS>(ar, enabledBtns, "enabledBtns");
+
+		ar.PopObj();
+	}
+	else
+	{
+		ar.PushObj("Input");
+			ar >> version;
+			switch (version)
+			{
+			case 1:
+			{
+				ar.PushObj("numBtns");
+					ar >> numBtns;
+				ar.PopObj();
+				ar.PushObj("Buttons");
+					for(int i=0; i<numBtns; i++)
+					{
+						ar.PushChild(i);
+							ar.PushObj("Name");
+								ar >> btns[i].name;
+							ar.PopObj();
+						ar.PopObj();
+					}
+				ar.PopObj();
+
+				ar.PushObj("numAxes");
+					ar >> numAxes;
+				ar.PopObj();
+				ar.PushObj("Axes");
+					for(int i=0; i<numAxes; i++)
+					{
+						ar.PushChild(i);
+							ar.PushObj("Name");
+								ar >> axis[i].name;
+							ar.PopObj();
+							ar.PushObj("Type");
+								ar >> (int&)axis[i].type;
+							ar.PopObj();
+						ar.PopObj();
+					}
+				ar.PopObj();
+
+				ar.PushObj("BindingEndpoints");
+					size_t enptsSize = 0;
+					ar >> enptsSize;
+					endpts.resize(enptsSize);
+
+					for(int i=0; i< enptsSize; i++)
+					{
+						In::BindingEndpoint& ep = endpts[i];
+						ar.PushChild(i);
+						ep.Serialize(ar);
+						ar.PopObj();
+					}
+				ar.PopObj();
+
+				SerializeBitset64<MAX_LOGICAL_AXES>(ar, enabledAxes, "enabledAxes");
+				SerializeBitset64<MAX_LOGICAL_BUTNS>(ar, enabledBtns, "enabledBtns");
+				break;
+			}
+				
+			}
+			
+
+		ar.PopObj();
 	}
 }

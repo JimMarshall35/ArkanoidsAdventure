@@ -1,5 +1,6 @@
 #include "TestPipelineMaterialComponent.h"
 #include "IArchive.h"
+#include "Scene.h"
 
 static void MetaReg(Comp::ComponentMeta* m) {}
 
@@ -52,5 +53,35 @@ static void SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, EntityReg
 	}
 }
 
+static void OnSceneLoaded(const EMap<HPipeline, EString>& pipelineHandleToMap, const EMap<HTexture, HTexture>& oldToNewTextureMap, const EMap<HMesh, HMesh>& oldToNewMeshMap)
+{
+	Scn::Scene& s = Scn::GetScene();
+	EntityReg& r = s.entities.GetReg();
+	auto v = r.view<TestPipelineMaterial>();
+	v.each([&](Entity e, TestPipelineMaterial& mc)
+	{
+		if (oldToNewMeshMap.find(mc.hTexture) != oldToNewTextureMap.end())
+		{
+			mc.hTexture = oldToNewMeshMap.at(mc.hTexture);
+		}
+		else
+		{
+			assert(false);
+		}
+	});
+}
 
-META_IMPL(TestPipelineMaterial, MetaReg, SerializeC)
+static void OnMeshCmpntDestroy(entt::registry& r, entt::entity e)
+{
+
+};
+
+static void OnMeshComponentCreate(entt::registry& r, entt::entity e)
+{
+}
+
+static void OnMeshComponentUpdate(entt::registry& r, entt::entity e)
+{
+
+}
+META_IMPL(TestPipelineMaterial, MetaReg, SerializeC, OnMeshComponentCreate, OnMeshCmpntDestroy, OnMeshComponentUpdate, OnSceneLoaded)

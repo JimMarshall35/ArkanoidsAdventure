@@ -6,6 +6,7 @@
 #define MAX_LOGICAL_BUTNS 128
 #define MAX_LOGICAL_AXES 128
 
+class IArchive;
 
 namespace In
 {
@@ -69,6 +70,7 @@ namespace In
 			BtnEndpoint btn;
 			AxisEndpoint axis;
 		}data;
+		void Serialize(IArchive& ar);
 	};
 
 	struct LogicalButton
@@ -135,6 +137,7 @@ namespace In
 	bool GetPressOccured(HLogicalBtn hBtn);
 	bool GetReleaseOccured(HLogicalBtn hBtn);
 
+	void Serialize(IArchive& archive);
 };
 
 
@@ -148,4 +151,6 @@ struct BackendInputState
 	EVec<In::BindingEndpoint> endpts;
 	std::bitset<MAX_LOGICAL_AXES> enabledAxes;
 	std::bitset<MAX_LOGICAL_BUTNS> enabledBtns;
+
+	void Serialize(IArchive& ar);
 };

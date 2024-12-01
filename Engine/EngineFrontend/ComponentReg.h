@@ -1,8 +1,10 @@
 #pragma once
 #include "EngineLib.h"
 #include "Autolist.h"
+#include "PipelineTypes.h"
 #include <entt/entity/entity.hpp>
 class IArchive;
+
 
 namespace Comp
 {
@@ -15,6 +17,7 @@ namespace Comp
 		virtual void Serialize(IArchive* ar, Entity e, EntityReg& reg) = 0;
 		virtual void RegisterListeners(EntityReg& reg) = 0;
 		virtual const char* GetName() = 0;
+		virtual void OnSceneLoad(const EMap<HPipeline, EString>& pipelineHandleToMap, const EMap<HTexture, HTexture>& oldToNewTextureMap, const EMap<HMesh, HMesh>& oldToNewMeshMap) {};
 		static ComponentMeta* FindByName(const char* name);
 		EString GetDefaultComponentXMLString();
 		void SerializeDefaultComponent(IArchive* ar);
@@ -45,7 +48,7 @@ namespace Comp
 	Comp::ComponentMeta* className##_GetMeta() { return (Comp::ComponentMeta*)&className##_Meta_Instance; }
 	
 // Listener type for ConstructFn, DestructFn, UpdateFn: void(entt::registry &, entt::entity);
-#define META_IMPL_EX(className, metaFn, SerializeFn, ConstructFn, DestructFn, UpdateFn) class className##_Meta : public Comp::ComponentMeta {\
+#define META_IMPL_EX(className, metaFn, SerializeFn, ConstructFn, DestructFn, UpdateFn, OnSceneLoadedFn) class className##_Meta : public Comp::ComponentMeta {\
 	public:\
 		virtual void Meta() override {\
 			metaFn((Comp::ComponentMeta*)this);\
@@ -59,6 +62,9 @@ namespace Comp
 			reg.on_update<##className##>().connect<&##UpdateFn##>();\
 		}\
 		virtual const char* GetName() override { return #className ; }\
+		virtual void OnSceneLoad(const EMap<HPipeline, EString>& pipelineHandleToMap, const EMap<HTexture, HTexture>& oldToNewTextureMap, const EMap<HMesh, HMesh>& oldToNewMeshMap) {\
+			OnSceneLoadedFn(pipelineHandleToMap, oldToNewTextureMap, oldToNewMeshMap);\
+		};\
 	protected:\
 		virtual void EmplaceDefaultComponent(EntityReg& reg,  Entity e) override { reg.emplace< className >(e); }\
 	};\

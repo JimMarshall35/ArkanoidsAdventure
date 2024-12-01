@@ -8,17 +8,8 @@
 int main() {
     EngineInitArgs args;
     args.BackEndRendererDLLPath = L"C:\\Users\\User1\\source\\repos\\ArkanoidsAdventure\\ArkanoidsAdventure\\Engine\\x64\\Debug\\EngineWindowsOpenGLBackend.dll";
-
-    try
-    {
-        Engine::Run(args);
-    }
-    catch (const std::exception& e)
-    {
-        std::cerr << e.what() << std::endl;
-        return EXIT_FAILURE;
-    }
-
+    args.InitialScenePath = "C:\\Users\\User1\\source\\repos\\ArkanoidsAdventure\\ArkanoidsAdventure\\Engine\\Game\\Assets\\test.xml";
+    Engine::Run(args);
     return EXIT_SUCCESS;
 }
 

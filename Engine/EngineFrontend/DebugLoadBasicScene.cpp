@@ -74,7 +74,7 @@ Entity BasicScn::Load(Scn::Scene& scn)
 
     MeshComponent& mc = reg.emplace<MeshComponent>(meshEntity);
     PipeLine* pPipeline = PipeLine::TryGetPipeline("Test");
-    pPipeline->Create();
+   // pPipeline->Create();
     mc.Create(shurikenMesh, *pPipeline, meshEntity);
 
     Transform& t2 = reg.emplace<Transform>(meshEntity);
@@ -170,8 +170,8 @@ In::EnableDisableBtn(handleStoreLocation, true);
     editorCamX.name = "EditorCamX";
 
     In::LogicalAxis editorCamY;
-    editorCamX.type = In::LogicalAxisType::Delta;
-    editorCamX.name = "EditorCamY";
+    editorCamY.type = In::LogicalAxisType::Delta;
+    editorCamY.name = "EditorCamY";
 
     
 
@@ -201,11 +201,11 @@ In::EnableDisableBtn(handleStoreLocation, true);
 
     In::InputSet editorInputSet = In::GetCurrentInputSet();
 
-    DrawSystem* ds = DrawSystem::GetByName(DRAW_MESH_COMPONENT_SYSTEM_NAME);
-    HDrawSystem hDS = scn.sysReg.RegisterDrawSystem(ds);
-    
-    UpdateSystem* up = UpdateSystem::GetByName(EDITOR_CONTROLS_SYSTEM_NAME);
-    HUpdateSystem hUS = scn.sysReg.RegisterUpdateSystem(up);
+    //DrawSystem* ds = DrawSystem::GetByName(DRAW_MESH_COMPONENT_SYSTEM_NAME);
+    //HDrawSystem hDS = scn.sysReg.RegisterDrawSystem(ds);
+    //
+    //UpdateSystem* up = UpdateSystem::GetByName(EDITOR_CONTROLS_SYSTEM_NAME);
+    //HUpdateSystem hUS = scn.sysReg.RegisterUpdateSystem(up);
 
     return meshEntity;
 }

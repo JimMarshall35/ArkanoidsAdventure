@@ -257,6 +257,7 @@ void XMLArchive::operator>>(glm::vec2& v)
     a = n.attribute("x");
     v.x = a.as_float();
     a = n.attribute("y");
+    v.y = a.as_float();
 }
 
 void XMLArchive::operator<<(const glm::vec2& v)

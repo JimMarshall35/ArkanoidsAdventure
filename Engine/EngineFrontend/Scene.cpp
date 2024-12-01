@@ -26,6 +26,28 @@ namespace Scn
 		return gTheScene;
 	}
 
+	void PopulateHandleToPipelineNameMap(EMap<HPipeline, EString>& outMap, IArchive& archive)
+	{
+		archive.PushObj("Pipelines");
+			i32 arraySize = 0;
+			archive >> arraySize;
+			for (int i = 0; i < arraySize; i++)
+			{
+				archive.PushChild(i);
+					archive.PushObj("Name");
+						EString name = "";
+						archive >> name;
+					archive.PopObj();
+					archive.PushObj("Handle");
+						u64 handle = 0;
+						archive >> handle;
+					archive.PopObj();
+				archive.PopObj();
+				outMap[handle] = name;
+			}
+		archive.PopObj();
+	}
+
 	void DeserialiseSceneV1(IArchive& archive)
 	{
 		Scene& s = GetScene();
@@ -35,17 +57,18 @@ namespace Scn
 		archive.PushObj("activeCameraAntity");
 			archive >> s.activeCameraAntity;
 		archive.PopObj();
-
+		In::Serialize(archive);
 		s.entities.Serialize(archive);
 		s.meshReg.Serialize(archive);
 		s.textureReg.Serialize(archive);
 		EMap<HPipeline, EString> pipelineHandleToMap;
+		PopulateHandleToPipelineNameMap(pipelineHandleToMap, archive);
 		EMap<HTexture, HTexture> oldToNewTextureMap;
 		EMap<HMesh, HMesh> oldToNewMeshMap;
 		s.textureReg.ReloadTextures(oldToNewTextureMap);
 		s.meshReg.ReloadMeshes(oldToNewMeshMap);
 		s.entities.PostSerializeFix(pipelineHandleToMap, oldToNewTextureMap, oldToNewMeshMap);
-		Autolist<Comp::ComponentMeta>* pMeta = Autolist<Comp::ComponentMeta>::GetHead();
+   		Autolist<Comp::ComponentMeta>* pMeta = Autolist<Comp::ComponentMeta>::GetHead();
 		while (pMeta)
 		{
 			Comp::ComponentMeta* meta = (Comp::ComponentMeta*)pMeta;
@@ -127,6 +150,8 @@ namespace Scn
 			archive.PushObj("activeCameraAntity");
 				archive << s.activeCameraAntity;
 			archive.PopObj();
+
+			In::Serialize(archive);
 			s.entities.Serialize(archive);
 			s.meshReg.Serialize(archive);
 			s.textureReg.Serialize(archive);

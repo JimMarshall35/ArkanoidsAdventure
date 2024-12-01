@@ -15,6 +15,12 @@ static void SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, EntityReg
 				AR_STORE(mc, ActivateButton)
 				AR_STORE(mc, MoveSpeedUpBtn)
 				AR_STORE(mc, MoveSpeedDownBtn)
+
+				AR_STORE(mc, Ent1)
+				AR_STORE(mc, Ent2)
+				AR_STORE(mc, Ent3)
+				AR_STORE(mc, Ent4)
+
 				ar->PushObj("UpBtn");
 					*ar << mc->MovementButtons[(u32)Directions::UP];
 					ar->HintUsage(HandleType::LogicalBtn);
@@ -45,7 +51,7 @@ static void SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, EntityReg
 	else
 	{
 		int fileVersion = 0;
-		if (!ar->PushObj("TestPipelineMaterial")) return;
+		if (!ar->PushObj("EditorCamControlsComponent")) return;
 		EditorCamControlsComponent* mc = reg.try_get<EditorCamControlsComponent>(e);
 		if (!mc)
 		{
@@ -62,6 +68,12 @@ static void SerializeC(Comp::ComponentMeta* m, IArchive* ar, Entity e, EntityReg
 			AR_LOAD(mc, ActivateButton)
 			AR_LOAD(mc, MoveSpeedUpBtn)
 			AR_LOAD(mc, MoveSpeedDownBtn)
+
+			AR_LOAD(mc, Ent1)
+			AR_LOAD(mc, Ent2)
+			AR_LOAD(mc, Ent3)
+			AR_LOAD(mc, Ent4)
+
 			ar->PushObj("UpBtn");
 				*ar >> mc->MovementButtons[(u32)Directions::UP];
 			ar->PopObj();

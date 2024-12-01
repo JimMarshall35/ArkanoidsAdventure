@@ -370,4 +370,9 @@ static void OnMeshComponentDestroy(entt::registry& r, entt::entity e)
 
 }
 
-META_IMPL_EX(Transform, MetaReg, Transform::SerializeC, OnMeshComponentCreate, OnMeshComponentDestroy, OnMeshComponentUpdate)
+static void OnSceneLoaded(const EMap<HPipeline, EString>& pipelineHandleToMap, const EMap<HTexture, HTexture>& oldToNewTextureMap, const EMap<HMesh, HMesh>& oldToNewMeshMap)
+{
+
+}
+
+META_IMPL_EX(Transform, MetaReg, Transform::SerializeC, OnMeshComponentCreate, OnMeshComponentDestroy, OnMeshComponentUpdate, OnSceneLoaded)

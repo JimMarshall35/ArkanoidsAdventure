@@ -172,18 +172,18 @@ void MeshReg::Serialize(IArchive& archive)
 		{
 		case 1:
 			archive.PushObj("Meshes");
-			size_t numMeshes;
-			archive >> numMeshes;
-			m_Meshes.resize(numMeshes);
-			for (EPair<PipelineMeshData, HMesh>& p : m_Meshes)
-			{
-				archive.PushObj("Mesh");
-				archive.PushObj("Handle");
-				archive >> p.second;
-				archive.PopObj();
-				p.first.Serialize(archive);
-				archive.PopObj();
-			}
+				size_t numMeshes;
+				archive >> numMeshes;
+				m_Meshes.resize(numMeshes);
+				for (EPair<PipelineMeshData, HMesh>& p : m_Meshes)
+				{
+					archive.PushObj("Mesh");
+						archive.PushObj("Handle");
+							archive >> p.second;
+						archive.PopObj();
+						p.first.Serialize(archive);
+					archive.PopObj();
+				}
 			archive.PopObj();
 			break;
 		default:

@@ -85,7 +85,6 @@ void Sphere::Serialize(IArchive& a)
                 a >> radius;
             a.PopObj();
         a.PopObj();
-        a.PopObj();
     }
     
 }
